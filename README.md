@@ -1,2 +1,2 @@
-Whydah-UserAdministration
-=========================
+Brukeradministrasjon
+========================
