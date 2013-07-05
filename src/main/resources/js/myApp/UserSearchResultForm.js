@@ -5,7 +5,7 @@ var newUrl;
 
    var findCustomerButtonHandler = function(button,event) {
 //	    alert('You clicked the new password button!');
-        newUrl = myHostJson+'?url=http://giftit.yenka.freecode.no/members/';
+        newUrl = myHostJson+'?url=http://localhost:9999/members/';
         myJsonPersonCustomerStore.proxy.conn.url = newUrl;
         myJsonPersonCustomerStore.load();
         cswin.show();

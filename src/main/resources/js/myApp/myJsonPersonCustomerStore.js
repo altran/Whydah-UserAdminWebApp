@@ -1,8 +1,7 @@
 
 
 var myJsonPersonCustomerStore =  new Ext.data.JsonStore({
-//  url: 'http://giftit.yenka.freecode.no/members/',
-   url:  myHostJson+'?url=http://giftit.yenka.freecode.no/members/',
+   url:  myHostJson+'?url=http://localhost:9999/members/',
 //        url: './json',
 //        url: './jsondata',
         root: 'members',

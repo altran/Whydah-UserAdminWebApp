@@ -12,6 +12,7 @@ public class ApplicationMode {
     public final static String IAM_MODE_KEY = "IAM_MODE";
     public final static String PROD = "PROD";
     public final static String TEST = "TEST";
+    public final static String TEST_L = "TEST_LOCALHOST";
     public final static String DEV = "DEV";
     private static final Logger logger = LoggerFactory.getLogger(ApplicationMode.class);
 
@@ -26,7 +27,7 @@ public class ApplicationMode {
             System.err.println(IAM_MODE_KEY + " not defined in environment");
             System.exit(4);
         }
-        if(!Arrays.asList(PROD, TEST, DEV).contains(appMode)) {
+        if(!Arrays.asList(PROD, TEST, TEST_L, DEV).contains(appMode)) {
             System.err.println("Unknown " + IAM_MODE_KEY + ": " + appMode);
             System.exit(5);
         }

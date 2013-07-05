@@ -20,7 +20,7 @@
         var myHostJsonCustomerSearch="${myHostJsonCustomerSearch}";
         var myHostUserDelete="${myHostUserDelete}";
         var search_uid="001";
-        var appTitle="Brukeradministrasjon v/1.0.  (Brukerdatabaser: Yenka-Giftit - Applikasjoner: Giftit)";
+        var appTitle="User Administration v/0.0.1";
         var appId=001;
 
 
