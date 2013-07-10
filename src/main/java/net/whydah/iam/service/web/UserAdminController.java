@@ -1,22 +1,9 @@
 package net.whydah.iam.service.web;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import net.whydah.iam.service.config.AppConfig;
-import net.whydah.iam.service.util.SSOHelper;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.MissingResourceException;
+import java.util.Properties;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +19,26 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Properties;
+
+import net.whydah.iam.service.config.AppConfig;
+import net.whydah.iam.service.util.SSOHelper;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 @Controller
 public class UserAdminController {
@@ -87,24 +91,31 @@ public class UserAdminController {
 
         String userTicket = request.getParameter(USERTICKET);
         logger.debug("userTicket:" + userTicket);
-        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
-            String userTokenXml = ssoHelper.getUserTokenByTicket(userTicket);
-            logger.debug("userToken from ticket:" + userTokenXml);
-            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-                String tokenId = ssoHelper.getTokenId(userTokenXml);
-                logger.debug("tokenId:" + tokenId);
-                addModelParams(model, tokenId);
+        try {
+	        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
+	        	
+	            String userTokenXml = ssoHelper.getUserTokenByTicket(userTicket);
+	            logger.debug("userToken from ticket:" + userTokenXml);
+	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
+	                String tokenId = ssoHelper.getTokenId(userTokenXml);
+	                logger.debug("tokenId:" + tokenId);
+	                addModelParams(model, tokenId);
+	
+	
+	                Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+	                // cookie.setDomain("whydah.net");
+	                response.addCookie(cookie);
+	
+	                return "myapp";
+	            } else {
+	                return LOGIN_SERVICE;
+	            }
+	        }
+        } catch (MissingResourceException mre) {
+        	logger.debug("The ticked might have already been used, checking the cookie.", mre);
+        }
 
-
-                Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-                // cookie.setDomain("whydah.net");
-                response.addCookie(cookie);
-
-                return "myapp";
-            } else {
-                return LOGIN_SERVICE;
-            }
-        } else if (ssoHelper.hasRightCookie(request)) {
+        if (ssoHelper.hasRightCookie(request)) {
             String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
             logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
             String userTokenXmlFromCookie = ssoHelper.getUserToken(userTokenIdFromCookie);
@@ -207,6 +218,9 @@ public class UserAdminController {
             logger.error("", e);
         } finally {
             method.releaseConnection();
+        }
+        if (!model.containsAttribute("jsondata")) {
+        	logger.error("jsondata attribute not set when fetching data from URL: {}", url);
         }
         return "json";
     }

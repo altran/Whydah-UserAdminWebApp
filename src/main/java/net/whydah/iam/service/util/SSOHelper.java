@@ -1,11 +1,25 @@
 package net.whydah.iam.service.util;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
+import java.util.MissingResourceException;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import net.whydah.iam.service.config.AppConfig;
 import net.whydah.iam.service.data.ApplicationCredential;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
@@ -13,19 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
@@ -219,7 +224,9 @@ public class SSOHelper {
             return responseXML;
         }
         logger.warn("User authentication failed: {}", response);
-
+        if (response.getStatus() == Response.Status.GONE.getStatusCode()) {
+        	throw new MissingResourceException("No token found for ticket.", getClass().getSimpleName(), ticket);
+        }
         throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
 
