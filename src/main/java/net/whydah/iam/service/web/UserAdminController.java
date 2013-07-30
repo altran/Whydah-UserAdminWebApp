@@ -1,6 +1,9 @@
 package net.whydah.iam.service.web;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -211,8 +214,20 @@ public class UserAdminController {
         //logger.info("getHost:"+getHost());
         try {
             method.setURI(new URI(url, true));
-            int rescode = httpClient.executeMethod(method);
-            model.addAttribute("jsondata", method.getResponseBodyAsString());
+            int rescode = httpClient.executeMethod(method); 
+            // TODO: check rescode?
+            if (rescode != 200) {
+            	// Do something
+            }
+            
+            InputStream responseBodyStream = method.getResponseBodyAsStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
+            StringBuilder responseBody = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) !=null) {
+            	responseBody.append(line);
+            }
+            model.addAttribute("jsondata", responseBody.toString());
             response.setContentType("application/json; charset=utf-8");
         } catch (IOException e) {
             logger.error("", e);
