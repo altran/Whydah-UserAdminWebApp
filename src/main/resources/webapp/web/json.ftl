@@ -1,1 +1,1 @@
-${jsondata}
+${jsondata!"{}"}
