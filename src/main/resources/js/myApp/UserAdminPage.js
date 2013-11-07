@@ -23,23 +23,23 @@ UserAdminPage = Ext.extend(Ext.Panel, {
                 width: 800,
                 colspan:2
             },{
-                title:'Brukere',
+                title:'Users',
                 id: 'brukere',
                 layout: 'fit',
                 xtype: 'usersearchresult',
                 width: 800,
                 colspan:2
-            }, { title:'Bruker detaljer',
+            }, { title:'User details',
                 id: 'brukerdetaljer',
                 height:225,
                 layout: 'fit',
                 xtype: 'userpanel'
-            },{ title:'Tilgjengelige applikasjoner',
+            },{ title:'Available applications',
                 id: 'applikasjoner',
                 height:225,
                 layout: 'fit',
                 xtype: 'apppanel'
-            },{ title:'Selskaper, roller og egenskaper for applikasjon',
+            },{ title:'Organizations, roles and parametres for the application',
                 id: 'roller',
                 layout: 'fit',
                 xtype: 'rolepanel',

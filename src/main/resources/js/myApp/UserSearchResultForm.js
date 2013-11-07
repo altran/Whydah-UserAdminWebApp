@@ -19,14 +19,14 @@ var newUrl;
     var cswin = new Ext.Window({
            layout:'fit',
            width:500,
-           title:"Finn kunde",
+           title:"Customer search",
            shim :false,
            modal:true,
            autoDestroy :true,
            monitorValid:true,
            closable:true,
            resizable:true,
-           items:[{ title:'Kunder',
+           items:[{ title:'Customer',
                 id: 'rolledetaljer',
                 height:225,
                 layout: 'fit',
@@ -42,13 +42,13 @@ var newUrl;
             url:        myHostJsonUsers+search_uid+'/resetpassword',
             method:     'GET',
             success: function(responseObject) {
-                Ext.MessageBox.alert(search_uid+' har fått tilsendt nytt passord.');
+                Ext.MessageBox.alert(search_uid+' has been sent a reset-password mail.');
             },
             failure: function() {
                 Ext.MessageBox.alert('Something failed:'+url);
             }
         });
-        Ext.MessageBox.alert(search_uid+' har fått tilsendt nytt passord ');
+        Ext.MessageBox.alert(search_uid+' has received a reset password mail. ');
 
    };
 
@@ -59,7 +59,7 @@ UserSearchResultForm  = Ext.extend(Ext.grid.GridPanel, {
   autoScroll:true,
   initComponent: function(config) {
       var config = {
-              title: 'Brukere',
+              title: 'Users',
               id: 'brukersok-panel',
 //              store: myUserDataStore,,
               store: myJsonUserSearchStore,
@@ -73,33 +73,33 @@ UserSearchResultForm  = Ext.extend(Ext.grid.GridPanel, {
               // here. That is okay.   id: 'company'
              cm: new xg.ColumnModel([
                     sm2,
-                    {header: 'Brukernavn', size: 100, sortable: true, dataIndex: 'username'},
-                    {header: 'Fornavn', size: 100, sortable: true, dataIndex: 'firstName'},
-                    {header: 'Etternavn', size: 100, sortable: true, dataIndex: 'lastName'},
-                    {header: 'Mobil', size: 100, sortable: true, dataIndex: 'cellPhone'},
-                    {header: 'Kundereferanse', size: 100, sortable: true, dataIndex: 'personRef'}
+                    {header: 'Username', size: 100, sortable: true, dataIndex: 'username'},
+                    {header: 'First name', size: 100, sortable: true, dataIndex: 'firstName'},
+                    {header: 'Last name', size: 100, sortable: true, dataIndex: 'lastName'},
+                    {header: 'Cell phone', size: 100, sortable: true, dataIndex: 'cellPhone'},
+                    {header: 'Customer reference', size: 100, sortable: true, dataIndex: 'personRef'}
               ]),
               tbar: [ {
-                          text: 'Lag nytt passord',
+                          text: 'New password',
                           minWidth: 100,
                           iconCls:'password',
                           handler: newPWButtonHandler,
                           ref: '../newPwButton'
                       }, {
-                          text: 'Vis kundeinformasjon',
+                          text: 'Show customerinformation',
                           minWidth: 100,
                           iconCls:'customer',
                           disabled : true,
                           ref: '../customerButton'
                       }, {
-                          text: 'Knytt bruker til kunde',
+                          text: 'Connect user to customer',
                           minWidth: 100,
                           iconCls:'connect',
                           disabled : false,
                           handler: findCustomerButtonHandler,
                           ref: '../connectButton'
                       }, {
-                          text: 'Fjern kundereferanse',
+                          text: 'Remove customer reference',
                           minWidth: 100,
                           iconCls:'cross',
                           disabled : true,

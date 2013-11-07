@@ -3,7 +3,7 @@
   Bus = new Ext.util.Observable();
 
   var brukernavn_field = new Ext.form.TextField({
-        fieldLabel: 'Brukernavn',
+        fieldLabel: 'Username',
 //        disabled: true,
         readOnly: true,
         name: 'username',
@@ -11,28 +11,28 @@
     });
 
   var firstName_field = new Ext.form.TextField({
-        fieldLabel: 'Fornavn',
+        fieldLabel: 'FirstName',
 //        disabled: true,
         readOnly: true,
         name: 'firstName',
         anchor:'-15'
     });
   var lastname_field = new Ext.form.TextField({
-        fieldLabel: 'Etternavn',
+        fieldLabel: 'LastName',
 //        disabled: true,
         readOnly: true,
         name: 'lastName',
         anchor:'-15'
     });
   var email_field = new Ext.form.TextField({
-        fieldLabel: 'epost',
+        fieldLabel: 'email',
 //        disabled: true,
         readOnly: true,
         name: 'email',
         anchor:'-15'
     });
   var cell_field = new Ext.form.TextField({
-        fieldLabel: 'Mobil',
+        fieldLabel: 'Cellphone',
 //        disabled: true,
         readOnly: true,
         name: 'cellPhone',
@@ -96,7 +96,7 @@
                 myJsonRoleDataStore.load();
             },
             failure: function(transport){
-                alert("Fikk ikke oprettet brukeren: " - transport.responseText);
+                alert("Unable to create user: " - transport.responseText);
                 myJsonRoleDataStore.load();
             }
         });
@@ -117,7 +117,7 @@
                 myJsonRoleDataStore.load();
             },
             failure: function(transport){
-                alert("Fikk ikke oprettet brukeren: " - transport.responseText);
+                alert("Unable to create user: " - transport.responseText);
                 myJsonRoleDataStore.load();
             }
         });
@@ -145,16 +145,16 @@
    var eudwin = new Ext.Window({
            layout:'fit',
            width:400,
-           title:"Editer bruker",
+           title:"Edit user",
            shim :false,
            modal:true,
            autoDestroy :true,
            monitorValid:true,
            closable:false,
            resizable:false,
-           buttons: [{text: 'Avbryt', handler: cancelButtonHandler},
+           buttons: [{text: 'Calcel', handler: cancelButtonHandler},
                       {text:'OK', handler: saveButtonHandler}],
-           items:[{ title:'Bruker detaljer',
+           items:[{ title:'User details',
                 id: 'brukerdetaljer',
                 height:225,
                 layout: 'fit',
@@ -176,7 +176,7 @@
    //var saveButtonHandler = function(button,event) {
 
    var deleteButtonHandler = function(button,event) {
-                Ext.MessageBox.confirm('Bekreft', 'Er du sikker på at du vil slette '+user_uid+'?', showDeleteResult);
+                Ext.MessageBox.confirm('Confirm', 'Do you really want to delete '+user_uid+'?', showDeleteResult);
    };
 
    function showDeleteResult(btn){
@@ -187,7 +187,7 @@
             	//url:        myHostUserDelete+user_uid, //New
                 method:     'GET', //OLD
                 success: function(responseObject) {
-                    Ext.MessageBox.alert(user_uid+' - slettet ');
+                    Ext.MessageBox.alert(user_uid+' - deleted ');
                 },
                 failure: function() {
                     Ext.MessageBox.alert('Something failed');
@@ -202,7 +202,7 @@ UserDetailForm = Ext.extend(Ext.form.FormPanel, {
     initComponent: function(config) {
         var config = {
             // Put your pre-configured config options here
-            title: 'Brukerinformasjon',
+            title: 'User information',
             id: 'bruker-panel',
             bodyStyle:'padding:15px',
             monitorValid:true,
@@ -212,19 +212,19 @@ UserDetailForm = Ext.extend(Ext.form.FormPanel, {
             layout: 'form',
             items: [ brukernavn_field, firstName_field, lastname_field, email_field, cell_field ],
                 bbar:  ['->', {
-                            text: 'Ny bruker',
+                            text: 'New user',
                             minWidth: 100,
                             iconCls:'add',
                             handler: addButtonHandler,
                             ref: '../cancelButton'
                         }, {
-                            text: 'Endre bruker',
+                            text: 'Edit user',
                             minWidth: 100,
                             iconCls:'edit',
                             handler: editButtonHandler,
                             ref: '../editButton'
                         }, {
-                            text: 'Slett bruker',
+                            text: 'Delete user',
                             minWidth: 100,
                             iconCls:'remove',
                             handler: deleteButtonHandler,
