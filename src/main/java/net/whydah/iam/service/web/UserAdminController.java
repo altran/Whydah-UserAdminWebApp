@@ -124,9 +124,11 @@ public class UserAdminController {
             String userTokenXmlFromCookie = ssoHelper.getUserToken(userTokenIdFromCookie);
             logger.debug("userTokenXmlFromCookie=" + userTokenXmlFromCookie);
 
-            if (userTokenXmlFromCookie.length() >= MIN_USER_TOKEN_LENGTH && ssoHelper.getMyUserTokenId()!=null) {
+            if (userTokenXmlFromCookie.length() >= MIN_USER_TOKEN_LENGTH ) {
 
                 addModelParams(model, userTokenIdFromCookie);
+
+                // TODO verify that the token is valid
 
                 //TODO Should we do something with the cookie here?
                 return "myapp";
