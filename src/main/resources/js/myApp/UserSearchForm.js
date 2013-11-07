@@ -4,7 +4,7 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
     // Put your pre-configured config options here
     initComponent: function(config) {
         var config = {
-            title: 'Brukersøk',
+            title: 'User search',
             labelAlign: 'top',
             labelWidth:70,
             layout: 'table',
@@ -16,7 +16,7 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
                 },
                 {
                        xtype: 'textfield',
-                       fieldLabel: 'Brukernavn',
+                       fieldLabel: 'User name',
                        name: 'userName',
                        value: '',
                        width:225,

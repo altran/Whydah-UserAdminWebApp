@@ -13,7 +13,7 @@ var axg = Ext.grid;
 
 
     var checkColumn = new Ext.grid.CheckColumn({
-       header: 'Tilgang',
+       header: 'Access',
        click: true,
        dataIndex: 'hasRoles',
        sortable: true,
@@ -59,7 +59,7 @@ var axg = Ext.grid;
     var cm = new Ext.grid.ColumnModel([
         checkColumn,
         {
-           header: 'Applikasjonsnavn',
+           header: 'Application name',
            id: 'applicationName',
            dataIndex: 'applicationName',
            sortable: true,
@@ -104,7 +104,7 @@ ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
   autoScroll:true,
   initComponent: function(config) {
       var config = {
-              title: 'Applikasjonstilgang',
+              title: 'Whydah application access',
               id: 'applikasjon-panel',
               autoExpandColumn: 'applicationName',
               store: myJsonApplicationDataStore,
@@ -119,22 +119,22 @@ ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
 //                    {header: 'ApplikasjonsID',  sortable: true, dataIndex: 'appId'}
 //              ],
               tbar:[{
-                    text:'Ny applikasjon',
-                    tooltip:'Legg til en ny applikasjon',
+                    text:'New application',
+                    tooltip:'Add a new Whydah application',
                     disabled : true,
                     iconCls:'add'
               }, {
-                    text:'Endre',
+                    text:'Edit',
                     id: 'earmbtn',
-                    tooltip:'Endre en applikasjon',
+                    tooltip:'Edit application',
                     iconCls:'edit',
                     // Place a reference in the GridPanel
                     ref: '../editButton',
                     disabled: true
               }, {
-                    text:'Fjern',
+                    text:'Delete',
                     id: 'rarmbtn',
-                    tooltip:'Slette en applikasjon',
+                    tooltip:'Delete application',
                     iconCls:'remove',
                     // Place a reference in the GridPanel
                     ref: '../removeButton',

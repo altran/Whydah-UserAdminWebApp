@@ -125,7 +125,7 @@ RoleTable = Ext.extend(Ext.grid.GridPanel, {
   autoScroll:true,
   initComponent: function(config) {
       var config = {
-              title: 'Brukerens roller og egenskaper for valgte applikasjon',
+              title: 'User roles and properties for the selected application',
               id: 'role-panel',
               //store: myRoleDataStore,
               store: myJsonRoleDataStore,
@@ -139,39 +139,39 @@ RoleTable = Ext.extend(Ext.grid.GridPanel, {
 //                    {header: 'Selskap',  sortable: true, dataIndex: 'selskap'},
 //                    {header: 'Rolle',  sortable: true, dataIndex: 'rolle'},
 //                    {header: 'Egenskaper',  sortable: true, dataIndex: 'verdier'}
-                    {header: 'OrgNo', size: 80, sortable: true, dataIndex: 'orgID'},
-                    {header: 'Selskap',  sortable: true, dataIndex: 'organizationName'},
-                    {header: 'Rolle navn',  sortable: true, dataIndex: 'roleName'},
-                    {header: 'Rolle egenskaper',  sortable: true, dataIndex: 'roleValue'},
-                    {header: 'Applikasjon', size: 80, sortable: true, dataIndex: 'applicationName'}
+                    {header: 'Organization ID', size: 80, sortable: true, dataIndex: 'orgID'},
+                    {header: 'Org name',  sortable: true, dataIndex: 'organizationName'},
+                    {header: 'Role',  sortable: true, dataIndex: 'roleName'},
+                    {header: 'Role properties',  sortable: true, dataIndex: 'roleValue'},
+                    {header: 'Application', size: 80, sortable: true, dataIndex: 'applicationName'}
               ],
 
               tbar:[{
-                    text:'Ny rolle',
-                    tooltip:'Legg til en ny rolle',
+                    text:'New role',
+                    tooltip:'Add a new role',
                     handler: newRoleButtonHandler,
                     iconCls:'add'
               }, '-', {
-                    text:'Endre rolle',
+                    text:'Edit role',
                     id: 'elrmbtn',
-                    tooltip:'Oppdater egenskapene til en rolle',
+                    tooltip:'Edit the role parameters',
                     iconCls:'edit',
                     handler: editRoleButtonHandler,
                     // Place a reference in the GridPanel
                     ref: '../editButton',
                     disabled: true
               }, '-', {
-                    text:'Fjern rolle',
+                    text:'Delete role',
                     id: 'rlrmbtn',
-                    tooltip:'Blah blah blah blaht',
+                    tooltip:'Delete the role for the suer',
                     iconCls:'remove',
                     handler: deleteRoleButtonHandler,
                     // Place a reference in the GridPanel
                     ref: '../removeButton',
                     disabled: true
               },'-',{
-                    text:'Vis alle',
-                    tooltip:'Remove the selected item',
+                    text:'Show all',
+                    tooltip:'Show all roles',
                     handler: removeFilter,
                     iconCls:'option'
 

@@ -21,7 +21,7 @@
         var myHostJsonCustomerSearch="${myHostJsonCustomerSearch}";
         var myHostUserDelete="${myHostUserDelete}";
         var search_uid="001";
-        var appTitle="Whydah UserAdministration v/0.1.0";
+        var appTitle="Whydah UserAdministration v/0.3.0 (Late 2013 edition)";
         var appId=001;
 
 
