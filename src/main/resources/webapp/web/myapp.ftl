@@ -14,13 +14,14 @@
         var myHostJsonUserUpdate="${myHostJsonUserUpdate}";
         var myHostJsonUserAdd="${myHostJsonUserAdd}";
         var myHostJsonUserDelete="${myHostJsonUserDelete}";
+        var myHostJsonMembers="${myHostJsonMembers}";
         var myHostJsonRoleAdd="${myHostJsonRoleAdd}";
         var myHostUserAdd="${myHostUserAdd}";
         var myHostJsonRoleDelete="${myHostJsonRoleDelete}";
         var myHostJsonCustomerSearch="${myHostJsonCustomerSearch}";
         var myHostUserDelete="${myHostUserDelete}";
         var search_uid="001";
-        var appTitle="User Administration v/0.0.1";
+        var appTitle="Whydah UserAdministration v/0.1.0";
         var appId=001;
 
 
