@@ -161,6 +161,8 @@ public class UserAdminController {
         model.addAttribute("myHostJsonUsers", userAdminUrl + "users/");
         model.addAttribute("myHostJsonUserFind", userAdminUrl + "find/");
 
+        model.addAttribute("myHostJsonMembers", userAdminUrl + "members/");
+
         model.addAttribute("myHostJsonUserUpdate", userAdminPuUrl + "users/");
         model.addAttribute("myHostJsonUserAdd", userAdminPuUrl + "users/add");
 
