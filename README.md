@@ -19,8 +19,9 @@ Installation
 ```
 #!/bin/sh
 
-export IAM_MODE=DEV
-#export IAM_MODE=TEST
+#export IAM_MODE=DEV
+export IAM_MODE=TEST
+#export IAM_MODE=PROD
 
 A=UserAdministration
 V=1.0-SNAPSHOT
@@ -34,7 +35,7 @@ nohup java -jar -DIAM_CONFIG=useradmin.TEST.properties $JARFILE &
 tail -f nohup.out
 ```
 
-* create useradmin.TEST.properties
+* create UserAdministration.TEST.properties
 
 ```
 # standalone=true
