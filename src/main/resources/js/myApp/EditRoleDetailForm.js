@@ -2,36 +2,36 @@
 
 
   var e_appid_field = new Ext.form.TextField({
-        fieldLabel: 'Applikasjons ID',
+        fieldLabel: 'Application ID ID',
         readOnly: true,
         name: 'appID',
         anchor:'-15'
     });
 
   var e_orgno_field = new Ext.form.TextField({
-        fieldLabel: 'Organisasjonsnummer',
+        fieldLabel: 'Organization ID',
         name: 'orgno',
         anchor:'-15'
     });
 
   var e_organization_field = new Ext.form.TextField({
-        fieldLabel: 'Selskap',
+        fieldLabel: 'Organization name',
         readOnly: true,
         name: 'orgName',
         anchor:'-15'
     });
   var e_roleName_field = new Ext.form.TextField({
-        fieldLabel: 'Rollenavn',
+        fieldLabel: 'Role',
         name: 'roleName',
         anchor:'-15'
     });
   var e_roleValue_field = new Ext.form.TextField({
-        fieldLabel: 'Rolle egenskaper',
+        fieldLabel: 'Role properties',
         name: 'roleValue',
         anchor:'-15'
     });
   var e_appName_field = new Ext.form.TextField({
-        fieldLabel: 'Applikasjon',
+        fieldLabel: 'Application name',
         readOnly: true,
         name: 'AppName',
         anchor:'-15'

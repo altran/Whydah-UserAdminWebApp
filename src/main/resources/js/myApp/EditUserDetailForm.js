@@ -9,7 +9,7 @@
 
 
   var e_uid_field = new Ext.form.TextField({
-        fieldLabel: 'UID',
+        fieldLabel: 'User ID',
         name: 'uid',
         anchor:'-15',
         vtype: 'name',
@@ -44,28 +44,28 @@
     });
 
   var e_brukernavn_field = new Ext.form.TextField({
-        fieldLabel: 'Brukernavn',
+        fieldLabel: 'User name',
         name: 'username',
         anchor:'-15'
     });
 
   var e_firstName_field = new Ext.form.TextField({
-        fieldLabel: 'Fornavn',
+        fieldLabel: 'First name',
         name: 'firstName',
         anchor:'-15'
     });
   var e_lastName_field = new Ext.form.TextField({
-        fieldLabel: 'Etternavn',
+        fieldLabel: 'Last name',
         name: 'lastName',
         anchor:'-15'
     });
   var e_email_field = new Ext.form.TextField({
-        fieldLabel: 'epost',
+        fieldLabel: 'email',
         name: 'email',
         anchor:'-15'
     });
   var e_cell_field = new Ext.form.TextField({
-        fieldLabel: 'Mobil',
+        fieldLabel: 'Callphone',
         name: 'cellPhone',
         anchor:'-15'
     });

@@ -154,7 +154,7 @@ RoleTable = Ext.extend(Ext.grid.GridPanel, {
               }, '-', {
                     text:'Edit role',
                     id: 'elrmbtn',
-                    tooltip:'Edit the role parameters',
+                    tooltip:'Edit the role properties',
                     iconCls:'edit',
                     handler: editRoleButtonHandler,
                     // Place a reference in the GridPanel
