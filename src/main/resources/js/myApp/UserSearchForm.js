@@ -35,7 +35,7 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
                 },
                 {
                         xtype: 'button',
-                        text: 'Søk',
+                        text: 'Search',
                         width: 100
                 }
             ]
