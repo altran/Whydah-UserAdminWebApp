@@ -34,7 +34,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken";
+    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken-admin";
 
     private final URI tokenServiceUri;
     private final Client tokenServiceClient = Client.create();
