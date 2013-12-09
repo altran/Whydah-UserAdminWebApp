@@ -152,7 +152,7 @@
            monitorValid:true,
            closable:false,
            resizable:false,
-           buttons: [{text: 'Calcel', handler: cancelButtonHandler},
+           buttons: [{text: 'Cancel', handler: cancelButtonHandler},
                       {text:'OK', handler: saveButtonHandler}],
            items:[{ title:'User details',
                 id: 'brukerdetaljer',

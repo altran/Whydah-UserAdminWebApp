@@ -19,7 +19,7 @@ var appIdxName = 1;
    var erdwin = new Ext.Window({
            layout:'fit',
            width:500,
-           title:"Editer rolle",
+           title:"Edit role",
            shim :false,
            modal:true,
            autoDestroy :true,
@@ -27,8 +27,8 @@ var appIdxName = 1;
            closable:false,
            resizable:false,
            buttons: [{text:'OK', handler: rsaveButtonHandler}],
-           items:[{ title:'Rolle detaljer',
-                id: 'rolledetaljer',
+           items:[{ title:'Role details',
+                id: 'Role details',
                 height:225,
                 layout: 'fit',
                 xtype: 'editrolepanel'
@@ -77,7 +77,7 @@ function deleteRole() {
                 myJsonRoleDataStore.load();
             },
             failure: function(transport){
-                alert("Fikk ikke slettet rollen: " - transport.responseText);
+                alert("Unable to delete role: " - transport.responseText);
                 myJsonRoleDataStore.load();
             }
         });
@@ -96,7 +96,7 @@ function addRole() {
                 myJsonRoleDataStore.load();
             },
             failure: function(transport){
-                alert("Fikk ikke oprettet rollen: " - transport.responseText);
+                alert("Unable to create role: " - transport.responseText);
                 myJsonRoleDataStore.load();
             }
         });
