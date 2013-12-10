@@ -101,7 +101,7 @@ var editing = 'false';
 
 //ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
   border:false,
-  autoScroll:true,
+//  autoScroll:true,
   initComponent: function(config) {
       var config = {
               title: 'Whydah application access',
