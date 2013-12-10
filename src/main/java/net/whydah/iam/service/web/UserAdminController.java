@@ -92,12 +92,6 @@ public class UserAdminController {
             return "myapp";
         }
 
-        logger.debug("UserTokenID from Cookie:"+ssoHelper.getUserTokenIdFromCookie(request));
-
-        if (ssoHelper!=null && ssoHelper.getUserTokenIdFromCookie(request)!=null && ssoHelper.getUserTokenIdFromCookie(request).length()>3){
-            return "myapp";
-
-        }
 
         String userTicket = request.getParameter(USERTICKET);
         logger.debug("userTicket:" + userTicket);
