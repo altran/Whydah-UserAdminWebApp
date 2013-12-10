@@ -99,9 +99,9 @@ var asm2 = new axg.CheckboxSelectionModel({
 var rec;
 var editing = 'false';
 
-//ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
+ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
   border:false,
-//  autoScroll:true,
+  autoScroll:true,
   initComponent: function(config) {
       var config = {
               title: 'Whydah application access',
