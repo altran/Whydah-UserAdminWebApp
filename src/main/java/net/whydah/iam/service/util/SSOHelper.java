@@ -81,7 +81,7 @@ public class SSOHelper {
         WebResource logonResource = tokenServiceClient.resource(tokenServiceUri).path("logon");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         ApplicationCredential appCredential = new ApplicationCredential();
-        appCredential.setApplicationID("Whydah SSO LoginService");
+        appCredential.setApplicationID("Whydah SSO UserAdministration");
         appCredential.setApplicationPassord("secret dummy");
 
         formData.add("applicationcredential", appCredential.toXML());
