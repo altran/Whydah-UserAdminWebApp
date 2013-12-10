@@ -99,7 +99,7 @@ var asm2 = new axg.CheckboxSelectionModel({
 var rec;
 var editing = 'false';
 
-ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
+//ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
   border:false,
   autoScroll:true,
   initComponent: function(config) {
@@ -121,7 +121,7 @@ ApplicationTable = Ext.extend(Ext.grid.GridPanel, {
               tbar:[{
                     text:'New application',
                     tooltip:'Add a new Whydah application',
-                    disabled : true,
+                    disabled : false,
                     iconCls:'add'
               }, {
                     text:'Edit',
