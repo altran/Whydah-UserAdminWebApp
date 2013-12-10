@@ -92,7 +92,9 @@ public class UserAdminController {
             return "myapp";
         }
 
-        if (ssoHelper.getUserTokenIdFromCookie(request).length()>3){
+        logger.debug("UserTokenID from Cookie:"+ssoHelper.getUserTokenIdFromCookie(request));
+
+        if (ssoHelper!=null && ssoHelper.getUserTokenIdFromCookie(request)!=null && ssoHelper.getUserTokenIdFromCookie(request).length()>3){
             return "myapp";
 
         }
