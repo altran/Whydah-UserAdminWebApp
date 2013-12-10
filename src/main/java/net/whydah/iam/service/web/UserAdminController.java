@@ -166,7 +166,7 @@ public class UserAdminController {
         model.addAttribute("myHostJsonUserFind", userAdminUrl + "find/");
 
 //        model.addAttribute("myHostJsonMembers", userAdminUrl + "members/");
-        model.addAttribute("myHostJsonMembers", "http://acs02.cloudapp.net/useradmin/css/jsonpersoncustomer.css");
+        model.addAttribute("myHostJsonMembers", userIdentityBackend + "useradmin/" +"/css/jsonpersoncustomer.css");
         model.addAttribute("myHostJsonUserUpdate", userAdminPuUrl + "users/");
         model.addAttribute("myHostJsonUserAdd", userAdminPuUrl + "users/add");
 
