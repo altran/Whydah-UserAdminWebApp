@@ -121,7 +121,7 @@ var editing = 'false';
               tbar:[{
                     text:'New application',
                     tooltip:'Add a new Whydah application',
-                    disabled : false,
+                    disabled : true,
                     iconCls:'add'
               }, {
                     text:'Edit',
