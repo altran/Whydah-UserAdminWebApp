@@ -82,8 +82,8 @@
 	   var userjson = '{\"personRef\":\"0000000000\", \"username\":\"'+e_brukernavn_field.getValue()+
                 '\", \"firstName\":\"'+e_firstName_field.getValue()+'\", \"lastName\":\"'+e_lastName_field.getValue()+
                 '\", \"email\":\"'+e_email_field.getValue()+'\", \"cellPhone\":\"'+e_cell_field.getValue()+'\"}';
+        userjson = encodeURIComponent(userjson);
 
-    
         Ext.Ajax.defaultHeaders = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
         Ext.Ajax.request({
             url: myHostUserAdd+'&jsond='+userjson, 
