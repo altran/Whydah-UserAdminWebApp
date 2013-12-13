@@ -22,14 +22,14 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
                        width:225,
                        enableKeyEvents:true,
                        listeners:{
-                             	keypress: function(field, event) {
-                                    // alert('key: '+field.getValue()+String.fromCharCode(event.getKey()));
-                                    var queryString = field.getValue()+String.fromCharCode(event.getKey());
-                                    reg = /\s+/;
-                                    query2 = queryString.replace(reg,'_')
-                                    myJsonUserSearchStore.proxy.conn.url = myHostJsonUserFind+''+query2;
+                             	keyup: function(field, event) {
+                                    var queryString = field.getValue();
+                                    if(queryString == ""){
+                                        queryString = '*';
+                                    }
+                                    queryString = encodeURI(queryString);
+                                    myJsonUserSearchStore.proxy.conn.url = myHostJsonUserFind+''+queryString;
                                     myJsonUserSearchStore.load();
-                                    //Bus.fireEvent('message', field.getValue()+String.fromCharCode(event.getKey()))
                                 }
                         }
                 },
@@ -46,6 +46,18 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
     }
 
 });
-
+function empty(e)
+{
+    switch(e) {
+        case "":
+        case 0:
+        case "0":
+        case null:
+        case false:
+        case typeof this == "undefined":
+            return true;
+                default : return false;
+    }
+}
 Ext.reg('searchpanel', UserSearchForm);
 
