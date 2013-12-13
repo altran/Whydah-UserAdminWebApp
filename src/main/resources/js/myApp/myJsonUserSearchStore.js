@@ -2,7 +2,7 @@
 
 var myJsonUserSearchStore =  new Ext.data.JsonStore({
 //  url: './ext3/test/useridentity.html',
-   url: myHostJsonUserFind+'*0',
+   url: myHostJsonUserFind+'*',
 //        url: './json',
 //        url: './jsondata',
         root: 'result',
