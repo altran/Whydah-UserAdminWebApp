@@ -83,6 +83,7 @@ public class UserAdminController {
         logger.debug(strb.toString());
     }
 
+    @Produces(MediaType.TEXT_HTML + ";charset=utf-8")
     @RequestMapping("/")
     public String myapp(HttpServletRequest request, HttpServletResponse response, Model model) {
         response.setContentType(HTML_CONTENT_TYPE);
@@ -208,7 +209,7 @@ public class UserAdminController {
 
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping("/json")
     public String json(@PathParam("url") String url, HttpServletRequest request, HttpServletResponse response, Model model) {
         HttpMethod method = new GetMethod();
@@ -250,6 +251,7 @@ public class UserAdminController {
     //Adding user
     @GET
     @RequestMapping("/jsonp")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Path("/jsonp/{url}/add/{jsond}") //OLD
     public String jsonp(@PathParam("jsond") String jsond, @PathParam("url") String url, HttpServletRequest request, HttpServletResponse response, Model model) { //OLD
         try {
