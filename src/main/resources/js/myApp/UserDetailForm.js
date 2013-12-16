@@ -176,18 +176,18 @@
    //var saveButtonHandler = function(button,event) {
 
    var deleteButtonHandler = function(button,event) {
-                Ext.MessageBox.confirm('Confirm', 'Do you really want to delete '+user_uid+'?', showDeleteResult);
+                Ext.MessageBox.confirm('Confirm', 'Do you really want to delete '+brukernavn_field.value+'?', showDeleteResult);
    };
 
    function showDeleteResult(btn){
         if (btn == 'yes') {
             var conn = new Ext.data.Connection();
             conn.request({
-                url:        myHostUserDelete+user_uid+'/delete', //OLD
+                url:        myHostUserDelete+brukernavn_field.value+'/delete', //OLD
             	//url:        myHostUserDelete+user_uid, //New
                 method:     'GET', //OLD
                 success: function(responseObject) {
-                    Ext.MessageBox.alert(user_uid+' - deleted ');
+                    Ext.MessageBox.alert(brukernavn_field.value+' - deleted ');
                 },
                 failure: function() {
                     Ext.MessageBox.alert('Something failed');
