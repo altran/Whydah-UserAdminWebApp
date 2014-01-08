@@ -1,7 +1,8 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" type="text/css" href="./ext3/resources/css/ext-all.css" />
+  <link rel="stylesheet" type="text/css" href="./ext3/resources/css/ext-all-notheme.css" />
+  <link rel="stylesheet" type="text/css" href="./ext3/resources/css/xtheme-gray.css" />
   <link rel="stylesheet" type="text/css" href="./css/application.css">
     <script type="text/javascript">
         var myHost = "${myHost}";
@@ -21,7 +22,7 @@
         var myHostJsonCustomerSearch="${myHostJsonCustomerSearch}";
         var myHostUserDelete="${myHostUserDelete}";
         var search_uid="001";
-        var appTitle="Whydah UserAdministration v/0.3.0 (Late 2013 edition)";
+        var appTitle="Whydah UserAdministration v/1.3.0";
         var appId=001;
 
 

@@ -10,10 +10,10 @@ UserSearchForm = Ext.extend(Ext.form.FormPanel, {
             layout: 'table',
             width: 800,
             items:  [
-                {
-                       xtype: 'spacer',
-                       width: 455
-                },
+//                {
+//                       xtype: 'spacer',
+//                       width: 455
+//                },
                 {
                        xtype: 'textfield',
                        fieldLabel: 'User name',

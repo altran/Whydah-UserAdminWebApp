@@ -21,6 +21,8 @@ Ext.onReady(function() {
          height:850,
          minWidth:500,
          minHeight:280,
+         y:10,
+         x:10,
          plain:true,
          layout:'fit',
          border:false,
