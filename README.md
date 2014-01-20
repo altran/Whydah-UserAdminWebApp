@@ -6,6 +6,7 @@ Requires UserIdentityBackend, and if authorization is turned on; SSOLoginService
 In order to use the Administration UI the User requires a UserAdmin-role defined in UserIdentityBackend.
 
 
+![Architectural Overview](https://raw2.github.com/altran/Whydah-SSOWebApplication/master/Whydah%20infrastructure.png)
 
 
 Installation
