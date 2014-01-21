@@ -1,4 +1,4 @@
-package net.whydah.iam.service.data;
+package net.whydah.identity.data;
 
 public class UserCredential {
 

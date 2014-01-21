@@ -8,9 +8,9 @@
 
     <!--Daily rolling file appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>logs/UserAdministration.log</File>
+        <File>logs/UserAdminWebapp.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/UserAdministration-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>logs/UserAdminWebapp-%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>5</maxHistory>
         </rollingPolicy>
 
@@ -26,7 +26,7 @@
     </logger>
 
 
-    <logger name="net.whydah.iam.service" level="TRACE" additivity="false">
+    <logger name="net.whydah.identity" level="TRACE" additivity="false">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </logger>

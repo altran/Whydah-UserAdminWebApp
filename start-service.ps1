@@ -19,8 +19,8 @@ $env:IAM_MODE=$mode
 
 # Set service name, version and repository
 $A='UserAdministration'
-$V='1.0-SNAPSHOT'
-$url =  'http://mvnrepo.cantara.no/service/local/artifact/maven/content?r=altran-snapshots&g=net.whydah.sso.service&a='+$A+'&v='+$V+'&p=jar'
+$V='0.2-SNAPSHOT'
+$url =  'http://mvnrepo.cantara.no/service/local/artifact/maven/content?r=altran-snapshots&g=net.whydah.identity&a='+$A+'&v='+$V+'&p=jar'
 $user = 'altran'
 $pwd = ConvertTo-SecureString "l1nkSys" -AsPlainText -Force
 $jarstartconfig = "-DIAM_CONFIG=useradministration."+ $mode + ".properties"

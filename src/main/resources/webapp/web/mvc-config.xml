@@ -20,7 +20,7 @@
     <mvc:resources mapping="/css/**" location="/, classpath:/css/" />
 
 
-	<context:component-scan base-package="net.whydah.iam.service" />
+	<context:component-scan base-package="net.whydah.identity" />
 
 	<mvc:annotation-driven />
 

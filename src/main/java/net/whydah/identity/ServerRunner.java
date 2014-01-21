@@ -1,4 +1,4 @@
-package net.whydah.iam.service;
+package net.whydah.identity;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

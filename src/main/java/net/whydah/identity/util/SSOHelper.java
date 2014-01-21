@@ -1,9 +1,17 @@
-package net.whydah.iam.service.util;
+package net.whydah.identity.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
-import java.util.MissingResourceException;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.whydah.identity.config.AppConfig;
+import net.whydah.identity.data.ApplicationCredential;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,21 +24,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-
-import net.whydah.iam.service.config.AppConfig;
-import net.whydah.iam.service.data.ApplicationCredential;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
+import java.util.MissingResourceException;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
