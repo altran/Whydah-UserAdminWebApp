@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.whydah.identity</groupId>
-    <artifactId>UserAdministration</artifactId>
+    <artifactId>UserAdminWebapp</artifactId>
     <version>0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>UserAdminWebapp</name>
-    <url>https://wiki.cantara.no/display/iam/UserAdministration</url>
+    <url>https://wiki.cantara.no/display/iam/UserAdminWebapp</url>
 
     <parent>
         <groupId>no.cantara.emi</groupId>
@@ -15,9 +15,26 @@
     </parent>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:altran/Whydah-UserAdministration.git</developerConnection>
-        <connection>scm:git:https://github.com:altran/Whydah-UserAdministration.git</connection>
+        <developerConnection>scm:git:git@github.com:altran/Whydah-UserAdminWebapp.git</developerConnection>
+        <connection>scm:git:https://github.com:altran/Whydah-UserAdminWebapp.git</connection>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>altran-releases</id>
+            <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>altran-snapshots</id>
+            <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <jersey.version>1.14</jersey.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <jetty.version>7.3.0.v20110203</jetty.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -34,105 +51,6 @@
             <url>http://mvnrepo.cantara.no/content/repositories/releases/</url>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>altran-releases</id>
-            <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>altran-snapshots</id>
-            <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <properties>
-        <jersey.version>1.14</jersey.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.version>7.3.0.v20110203</jetty.version>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>net.whydah.identity.ServerRunner</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>net.whydah.identity.ServerRunner</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>junit:junit</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.schemas</resource>
-                                </transformer>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.handlers</resource>
-                                </transformer>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.tooling</resource>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/winservice.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>single</goal></goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -223,4 +141,85 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>net.whydah.identity.ServerRunner</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>net.whydah.identity.ServerRunner</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.tooling</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/winservice.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>single</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
