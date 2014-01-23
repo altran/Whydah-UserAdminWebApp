@@ -14,8 +14,9 @@
     </parent>
 
     <scm>
+        <connection>scm:git:git@github.com:altran/Whydah-UserAdminWebapp.git</connection>
+        <url>scm:git:git@github.com:altran/Whydah-UserAdminWebapp.git</url>
         <developerConnection>scm:git:git@github.com:altran/Whydah-UserAdminWebapp.git</developerConnection>
-        <connection>scm:git:https://github.com:altran/Whydah-UserAdminWebapp.git</connection>
     </scm>
 
     <distributionManagement>
