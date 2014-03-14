@@ -2,7 +2,7 @@
     "identity": {
         "personRef": "0000000000",
         "uid": "123123123",
-        "username": "JAafas",
+        "username": "User",
         "firstName": "First",
         "lastName": "Last",
         "email": "email@gmail.com",
