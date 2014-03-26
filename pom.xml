@@ -41,19 +41,7 @@
         <developerConnection>scm:git:ssh://git@github.com/altran/Whydah-UserAdminWebApp.git</developerConnection>
         <connection>scm:git:https://github.com/altran/Whydah-UserAdminWebApp.git</connection>
         <url>https://github.com/altran/Whydah-UserAdminWebApp</url>
-      <tag>HEAD</tag>
-  </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>altran-releases</id>
-            <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>altran-snapshots</id>
-            <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    </scm>
 
     <properties>
         <jersey.version>1.14</jersey.version>
