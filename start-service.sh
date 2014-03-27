@@ -4,7 +4,7 @@ export IAM_MODE=DEV
 #export IAM_MODE=TEST
 
 A=UserAdminWebapp
-V=0.3-SNAPSHOT
+V=LATEST
 JARFILE=$A-$V.jar
 
 pkill -f $A

@@ -24,8 +24,8 @@ Installation
 export IAM_MODE=TEST
 #export IAM_MODE=PROD
 
-A=UserAdministration
-V=1.0-SNAPSHOT
+A=UserAdminWebapp
+V=LATEST
 JARFILE=$A-$V.jar
 
 pkill -f $A
