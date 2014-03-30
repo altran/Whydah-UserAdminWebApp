@@ -45,9 +45,9 @@ public class UserAdminController {
     private static final int MIN_USERTOKEN_ID_LENGTH = 4;
     private static final String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
-
     private SSOHelper ssoHelper = new SSOHelper();
 
+    private String MY_APP_TYPE = "myapp";
     private final String MY_APP_URI;
     private final String LOGIN_SERVICE;
     private final String userIdentityBackend;
@@ -59,6 +59,7 @@ public class UserAdminController {
         Properties properties = AppConfig.readProperties();
         STANDALONE = Boolean.valueOf(properties.getProperty("standalone"));
         MY_APP_URI = properties.getProperty("myuri");
+        MY_APP_TYPE = properties.getProperty("myapp");
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
         LOGIN_SERVICE = "redirect:" + properties.getProperty("logonserviceurl") + "login?redirectURI=" + MY_APP_URI;
@@ -83,7 +84,8 @@ public class UserAdminController {
         if (STANDALONE) {
             logger.debug("Standalone mode select, no authentication.");
             addModelParams(model, null);
-            return "myapp";
+            return MY_APP_TYPE;
+            // return "myapp";
         }
 
 
@@ -104,7 +106,8 @@ public class UserAdminController {
 	                // cookie.setDomain("whydah.net");
 	                response.addCookie(cookie);
 	
-	                return "myapp";
+	                //return "myapp";
+	                return MY_APP_TYPE;
 	            } else {
 	                return LOGIN_SERVICE;
 	            }
@@ -126,7 +129,8 @@ public class UserAdminController {
                 // TODO verify that the token is valid
 
                 //TODO Should we do something with the cookie here?
-                return "myapp";
+                //return "myapp";
+                return MY_APP_TYPE;
             } else {
                 return LOGIN_SERVICE;
             }
@@ -154,6 +158,8 @@ public class UserAdminController {
         String userAdminUrl = MY_APP_URI + "json?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyUserTokenId()+"/";
         String userAdminPuUrl = MY_APP_URI + "jsonpu?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyUserTokenId()+"/";
         String userAdminPUrl = MY_APP_URI + "jsonp?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyUserTokenId()+"/";
+
+        model.addAttribute("baseUrl", userAdminUrl);
 
         logger.trace("Adding admin urls to modelParams");
         model.addAttribute("myHostJsonUsers", userAdminUrl + "users/");
@@ -289,7 +295,6 @@ public class UserAdminController {
         }
         return "json";
     }
-
 
 
 //
