@@ -235,6 +235,7 @@ public class UserAdminController {
             }
             model.addAttribute("jsondata", responseBody.toString());
             response.setContentType("application/json; charset=utf-8");
+            response.setStatus(rescode);
         } catch (IOException e) {
             logger.error("", e);
         } finally {
