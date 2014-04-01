@@ -88,7 +88,6 @@ public class UserAdminController {
             // return "myapp";
         }
 
-
         String userTicket = request.getParameter(USERTICKET);
         logger.debug("userTicket:" + userTicket);
         try {
@@ -259,7 +258,7 @@ public class UserAdminController {
             java.net.URI baseUri = UriBuilder.fromUri(url).build();
             WebResource webResource = Client.create().resource(baseUri);
 
-            if (jsond ==null) {
+            if (jsond == null) {
                 jsond ="test";
                 logger.info("jsondata is NULL");
                 logger.info("jsond is" + jsond);
