@@ -154,9 +154,9 @@ public class UserAdminController {
         model.addAttribute("myHostJsonPost", MY_APP_URI + "jsonp");
         model.addAttribute("myHostJsonPut", MY_APP_URI + "jsonpu");
 
-        String userAdminUrl = MY_APP_URI + "json?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
-        String userAdminPuUrl = MY_APP_URI + "jsonpu?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyUserTokenId()+"/";
-        String userAdminPUrl = MY_APP_URI + "jsonp?url=" + userIdentityBackend + "useradmin/" + ssoHelper.getMyUserTokenId()+"/";
+        String userAdminUrl = MY_APP_URI + "json?url=" + userIdentityBackend + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
+        String userAdminPuUrl = MY_APP_URI + "jsonpu?url=" + userIdentityBackend + ssoHelper.getMyUserTokenId()+"/"+ ssoHelper.getMyUserTokenId()+"/";
+        String userAdminPUrl = MY_APP_URI + "jsonp?url=" + userIdentityBackend + ssoHelper.getMyUserTokenId()+"/"+ ssoHelper.getMyUserTokenId()+"/";
 
         model.addAttribute("baseUrl", userAdminUrl);
 
