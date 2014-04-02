@@ -25,7 +25,7 @@ UseradminApp.service('Users', function($http, Messages){
 	    var that = this;
 		$http({
 			method: 'GET',
-			url: baseUrl+'users/'+username+'/'
+			url: baseUrl+'user/'+username+'/'
 		}).success(function (data) {
 		    console.log('Got user', user);
 		    that.user = data;
@@ -42,7 +42,7 @@ UseradminApp.service('Users', function($http, Messages){
 	    console.log('Saving user', user);
 		$http({
 			method: 'PUT',
-			url: baseUrl+'users/'+user.username+'/',
+			url: baseUrl+'user/'+user.username+'/',
 			data: user
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was saved succesfully.');
@@ -54,7 +54,7 @@ UseradminApp.service('Users', function($http, Messages){
 	    console.log('Adding user', user);
 		$http({
 			method: 'PUT',
-			url: baseUrl+'users/',
+			url: baseUrl+'user/',
 			data: user
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was added succesfully.');
@@ -66,7 +66,7 @@ UseradminApp.service('Users', function($http, Messages){
 	    console.log('Deleting user', user);
 		$http({
 			method: 'DELETE',
-			url: baseUrl+'users/'+user.username+'/'
+			url: baseUrl+'user/'+user.username+'/'
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was deleted succesfully.');
 		});
