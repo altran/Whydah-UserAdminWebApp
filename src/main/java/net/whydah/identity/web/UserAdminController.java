@@ -9,11 +9,14 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -21,10 +24,7 @@ import org.xml.sax.InputSource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.parsers.DocumentBuilder;
@@ -149,39 +149,11 @@ public class UserAdminController {
             model.addAttribute("realname", "Unknown UA");
         }
 
-        model.addAttribute("myHost", MY_APP_URI );
-        model.addAttribute("myHostJson", MY_APP_URI + "json");
-        model.addAttribute("myHostJsonPost", MY_APP_URI + "jsonp");
-        model.addAttribute("myHostJsonPut", MY_APP_URI + "jsonpu");
-
         String userAdminUrl = MY_APP_URI + "json?url=" + userIdentityBackend + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
-        String userAdminPuUrl = MY_APP_URI + "jsonpu?url=" + userIdentityBackend + ssoHelper.getMyUserTokenId()+"/"+ ssoHelper.getMyUserTokenId()+"/";
-        String userAdminPUrl = MY_APP_URI + "jsonp?url=" + userIdentityBackend + ssoHelper.getMyUserTokenId()+"/"+ ssoHelper.getMyUserTokenId()+"/";
 
         model.addAttribute("baseUrl", userAdminUrl);
-
-        logger.trace("Adding admin urls to modelParams");
-        model.addAttribute("myHostJsonUsers", userAdminUrl + "users/");
-        model.addAttribute("myHostJsonUserFind", userAdminUrl + "find/");
-
-//        model.addAttribute("myHostJsonMembers", userAdminUrl + "members/");
-        model.addAttribute("myHostJsonMembers", userIdentityBackend + "useradmin/" +"/css/jsonpersoncustomer.css");
-        model.addAttribute("myHostJsonUserUpdate", userAdminPuUrl + "users/");
-        model.addAttribute("myHostJsonUserAdd", userAdminPuUrl + "users/add");
-
-        //model.addAttribute("myHostJsonUserDelete", MY_APP_URI +"json?url=" + userIdentityBackend + "useradmin/users/"); //OLD
-        model.addAttribute("myHostJsonUserDelete", userAdminPUrl + "users/");  //New
-        model.addAttribute("myHostJsonRoleAdd", userAdminPUrl + "users/");
-        model.addAttribute("myHostJsonRoleDelete", userAdminPUrl + "users/"); //New
-        //model.addAttribute("myHostUserDelete", MY_APP_URI +"jsonp?url=" + userIdentityBackend + "useradmin/users/"); //OLD
-
-        model.addAttribute("myHostUserDelete", userAdminPUrl + "users/"); //NEW work with it
-
-        model.addAttribute("myHostUserAdd", userAdminPUrl + "users/add");  //For adding user
-        model.addAttribute("myHostJsonCustomerSearch", userAdminUrl + "persons/find/");
-        //model.addAttribute("myHostUserAdd", MY_APP_URI);
-
-        logger.trace("Finished adding modelParams");
+        model.addAttribute("apptokenid", ssoHelper.getMyAppTokenId());
+        model.addAttribute("usertokenid", ssoHelper.getMyUserTokenId());
     }
 
     private String getRealName(String userTokenXml) {
@@ -216,6 +188,7 @@ public class UserAdminController {
         params.setContentCharset("UTF-8");
         method.setParams(params);
         logger.trace("Accessing /json with url:" + url);
+        logger.trace("Request:" + request.toString());
         //logger.info("getHost:"+getHost());
         try {
             method.setURI(new URI(url, true));
@@ -247,84 +220,56 @@ public class UserAdminController {
     }
 
 
-    //Adding user
-    @GET
-    @RequestMapping("/jsonp")
+    @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Path("/jsonp/{url}/add/{jsond}") //OLD
-    public String jsonp(@PathParam("jsond") String jsond, @PathParam("url") String url, HttpServletRequest request, HttpServletResponse response, Model model) { //OLD
+    @RequestMapping("/{apptokenid}/{usertokenid}/user/{uid}/")
+    public String putUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        PutMethod method = new PutMethod();
+        InputStreamRequestEntity inputStreamRequestEntity = null;
         try {
-            logger.debug("Accessing /jsonp with url=" + url + ", request=" + request.getParameter("jsond") + ", jsond=" + jsond);
-            java.net.URI baseUri = UriBuilder.fromUri(url).build();
-            WebResource webResource = Client.create().resource(baseUri);
+            inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        method.setRequestEntity(inputStreamRequestEntity);
+        HttpMethodParams params = new HttpMethodParams();
+        params.setHttpElementCharset("UTF-8");
+        params.setContentCharset("UTF-8");
+        method.setParams(params);
+        String url = userIdentityBackend + apptokenid + "/" + usertokenid +"/user/"+uid;
+        logger.trace("Putting user with url:" + url);
+        //logger.info("getHost:"+getHost());
+        makeUIBRequest(method, url, model, response);
+        return "json";
+    }
 
-            if (jsond == null) {
-                jsond ="test";
-                logger.info("jsondata is NULL");
-                logger.info("jsond is" + jsond);
-                String sa = webResource.type("application/json").post(String.class, jsond);
-                model.addAttribute("jsondata", sa); //OLD
-            } else {
-                String s = webResource.type("application/json").post(String.class, jsond);
-                model.addAttribute("jsondata", s); //OLD	
-                logger.info("jsondata is NOT NULL");
+    private void makeUIBRequest(HttpMethod method, String url, Model model, HttpServletResponse response) {
+        try {
+            method.setURI(new URI(url, true));
+            int rescode = httpClient.executeMethod(method);
+            // TODO: check rescode?
+            if (rescode != 200) {
+                // Do something
             }
-        } catch (Exception e) {
+
+            InputStream responseBodyStream = method.getResponseBodyAsStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
+            StringBuilder responseBody = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) !=null) {
+                responseBody.append(line);
+            }
+            model.addAttribute("jsondata", responseBody.toString());
+            response.setContentType("application/json; charset=utf-8");
+            response.setStatus(rescode);
+        } catch (IOException e) {
             logger.error("", e);
-            model.addAttribute("jsondata", "");
+        } finally {
+            method.releaseConnection();
         }
-        return "json";
-    }
-
-
-    //Editing user
-    @GET
-    @RequestMapping("/jsonpu")
-    @Path("/jsonpu/{url}/add/{jsond}")
-    public String jsonpu(@PathParam("jsond") String jsond, @PathParam("url") String url, HttpServletRequest request, HttpServletResponse response, Model model) {
-        try {
-            logger.info(" url2:" + url);
-            logger.info("req2:" + request.getParameter("jsond"));
-            java.net.URI baseUri = UriBuilder.fromUri(url).build();
-            WebResource webResource = Client.create().resource(baseUri);
-            String s = webResource.type("application/json").put(String.class, jsond);
-            model.addAttribute("jsondata", s);
-        } catch (Exception e) {
-            logger.error("", e);
-            model.addAttribute("jsondata", "");
+        if (!model.containsAttribute("jsondata")) {
+            logger.error("jsondata attribute not set when fetching data from URL: {}", url);
         }
-        return "json";
     }
-
-
-//
-//    public static String getHost() {
-//        String host = "localhost";
-//        try {
-//            String hostName = InetAddress.getLocalHost().getHostName();
-//
-//            InetAddress addrs[] = InetAddress.getAllByName(hostName);
-//
-//            String myIp = "UNKNOWN";
-//            for (InetAddress addr : addrs) {
-//                //logger.info("addr.getHostAddress() = " + addr.getHostAddress());
-//                //logger.info("addr.getHostName() = " + addr.getHostName());
-//                //logger.info("addr.isAnyLocalAddress() = " + addr.isAnyLocalAddress());
-//                //logger.info("addr.isLinkLocalAddress() = " + addr.isLinkLocalAddress());
-//                //logger.info("addr.isLoopbackAddress() = " + addr.isLoopbackAddress());
-//                //logger.info("addr.isMulticastAddress() = " + addr.isMulticastAddress());
-//                //logger.info("addr.isSiteLocalAddress() = " + addr.isSiteLocalAddress());
-//                //logger.info("");
-//
-//                if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()) {
-//                    myIp = addr.getHostAddress();
-//                }
-//            }
-//            // logger.info("\nIP = " + myIp);
-//            host = myIp;
-//        } catch (UnknownHostException e) {
-//        }
-//        return host;
-//    }
 
 }
