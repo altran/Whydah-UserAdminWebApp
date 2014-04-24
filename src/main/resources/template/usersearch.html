@@ -68,12 +68,12 @@
         <tbody>
           <tr ng-repeat="user in users.list" class="itemrow">
             <td><label><input type="checkbox" ng-model="user.isSelected"></label></td>
-            <td ng-click="activateUserDetail(user.username)">{{user.username}}</td>
-            <td ng-click="activateUserDetail(user.username)">{{user.firstName}}</td>
-            <td ng-click="activateUserDetail(user.username)">{{user.lastName}}</td>
-            <td ng-click="activateUserDetail(user.username)">{{user.cellPhone}}</td>
-            <td ng-click="activateUserDetail(user.username)">{{user.email}}</td>
-            <td ng-click="activateUserDetail(user.username)">{{user.personRef}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.username}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.firstName}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.lastName}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.cellPhone}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.email}}</td>
+            <td ng-click="activateUserDetail(user.uid)">{{user.personRef}}</td>
           </tr>
           <tr ng-if="!users.list.length && searchQuery">
             <td colspan="4">No results for search "{{searchQuery}}".</td>

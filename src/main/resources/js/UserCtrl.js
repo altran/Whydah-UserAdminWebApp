@@ -55,6 +55,7 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   function init() {
     Users.search();
     Applications.search();
+    // Don't hide application-filter menu when clicking an option
     $('.dropdown-menu').click(function(e) {
       e.stopPropagation();
     });

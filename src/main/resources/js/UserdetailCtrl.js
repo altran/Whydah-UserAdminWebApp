@@ -44,7 +44,6 @@ UseradminApp.controller('UserdetailCtrl', function($scope, $http, $routeParams, 
     } else {
         Users.save(Users.user);
     }
-    Users.search($scope.searchQuery);
   }
 
 });
