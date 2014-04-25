@@ -43,7 +43,7 @@ UseradminApp.service('Users', function($http, Messages){
 	    var that = this;
 		$http({
 			method: 'PUT',
-			url: '/useradmin/'+apptokenid+'/'+usertokenid+'/user/'+user.uid+'/',
+			url: baseUrl+'user/'+user.uid+'/',
 			data: user
 		}).success(function (data) {
 		    that.search();
@@ -55,7 +55,7 @@ UseradminApp.service('Users', function($http, Messages){
 	this.add = function(user) {
 	    console.log('Adding user', user);
 		$http({
-			method: 'PUT',
+			method: 'POST',
 			url: baseUrl+'user/',
 			data: user
 		}).success(function (data) {

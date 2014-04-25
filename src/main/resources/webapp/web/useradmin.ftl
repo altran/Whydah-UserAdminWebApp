@@ -44,8 +44,6 @@
 
         <script>
             var baseUrl = "${baseUrl}";
-            var apptokenid = "${apptokenid}";
-            var usertokenid = "${usertokenid}";
             var userName = "${realname}";
         </script>
 

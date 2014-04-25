@@ -67,7 +67,6 @@ public class UserAdminController {
 
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
-
         StringBuilder strb = new StringBuilder("Initialized UserAdminController \n");
         strb.append("\n- Standalone=").append(STANDALONE);
         strb.append("\n- MY_APP_URI=").append(MY_APP_URI);
@@ -149,11 +148,8 @@ public class UserAdminController {
             model.addAttribute("realname", "Unknown UA");
         }
 
-        String userAdminUrl = MY_APP_URI + "json?url=" + userIdentityBackend + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
-
-        model.addAttribute("baseUrl", userAdminUrl);
-        model.addAttribute("apptokenid", ssoHelper.getMyAppTokenId());
-        model.addAttribute("usertokenid", ssoHelper.getMyUserTokenId());
+        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
+        model.addAttribute("baseUrl", baseUrl);
     }
 
     private String getRealName(String userTokenXml) {
@@ -174,102 +170,6 @@ public class UserAdminController {
             logger.error("", e);
         }
         return "";
-    }
-
-
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RequestMapping("/json")
-    public String json(@PathParam("url") String url, HttpServletRequest request, HttpServletResponse response, Model model) {
-        HttpMethod method = new GetMethod();
-        HttpMethodParams params = new HttpMethodParams();
-        params.setHttpElementCharset("UTF-8");
-        params.setContentCharset("UTF-8");
-        method.setParams(params);
-        logger.trace("Accessing /json with url:" + url);
-        logger.trace("Request:" + request.toString());
-        //logger.info("getHost:"+getHost());
-        try {
-            method.setURI(new URI(url, true));
-            int rescode = httpClient.executeMethod(method); 
-            // TODO: check rescode?
-            if (rescode != 200) {
-            	// Do something
-            }
-            
-            InputStream responseBodyStream = method.getResponseBodyAsStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
-            StringBuilder responseBody = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) !=null) {
-            	responseBody.append(line);
-            }
-            model.addAttribute("jsondata", responseBody.toString());
-            response.setContentType("application/json; charset=utf-8");
-            response.setStatus(rescode);
-        } catch (IOException e) {
-            logger.error("", e);
-        } finally {
-            method.releaseConnection();
-        }
-        if (!model.containsAttribute("jsondata")) {
-        	logger.error("jsondata attribute not set when fetching data from URL: {}", url);
-        }
-        return "json";
-    }
-
-
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RequestMapping("/{apptokenid}/{usertokenid}/user/{uid}/")
-    public String putUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        PutMethod method = new PutMethod();
-        InputStreamRequestEntity inputStreamRequestEntity = null;
-        try {
-            inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        method.setRequestEntity(inputStreamRequestEntity);
-        HttpMethodParams params = new HttpMethodParams();
-        params.setHttpElementCharset("UTF-8");
-        params.setContentCharset("UTF-8");
-        method.setParams(params);
-        String url = userIdentityBackend + apptokenid + "/" + usertokenid +"/user/"+uid;
-        logger.trace("Putting user with url:" + url);
-        //logger.info("getHost:"+getHost());
-        makeUIBRequest(method, url, model, response);
-        return "json";
-    }
-
-    private void makeUIBRequest(HttpMethod method, String url, Model model, HttpServletResponse response) {
-        try {
-            method.setURI(new URI(url, true));
-            int rescode = httpClient.executeMethod(method);
-            // TODO: check rescode?
-            if (rescode != 200) {
-                // Do something
-            }
-
-            InputStream responseBodyStream = method.getResponseBodyAsStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
-            StringBuilder responseBody = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) !=null) {
-                responseBody.append(line);
-            }
-            model.addAttribute("jsondata", responseBody.toString());
-            response.setContentType("application/json; charset=utf-8");
-            response.setStatus(rescode);
-        } catch (IOException e) {
-            logger.error("", e);
-        } finally {
-            method.releaseConnection();
-        }
-        if (!model.containsAttribute("jsondata")) {
-            logger.error("jsondata attribute not set when fetching data from URL: {}", url);
-        }
     }
 
 }
