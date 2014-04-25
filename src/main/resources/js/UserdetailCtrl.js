@@ -39,10 +39,19 @@ UseradminApp.controller('UserdetailCtrl', function($scope, $http, $routeParams, 
   $scope.save = function() {
     // Make sure these $scope-values are properly connected to the view
     if(Users.user.isNew) {
+        delete Users.user.isNew;
         Users.add(Users.user);
-        Users.user.isNew = false;
     } else {
         Users.save(Users.user);
+    }
+  }
+
+  $scope.delete = function() {
+    if(window.confirm('Are you sure you want to delete?')) {
+        console.log('Deleting user', Users.user.username);
+        Users.delete(Users.user);
+    } else {
+        console.log('Cancelled deletion of user', Users.user.username);
     }
   }
 

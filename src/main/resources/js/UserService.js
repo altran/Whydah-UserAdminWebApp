@@ -2,17 +2,18 @@ UseradminApp.service('Users', function($http, Messages){
 	
 	this.list = [];
 	this.user = {};
+	this.searchQuery = '*';
 	this.selected = false;
 	this.applications = [];
 	this.applicationFilter = [];
 
 	this.search = function(searchQuery) {
 		console.log('Searching for users...');
-		searchQuery = searchQuery || '*';
+		this.searchQuery = searchQuery || '*';
 		var that = this;
 		$http({
 			method: 'GET',
-			url: baseUrl+'users/find/'+searchQuery
+			url: baseUrl+'users/find/'+this.searchQuery
 			//url: 'json/users.json',
 		}).success(function (data) {
 			that.list = data.result;
@@ -46,31 +47,35 @@ UseradminApp.service('Users', function($http, Messages){
 			url: baseUrl+'user/'+user.uid+'/',
 			data: user
 		}).success(function (data) {
-		    that.search();
 			Messages.add('success', 'User "'+user.username+'" was saved succesfully.');
+		    that.search();
 		});
 		return this;
 	};
 
 	this.add = function(user) {
 	    console.log('Adding user', user);
+	    var that = this;
 		$http({
 			method: 'POST',
 			url: baseUrl+'user/',
 			data: user
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was added succesfully.');
+			that.search();
 		});
 		return this;
 	};
 
 	this.delete = function(user) {
 	    console.log('Deleting user', user);
+	    var that = this;
 		$http({
 			method: 'DELETE',
 			url: baseUrl+'user/'+user.uid+'/'
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was deleted succesfully.');
+			that.search();
 		});
 		return this;
 	};
