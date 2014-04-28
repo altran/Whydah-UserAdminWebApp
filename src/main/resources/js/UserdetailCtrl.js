@@ -1,19 +1,17 @@
-UseradminApp.controller('UserdetailCtrl', function($scope, $http, $routeParams, Users) {
-  
-  $scope.session.activeTab = 'user';
+UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
 
-  $scope.editableUserProperties = [
-    'firstName',
-    'lastName',
-    'email',
-    'cellPhone'
+  $scope.userProperties = [
+    {value: 'firstName', minLength: 2, maxLength: 64, type: 'text'},
+    {value: 'lastName', minLength: 2, maxLength: 64, type: 'text'},
+    {value: 'email', minLength: 4, maxLength: 64, type: 'email'},
+    {value: 'cellPhone', minLength: 3, maxLength: 48, type: 'text'}
   ];
 
   $scope.editableRoleProperties = [
     'applicationName',
     'organizationName',
-    'roleName',
-    'roleValue'
+    'applicationRoleName',
+    'applicationRoleValue'
   ];
 
   $scope.dict = {

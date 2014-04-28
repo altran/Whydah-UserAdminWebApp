@@ -64,6 +64,17 @@ public class UserAdminUibController {
         return "json";
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/useraggregate/{uid}/", method = RequestMethod.GET)
+    public String getUserAggregate(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Getting user with uid: " + uid);
+        HttpMethod method = new GetMethod();
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
     @DELETE
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/{uid}/", method = RequestMethod.DELETE)
@@ -107,6 +118,35 @@ public class UserAdminUibController {
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/");
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/user/{uid}/roles", method = RequestMethod.GET)
+    public String getUserRoles(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Getting user roles for user with uid: " + uid);
+        HttpMethod method = new GetMethod();
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/roles");
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/user/{uid}/role/", method = RequestMethod.POST)
+    public String postUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Posting new role for user with uid: " + uid);
+        PostMethod method = new PostMethod();
+        InputStreamRequestEntity inputStreamRequestEntity = null;
+        try {
+            inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        method.setRequestEntity(inputStreamRequestEntity);
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/");
         makeUibRequest(method, url, model, response);
         return "json";
     }

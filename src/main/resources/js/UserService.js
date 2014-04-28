@@ -2,6 +2,7 @@ UseradminApp.service('Users', function($http, Messages){
 	
 	this.list = [];
 	this.user = {};
+	this.userRoles = {};
 	this.searchQuery = '*';
 	this.selected = false;
 	this.applications = [];
@@ -79,5 +80,36 @@ UseradminApp.service('Users', function($http, Messages){
 		});
 		return this;
 	};
+
+    this.getRolesForCurrentUser = function(callback) {
+        var uid = this.user.uid;
+	    console.log('Getting roles for user', uid);
+	    var that = this;
+		$http({
+			method: 'GET',
+			url: baseUrl+'user/'+uid+'/roles/'
+		}).success(function (data) {
+		    console.log('Got userroles', data);
+		    that.userRoles = data;
+		    if(callback) {
+		        callback(data);
+		    }
+		});
+		return this;
+    }
+
+	this.addRoleForCurrentUser = function(role) {
+	    console.log('Adding role for user', this.user);
+	    var that = this;
+		$http({
+			method: 'POST',
+			url: baseUrl+'user/'+this.user.uid+'/role/',
+			data: role
+		}).success(function (data) {
+			Messages.add('success', 'Role for user "'+that.user.username+'" was added succesfully.');
+			that.search();
+		});
+		return this;
+	}
 
 });

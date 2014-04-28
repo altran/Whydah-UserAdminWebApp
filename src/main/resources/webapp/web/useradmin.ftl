@@ -70,6 +70,7 @@
         <script src="js/UserCtrl.js"></script>
         <script src="js/UserdetailCtrl.js"></script>
         <script src="js/ApplicationCtrl.js"></script>
+        <script src="js/RoleCtrl.js"></script>
 
         <!-- Directives -->
         <script src="js/triStateCheckbox.js"></script>

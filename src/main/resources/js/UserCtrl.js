@@ -5,6 +5,9 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.users = Users;
   $scope.applications = Applications;
 
+    $scope.orderByColumn = 'username';
+    $scope.orderReverse = false;
+
   var noUsersSelectedMessage = 'Please select a user first!';
   Users.requiredMessage = noUsersSelectedMessage;
 
@@ -37,8 +40,10 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
 
   $scope.activateUserDetail = function(username) {
     console.log('Activating user detail...', username);
-    Users.get(username, function(data){
-      $('#userdetail').modal('show');
+    Users.get(username, function(){
+      Users.getRolesForCurrentUser( function(){
+        $('#userdetail').modal('show');
+      });
     });
   }
 
@@ -50,6 +55,11 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.addRoleForUsers = function() {
     console.log('Adding roles for users...');
     $('#addrole').modal('show');
+  }
+
+  $scope.changeOrder = function(orderByColumn) {
+    $scope.orderByColumn = orderByColumn;
+    $scope.orderReverse = !$scope.orderReverse;
   }
 
   function init() {
