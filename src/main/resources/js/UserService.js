@@ -99,7 +99,7 @@ UseradminApp.service('Users', function($http, Messages){
     }
 
 	this.addRoleForCurrentUser = function(role) {
-	    console.log('Adding role for user', this.user);
+	    console.log('Adding role for user', this.user, role);
 	    var that = this;
 		$http({
 			method: 'POST',
@@ -107,6 +107,23 @@ UseradminApp.service('Users', function($http, Messages){
 			data: role
 		}).success(function (data) {
 			Messages.add('success', 'Role for user "'+that.user.username+'" was added succesfully.');
+			that.getRolesForCurrentUser();
+			that.search();
+		});
+		return this;
+	}
+
+	this.deleteRoleForCurrentUser = function(role) {
+	    console.log('Deleting role for user', this.user, role);
+	    var that = this;
+	    var roleName = role.applicationRoleName;
+		$http({
+			method: 'DELETE',
+			url: baseUrl+'user/'+this.user.uid+'/role/'+role.roleId,
+			data: role
+		}).success(function (data) {
+			Messages.add('success', 'Role "'+roleName+'" for user "'+that.user.username+'" was deleted succesfully.');
+			that.getRolesForCurrentUser();
 			that.search();
 		});
 		return this;

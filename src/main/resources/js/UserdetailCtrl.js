@@ -1,5 +1,9 @@
 UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
 
+  $scope.roles = {
+    selected: false
+  }
+
   $scope.userProperties = [
     {value: 'firstName', minLength: 2, maxLength: 64, type: 'text'},
     {value: 'lastName', minLength: 2, maxLength: 64, type: 'text'},
@@ -30,8 +34,8 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
   var noRolesSelectedMessage = 'Please select a role first!';
   $scope.rolesRequiredMessage = noRolesSelectedMessage;
 
-  $scope.$watch('usersSelected', function(){
-    $scope.rolesRequiredMessage = ($scope.rolesSelected) ? '' : noRolesSelectedMessage;
+  $scope.$watch('roles.selected', function(){
+    $scope.rolesRequiredMessage = ($scope.roles.selected) ? '' : noRolesSelectedMessage;
   });
 
   $scope.save = function() {
@@ -41,6 +45,22 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
         Users.add(Users.user);
     } else {
         Users.save(Users.user);
+    }
+  }
+
+  $scope.deleteRolesForUser = function() {
+    if(window.confirm('Are you sure you want to delete these roles?')) {
+        console.log('Deleting roles');
+        for(var i=0; i<Users.userRoles.length; i++) {
+            var role = Users.userRoles[i];
+            console.log(role);
+            if(role.isSelected) {
+                console.log(role);
+                Users.deleteRoleForCurrentUser(role);
+            }
+        }
+    } else {
+        console.log('Cancelled deletion of roles');
     }
   }
 

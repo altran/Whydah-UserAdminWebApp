@@ -151,6 +151,17 @@ public class UserAdminUibController {
         return "json";
     }
 
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/user/{uid}/role/{roleId}", method = RequestMethod.DELETE)
+    public String deleteUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, @PathVariable("roleId") String roleId, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Deleting role with roleId: " + roleId + ", for user with uid: " + uid);
+        DeleteMethod method = new DeleteMethod();
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
     private String getUibUrl(String apptokenid, String usertokenid, String s) {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }

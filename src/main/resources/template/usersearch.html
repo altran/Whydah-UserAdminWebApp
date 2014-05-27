@@ -116,11 +116,11 @@
 
             <button type="button" class="btn btn-default btn-sm" ng-click="addRoleForUsers()"><span class="glyphicon glyphicon-plus"></span> Add role</button>
             <div class="btn-group" tooltip="{{rolesRequiredMessage}}">
-              <button type="button" class="btn btn-default btn-sm" ng-disabled="!rolesSelected"><span class="glyphicon glyphicon-minus"></span> Remove selected roles</button>
+              <button type="button" class="btn btn-default btn-sm" ng-click="deleteRolesForUser()" ng-disabled="!roles.selected"><span class="glyphicon glyphicon-minus"></span> Delete selected roles</button>
             </div>
 
             <div class="table-responsive margin-top">
-              <table edit-table elements="users.userRoles" visible-fields="editableRoleProperties"></table>
+              <table edit-table elements="users.userRoles" visible-fields="editableRoleProperties" elements-selected="roles.selected"></table>
             </div>
 
           </div>

@@ -5,8 +5,8 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.users = Users;
   $scope.applications = Applications;
 
-    $scope.orderByColumn = 'username';
-    $scope.orderReverse = false;
+  $scope.orderByColumn = 'username';
+  $scope.orderReverse = false;
 
   var noUsersSelectedMessage = 'Please select a user first!';
   Users.requiredMessage = noUsersSelectedMessage;
@@ -49,6 +49,7 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
 
   $scope.newUserDetail = function() {
     Users.user = {isNew: true};
+    Users.userRoles = {};
     $('#userdetail').modal('show');
   }
 
