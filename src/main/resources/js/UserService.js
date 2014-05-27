@@ -48,7 +48,7 @@ UseradminApp.service('Users', function($http, Messages){
 			url: baseUrl+'user/'+user.uid+'/',
 			data: user
 		}).success(function (data) {
-			Messages.add('success', 'User "'+user.username+'" was saved succesfully.');
+			Messages.add('success', 'User "'+user.username+'" was saved successfully.');
 		    that.search();
 		});
 		return this;
@@ -62,7 +62,7 @@ UseradminApp.service('Users', function($http, Messages){
 			url: baseUrl+'user/',
 			data: user
 		}).success(function (data) {
-			Messages.add('success', 'User "'+user.username+'" was added succesfully.');
+			Messages.add('success', 'User "'+user.username+'" was added successfully.');
 			that.search();
 		});
 		return this;
@@ -75,7 +75,7 @@ UseradminApp.service('Users', function($http, Messages){
 			method: 'DELETE',
 			url: baseUrl+'user/'+user.uid+'/'
 		}).success(function (data) {
-			Messages.add('success', 'User "'+user.username+'" was deleted succesfully.');
+			Messages.add('success', 'User "'+user.username+'" was deleted successfully.');
 			that.search();
 		});
 		return this;
@@ -98,35 +98,69 @@ UseradminApp.service('Users', function($http, Messages){
 		return this;
     }
 
-	this.addRoleForCurrentUser = function(role) {
-	    console.log('Adding role for user', this.user, role);
+    this.addRoleForUser = function(role, user) {
+	    console.log('Adding role for user', user, role);
 	    var that = this;
 		$http({
 			method: 'POST',
-			url: baseUrl+'user/'+this.user.uid+'/role/',
+			url: baseUrl+'user/'+user.uid+'/role/',
 			data: role
 		}).success(function (data) {
-			Messages.add('success', 'Role for user "'+that.user.username+'" was added succesfully.');
+			Messages.add('success', 'Role for user "'+user.username+'" was added successfully.');
 			that.getRolesForCurrentUser();
 			that.search();
 		});
 		return this;
+    }
+
+	this.addRoleForCurrentUser = function(role) {
+	    this.addRoleForUser(role, this.user);
 	}
 
-	this.deleteRoleForCurrentUser = function(role) {
-	    console.log('Deleting role for user', this.user, role);
+    this.deleteRoleForUser = function(role, user) {
+	    console.log('Deleting role for user', user, role);
 	    var that = this;
 	    var roleName = role.applicationRoleName;
 		$http({
 			method: 'DELETE',
-			url: baseUrl+'user/'+this.user.uid+'/role/'+role.roleId,
+			url: baseUrl+'user/'+user.uid+'/role/'+role.roleId,
 			data: role
 		}).success(function (data) {
-			Messages.add('success', 'Role "'+roleName+'" for user "'+that.user.username+'" was deleted succesfully.');
+			Messages.add('success', 'Role "'+roleName+'" for user "'+user.username+'" was deleted successfully.');
 			that.getRolesForCurrentUser();
 			that.search();
+		}).error(function (data) {
+            Messages.add('warning', 'Role "'+roleName+'" for user "'+that.user.username+'" was not deleted.');
+            that.getRolesForCurrentUser();
+        });
+		return this;
+    }
+
+	this.deleteRoleForCurrentUser = function(role) {
+	    this.deleteRoleForUser(role, this.user);
+	}
+
+    this.saveRoleForUser = function(role, user) {
+	    console.log('Saving role for user', user, role);
+	    var that = this;
+	    var roleName = role.applicationRoleName;
+		$http({
+			method: 'PUT',
+			url: baseUrl+'user/'+user.uid+'/role/'+role.roleId,
+			data: role
+		}).success(function (data) {
+			Messages.add('success', 'Role "'+roleName+'" for user "'+that.user.username+'" was saved successfully.');
+			that.getRolesForCurrentUser();
+			that.search();
+		}).error(function (data) {
+			Messages.add('warning', 'Role "'+roleName+'" for user "'+that.user.username+'" was not saved.');
+			that.getRolesForCurrentUser();
 		});
 		return this;
-	}
+    }
+
+    this.saveRoleForCurrentUser = function(role) {
+        this.saveRoleForUser(role, this.user);
+    }
 
 });

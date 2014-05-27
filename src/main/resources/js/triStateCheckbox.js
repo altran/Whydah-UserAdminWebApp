@@ -24,7 +24,7 @@ UseradminApp.directive('triStateCheckbox', function() {
         $scope.allChecked = allSet;
         $element.prop( 'indeterminate', !allSet && !allClear );
         $scope.elementsSelected = !allClear;
-        console.log('Tristate changed', $scope.allChecked);
+        // console.log('Tristate changed', $scope.allChecked);
       }, true);
     }
   };

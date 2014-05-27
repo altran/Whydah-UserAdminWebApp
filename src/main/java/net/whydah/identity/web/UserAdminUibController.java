@@ -162,6 +162,24 @@ public class UserAdminUibController {
         return "json";
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/user/{uid}/role/{roleId}", method = RequestMethod.PUT)
+    public String putUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, @PathVariable("roleId") String roleId, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Putting role with roleId: " + roleId + ", for user with uid: " + uid);
+        PutMethod method = new PutMethod();
+        InputStreamRequestEntity inputStreamRequestEntity = null;
+        try {
+            inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        method.setRequestEntity(inputStreamRequestEntity);
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
     private String getUibUrl(String apptokenid, String usertokenid, String s) {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }

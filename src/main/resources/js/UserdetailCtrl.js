@@ -11,11 +11,11 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
     {value: 'cellPhone', minLength: 3, maxLength: 48, type: 'text'}
   ];
 
-  $scope.editableRoleProperties = [
-    'applicationName',
-    'organizationName',
-    'applicationRoleName',
-    'applicationRoleValue'
+  $scope.visibleRoleProperties = [
+    {name: 'applicationName', editable: false},
+    {name: 'organizationName', editable: false},
+    {name: 'applicationRoleName', editable: false},
+    {name: 'applicationRoleValue', editable: true}
   ];
 
   $scope.dict = {
@@ -46,6 +46,11 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
     } else {
         Users.save(Users.user);
     }
+  }
+
+  $scope.saveRoleForCurrentUser = function(role) {
+    delete role.isEditing;
+    Users.saveRoleForCurrentUser(role);
   }
 
   $scope.deleteRolesForUser = function() {
