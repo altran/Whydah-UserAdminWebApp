@@ -114,20 +114,22 @@
               </div>
             </div>
 
-            <button type="button" class="btn btn-default btn-sm" ng-click="addRoleForUsers()"><span class="glyphicon glyphicon-plus"></span> Add role</button>
-            <div class="btn-group" tooltip="{{rolesRequiredMessage}}">
-              <button type="button" class="btn btn-default btn-sm" ng-click="deleteRolesForUser()" ng-disabled="!roles.selected"><span class="glyphicon glyphicon-minus"></span> Delete selected roles</button>
-            </div>
+            <div ng-if="!users.user.isNew">
+                <button type="button" class="btn btn-default btn-sm" ng-click="addRoleForUsers()"><span class="glyphicon glyphicon-plus"></span> Add role</button>
+                <div class="btn-group" tooltip="{{rolesRequiredMessage}}">
+                  <button type="button" class="btn btn-default btn-sm" ng-click="deleteRolesForUser()" ng-disabled="!roles.selected"><span class="glyphicon glyphicon-minus"></span> Delete selected roles</button>
+                </div>
 
-            <div class="table-responsive margin-top">
-              <table edit-table elements="users.userRoles" visible-fields="visibleRoleProperties" elements-selected="roles.selected" edit-action="saveRoleForCurrentUser(role)"></table>
+                <div class="table-responsive margin-top">
+                  <table edit-table elements="users.userRoles" visible-fields="visibleRoleProperties" elements-selected="roles.selected" edit-action="saveRoleForCurrentUser(role)"></table>
+                </div>
             </div>
 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="save()">Save changes</button>
-            <button type="button" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()">Delete {{users.user.username}}</button>
+            <button type="button" class="btn btn-primary" ng-click="save()">Save changes</button>
+            <button type="button" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()" ng-if="!users.user.isNew">Delete {{users.user.username}}</button>
           </div>
 
       </form>
