@@ -58,6 +58,17 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
     $('#addrole').modal('show');
   }
 
+  $scope.resetPasswordForUsers = function() {
+    var selectedUsernames = Users.getSelectedUsernames();
+    var selectedUsers = Users.getSelectedUsers();
+    if(window.confirm('Are you sure you want to reset password for users: '+selectedUsernames+'?')) {
+        console.log('Resetting passwords.');
+        for(var i=0; i<selectedUsers.length; i++) {
+            Users.resetPassword(selectedUsers[i]);
+        }
+    }
+  }
+
   $scope.changeOrder = function(orderByColumn) {
     $scope.orderByColumn = orderByColumn;
     $scope.orderReverse = !$scope.orderReverse;

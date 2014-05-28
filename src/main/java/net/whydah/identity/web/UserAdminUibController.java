@@ -122,6 +122,9 @@ public class UserAdminUibController {
         return "json";
     }
 
+
+    // ROLES
+
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/{uid}/roles", method = RequestMethod.GET)
@@ -176,6 +179,20 @@ public class UserAdminUibController {
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
+
+    // PASSWORD
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/user/{username}/resetpassword", method = RequestMethod.POST)
+    public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Resetting password for user: " + username);
+        PostMethod method = new PostMethod();
+        String url = getUibUrl(apptokenid, usertokenid, "user/"+username+"/resetpassword");
         makeUibRequest(method, url, model, response);
         return "json";
     }

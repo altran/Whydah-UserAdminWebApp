@@ -41,11 +41,11 @@
         <span class="glyphicon glyphicon-plus"></span>
         Add role
       </button>
-      <button class="btn btn-default btn-sm" ng-disabled="!users.selected">
+      <button class="btn btn-default btn-sm" ng-disabled="!users.selected" ng-if="false">
         <span class="glyphicon glyphicon-minus"></span>
         Remove role
       </button>
-      <button class="btn btn-default btn-sm" ng-disabled="!users.selected">
+      <button class="btn btn-default btn-sm" ng-disabled="!users.selected" ng-click="resetPasswordForUsers()">
         <span class="glyphicon glyphicon-lock"></span>
         Reset password
       </button>

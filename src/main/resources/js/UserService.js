@@ -8,6 +8,23 @@ UseradminApp.service('Users', function($http, Messages){
 	this.applications = [];
 	this.applicationFilter = [];
 
+	this.getSelectedUsers = function() {
+	    var selectedUsers = [];
+	    for(var i=0; i<this.list.length; i++) {
+	        if(this.list[i].isSelected)selectedUsers.push(this.list[i]);
+	    }
+	    return selectedUsers;
+	}
+
+	this.getSelectedUsernames = function() {
+	    var selectedUsernames = [];
+	    var selectedUsers = this.getSelectedUsers();
+	    for(var i=0; i<selectedUsers.length; i++) {
+	        selectedUsernames.push(selectedUsers[i].username);
+	    }
+	    return selectedUsernames;
+	}
+
 	this.search = function(searchQuery) {
 		console.log('Searching for users...');
 		this.searchQuery = searchQuery || '*';
@@ -80,6 +97,8 @@ UseradminApp.service('Users', function($http, Messages){
 		});
 		return this;
 	};
+
+	// ROLES
 
     this.getRolesForCurrentUser = function(callback) {
         var uid = this.user.uid;
@@ -161,6 +180,21 @@ UseradminApp.service('Users', function($http, Messages){
 
     this.saveRoleForCurrentUser = function(role) {
         this.saveRoleForUser(role, this.user);
+    }
+
+
+    // PASSWORD
+
+    this.resetPassword = function(user) {
+		$http({
+			method: 'POST',
+			url: baseUrl+'user/'+user.username+'/resetpassword'
+		}).success(function (data) {
+			Messages.add('success', 'Successfully reset password for user "'+user.username+'".');
+		}).error(function (data) {
+			Messages.add('warning', 'Unable to reset password for user "'+user.username+'".');
+		});
+		return this;
     }
 
 });
