@@ -115,7 +115,7 @@
             </div>
 
             <div ng-if="!users.user.isNew">
-                <button type="button" class="btn btn-default btn-sm" ng-click="addRoleForUsers()"><span class="glyphicon glyphicon-plus"></span> Add role</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="addRoleForCurrentUser()"><span class="glyphicon glyphicon-plus"></span> Add role</button>
                 <div class="btn-group" tooltip="{{rolesRequiredMessage}}">
                   <button type="button" class="btn btn-default btn-sm" ng-click="deleteRolesForUser()" ng-disabled="!roles.selected"><span class="glyphicon glyphicon-minus"></span> Delete selected roles</button>
                 </div>
@@ -148,11 +148,12 @@
       </div>
       <div class="modal-body">
 
-
-        Selected users: 
-        <span ng-repeat="user in users.list | filter:{isSelected: true}" class="label label-default">
-          {{user.firstName}} {{user.lastName}}
-        </span>
+        <div ng-if="addRoleForMultiple">
+            Selected users:
+            <span ng-repeat="user in users.list | filter:{isSelected: true}" class="label label-default" style="margin-right: 0.5em">
+              {{user.firstName}} {{user.lastName}}
+            </span>
+        </div>
 
         <div class="form-horizontal">
             <div class="form-group" ng-repeat="property in roleProperties">

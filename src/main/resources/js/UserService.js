@@ -136,6 +136,13 @@ UseradminApp.service('Users', function($http, Messages){
 	    this.addRoleForUser(role, this.user);
 	}
 
+	this.addRoleForSelectedUsers = function(role) {
+	    var selectedUsers = this.getSelectedUsers();
+	    for(var i=0; i<selectedUsers.length; i++) {
+	        this.addRoleForUser(role, selectedUsers[i]);
+	    }
+	}
+
     this.deleteRoleForUser = function(role, user) {
 	    console.log('Deleting role for user', user, role);
 	    var that = this;

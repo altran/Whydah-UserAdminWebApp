@@ -8,6 +8,8 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.orderByColumn = 'username';
   $scope.orderReverse = false;
 
+  $scope.addRoleForMultiple = false;
+
   var noUsersSelectedMessage = 'Please select a user first!';
   Users.requiredMessage = noUsersSelectedMessage;
 
@@ -54,7 +56,12 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   }
 
   $scope.addRoleForUsers = function() {
-    console.log('Adding roles for users...');
+    $scope.addRoleForMultiple = true;
+    $('#addrole').modal('show');
+  }
+
+  $scope.addRoleForCurrentUser = function() {
+    $scope.addRoleForMultiple = false;
     $('#addrole').modal('show');
   }
 
