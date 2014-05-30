@@ -1,29 +1,41 @@
 UseradminApp.controller('RoleCtrl', function($scope, Users) {
 
   $scope.role = {
-    applicationRoleName: "developer",
-    applicationRoleValue: "20",
-    applicationId: "3",
-    applicationName:"Whydah",
-    organizationId: "1",
-    organizationName:"Whydah"
+    applicationRoleName: '',
+    applicationRoleValue: '',
+    applicationId: '',
+    applicationName: '',
+    organizationName: ''
   }
 
-  $scope.roleProperties = [
-    {value: 'applicationRoleName', minLength: 2, maxLength: 64, type: 'text'},
-    {value: 'applicationRoleValue', minLength: 0, maxLength: 128, type: 'text'},
-    {value: 'applicationId', minLength: 1, maxLength: 64, type: 'text'},
-    {value: 'applicationName', minLength: 1, maxLength: 64, type: 'text'},
-    {value: 'organizationId', minLength: 1, maxLength: 64, type: 'text'},
-    {value: 'organizationName', minLength: 1, maxLength: 64, type: 'text'}
-  ];
+  $scope.applications = [
+    {
+        applicationName: 'Whydah',
+        applicationId: 3,
+        organizations: [
+            'Developer',
+            'Tester',
+            'Designer',
+            'Sales'
+        ]
+    },
+    {
+        applicationName: 'ACS',
+        applicationId: 4,
+        organizations: [
+            'Oslo',
+            'Stockholm',
+            'Gothenburg'
+        ]
+    }
+  ]
+
+  $scope.currentApplication = {};
 
   $scope.dict = {
     en: {
-      applicationName: 'Application',
-      applicationId: 'Application Id',
-      organizationName: 'Organization',
-      organizationId: 'Organization Id',
+      application: 'Application',
+      organization: 'Organization',
       applicationRoleName: 'Role',
       applicationRoleValue: 'Value'
     }

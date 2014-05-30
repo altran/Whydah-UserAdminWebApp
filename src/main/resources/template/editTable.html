@@ -15,7 +15,10 @@
           <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit
         </button>
         <button class="btn btn-default btn-sm" ng-click="el.isEditing=false;editAction({role:el});" ng-show="el.isEditing">
-          <span class="glyphicon glyphicon-ok"></span>&nbsp;Done
+          <span class="glyphicon glyphicon-ok"></span>&nbsp;Save
+        </button>
+        <button class="btn btn-default btn-sm" ng-click="el.isEditing=false;" ng-show="el.isEditing">
+          <span class="glyphicon glyphicon-ok"></span>&nbsp;Cancel
         </button>
       </td>
     </tr>

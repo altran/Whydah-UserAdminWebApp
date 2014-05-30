@@ -156,9 +156,25 @@
         </div>
 
         <div class="form-horizontal">
-            <div class="form-group" ng-repeat="property in roleProperties">
-                <label for="{{property.value}}" class="col-sm-2 control-label">{{dict[conf.lang][property.value]}}</label>
-                <div class="col-sm-10"><input type="{{property.type}}" class="form-control" id="{{property.value}}" ng-model="role[property.value]" ng-minlength="{{property.minLength}}" ng-maxlength="{{property.maxLength}}"></div>
+            <div class="form-group">
+                <label for="application" class="col-sm-2 control-label">{{dict[conf.lang].application}}</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="application" ng-model="role.applicationId" ng-options="app.applicationId as app.applicationName for app in applications"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="organization" class="col-sm-2 control-label">{{dict[conf.lang].organization}}</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="organization" ng-model="role.applicationName" ng-disabled="currentApplication.applicationId" ng-options="org in currentApplication.organizations"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rolename" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleName}}</label>
+                <div class="col-sm-10"><input type="text" class="form-control" id="rolename" ng-model="role.applicationRoleName" ng-minlength="2" ng-maxlength="128"></div>
+            </div>
+            <div class="form-group">
+                <label for="rolevalue" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleValue}}</label>
+                <div class="col-sm-10"><input type="text" class="form-control" id="rolevalue" ng-model="role.applicationRoleValue" ng-minlength="0" ng-maxlength="128"></div>
             </div>
         </div>
 
