@@ -185,7 +185,7 @@ public class SSOHelper {
 
     private PostMethod setupRealApplicationLogon() {
         ApplicationCredential acred = new ApplicationCredential();
-        acred.setApplicationID("Styrerommet");
+        acred.setApplicationID("Whydah");
         acred.setApplicationPassord("dummy");
 
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/logon");
