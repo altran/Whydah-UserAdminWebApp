@@ -90,8 +90,12 @@ Typical apache setup
 ```
 
 
-TODO: 
-Show proper error message when receiving connection errors. Connection Refused leaves a page without any data.
-Change localization to English.
-What does myJsonPersonCustomerStore.js do? It tries to get "members" from url: myHostJson+'?url=http://localhost:9999/members/'. Remove this?
-Do a comprehensive test of the functionality in the UI. Does everything work as expected? If not, do we need it?
+
+
+Developer info
+==============
+
+* https://wiki.cantara.no/display/iam/Architecture+Overview
+* https://wiki.cantara.no/display/iam/Key+Whydah+Data+Structures
+* https://wiki.cantara.no/display/iam/Modules
+
