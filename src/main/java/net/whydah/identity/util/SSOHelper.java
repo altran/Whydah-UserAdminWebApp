@@ -94,7 +94,7 @@ public class SSOHelper {
         logger.debug("myAppTokenId: {}", myAppTokenId);
     }
     private String getTokenIdFromAppToken(String appTokenXML) {
-        return appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
+        return appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
     }
 
 
@@ -171,8 +171,8 @@ public class SSOHelper {
 
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenid) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
-        String appid = appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
-        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + appid + "/getusertokenbytokenid");
+        String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
+        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbytokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
         p2.addParameter("apptoken",appTokenXML);
