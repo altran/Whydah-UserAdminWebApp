@@ -230,7 +230,9 @@ public class SSOHelper {
     public Cookie createUserTokenCookie(String userTokenXml) {
         String tokenID = getTokenId(userTokenXml);
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, tokenID);
-        int maxAge = calculateTokenRemainingLifetime(userTokenXml);
+        //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
+        int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
+
         cookie.setMaxAge(maxAge);
         cookie.setValue(tokenID);
         cookie.setSecure(true);
