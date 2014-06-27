@@ -13,10 +13,10 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
   ];
 
   $scope.visibleRoleProperties = [
-    {name: 'applicationName', editable: false},
-    {name: 'organizationName', editable: false},
-    {name: 'applicationRoleName', editable: false},
-    {name: 'applicationRoleValue', editable: true}
+    {name: 'applicationName',       label: 'Application',   editable: false},
+    {name: 'organizationName',      label: 'Organization',  editable: false},
+    {name: 'applicationRoleName',   label: 'Role',          editable: false},
+    {name: 'applicationRoleValue',  label: 'Value',         editable: true}
   ];
 
   $scope.dict = {
