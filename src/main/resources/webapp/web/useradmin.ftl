@@ -26,25 +26,27 @@
                         <li ng-class="{active: session.activeTab == 'user'}"><a href="#">Users</a></li>
                         <li ng-class="{active: session.activeTab == 'application'}"><a href="#/application">Applications</a></li>
                         <li ng-class="{active: session.activeTab == 'about'}"><a href="#/about">About Whydah</a></li>
-                        <li><a href="https://sso.altran.se/sso/login?redirectURI=http://localhost/ua/">Log in</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="${logOutUrl}">Log out <strong>${realName}</strong></a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
         </div>
 
         <div class="container-fluid">
-            <div ng-repeat="msg in messages.list">
-                <div class="alert alert-{{msg.type}}">
+            <div ng-view id="mainview"></div>
+            <div id="messageContainer">
+                <div ng-repeat="msg in messages.list" class="alert alert-{{msg.type}}">
                     <button type="button" class="close" aria-hidden="true" ng-click="removeMessage($index)">&times;</button>
                     {{msg.text}}
                 </div>
             </div>
-            <div ng-view id="mainview"></div>
         </div>
 
         <script>
             var baseUrl = "${baseUrl}";
-            var userName = "${realname}";
+            var userName = "${realName}";
         </script>
 
         <!-- Framework and tools -->

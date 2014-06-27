@@ -5,10 +5,11 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
   }
 
   $scope.userProperties = [
-    {value: 'firstName', minLength: 2, maxLength: 64, type: 'text'},
-    {value: 'lastName', minLength: 2, maxLength: 64, type: 'text'},
-    {value: 'email', minLength: 4, maxLength: 64, type: 'email'},
-    {value: 'cellPhone', minLength: 3, maxLength: 48, type: 'text'}
+    {value: 'firstName',    minLength: 2, maxLength: 64, required: true, type: 'text'},
+    {value: 'lastName',     minLength: 2, maxLength: 64, required: true, type: 'text'},
+    {value: 'email',        minLength: 4, maxLength: 64, required: true, type: 'email'},
+    {value: 'cellPhone',    minLength: 3, maxLength: 48, required: false, type: 'text'},
+    {value: 'personRef',    minLength: 0, maxLength: 64, required: false, type: 'text'}
   ];
 
   $scope.visibleRoleProperties = [
@@ -24,6 +25,7 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
       lastName: 'Last name',
       email: 'E-mail',
       cellPhone: 'Cellphone',
+      personRef: 'Reference',
       applicationName: 'Application',
       organizationName: 'Organization',
       roleName: 'Role',

@@ -140,12 +140,12 @@ public class UserAdminController {
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", ssoHelper.getUserToken(userTokenID));
-            model.addAttribute("logouturl", LOGOUT_SERVICE);
-            model.addAttribute("realname", getRealName(ssoHelper.getUserToken(userTokenID)));
+            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
+            model.addAttribute("realName", getRealName(ssoHelper.getUserToken(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
-            model.addAttribute("logouturl", LOGOUT_SERVICE);
-            model.addAttribute("realname", "Unknown UA");
+            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
+            model.addAttribute("realName", "Unknown UA");
         }
 
         String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
