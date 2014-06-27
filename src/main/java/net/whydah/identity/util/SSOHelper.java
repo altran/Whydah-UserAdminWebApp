@@ -31,7 +31,7 @@ import java.util.MissingResourceException;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken-admin";
+    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
 
     private final URI tokenServiceUri;
     private final Client tokenServiceClient = Client.create();
