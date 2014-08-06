@@ -5,6 +5,8 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.users = Users;
   $scope.applications = Applications;
 
+  $scope.form = {};
+
   $scope.orderByColumn = 'username';
   $scope.orderReverse = false;
 
@@ -44,6 +46,7 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
     console.log('Activating user detail...', username);
     Users.get(username, function(){
       Users.getRolesForCurrentUser( function(){
+        $scope.form.userDetail.$setPristine();
         $('#userdetail').modal('show');
       });
     });
@@ -52,6 +55,7 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.newUserDetail = function() {
     Users.user = {isNew: true};
     Users.userRoles = {};
+    $scope.form.userDetail.$setPristine();
     $('#userdetail').modal('show');
   }
 

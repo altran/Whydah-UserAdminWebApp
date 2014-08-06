@@ -5,12 +5,20 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
   }
 
   $scope.userProperties = [
-    {value: 'firstName',    minLength: 2, maxLength: 64, required: true, type: 'text'},
+    {value: 'firstName',    minLength: 2, maxLength: 64, required: true, type: 'text', validations:['Must be longer', 'Must be shorter']},
     {value: 'lastName',     minLength: 2, maxLength: 64, required: true, type: 'text'},
     {value: 'email',        minLength: 4, maxLength: 64, required: true, type: 'email'},
     {value: 'cellPhone',    minLength: 3, maxLength: 48, required: false, type: 'text'},
     {value: 'personRef',    minLength: 0, maxLength: 64, required: false, type: 'text'}
   ];
+
+  $scope.getValidationClass = function(formPart) {
+    // console.log('Get validation for: ', formPart);
+    var classes = [];
+    if(formPart.$dirty && formPart.$valid) classes.push('has-success');
+    if(formPart.$dirty && formPart.$invalid) classes.push('has-error');
+    return classes.join(' ');
+  }
 
   $scope.visibleRoleProperties = [
     {name: 'applicationName',       label: 'Application',   editable: false},
@@ -42,11 +50,15 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
 
   $scope.save = function() {
     // Make sure these $scope-values are properly connected to the view
-    if(Users.user.isNew) {
-        delete Users.user.isNew;
-        Users.add(Users.user);
+    if($scope.form.userDetail.$valid){
+        if(Users.user.isNew) {
+            delete Users.user.isNew;
+            Users.add(Users.user);
+        } else {
+            Users.save(Users.user);
+        }
     } else {
-        Users.save(Users.user);
+        console.log('Tried to save an invalid form.');
     }
   }
 
