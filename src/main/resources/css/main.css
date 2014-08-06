@@ -21,7 +21,7 @@ body {
 /* To-do: Increase width for smaller screen sizes */
 
 
-/* VIEW ANIMATION */
+/* VIEW TRANSITION ANIMATION */
 
 #mainview.ng-enter,
 #mainview.ng-leave {
