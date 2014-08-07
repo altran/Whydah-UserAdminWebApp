@@ -18,8 +18,6 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.$watch('users.selected', function(){
     Users.requiredMessage = (Users.selected) ? '' : noUsersSelectedMessage;
   });
-  
-  $scope.loadApplications 
 
   $scope.searchUsers = function() {
     Users.search($scope.searchQuery);

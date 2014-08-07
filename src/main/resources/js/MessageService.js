@@ -12,7 +12,6 @@ UseradminApp.service('Messages', function($timeout){
         });
         var that = this;
         $timeout(function(){
-            console.log('timeout', this);
             that.remove(0);
         }, messageDuration);
 	};

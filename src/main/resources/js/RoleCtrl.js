@@ -32,6 +32,16 @@ UseradminApp.controller('RoleCtrl', function($scope, Users) {
 
   $scope.currentApplication = {};
 
+
+  $scope.updateCurrentApplication = function(appId){
+    console.log('curr app', appId);
+    angular.forEach($scope.applications, function(app){
+        console.log(app, appId);
+        if(app.applicationId == appId) $scope.currentApplication = app;
+    });
+    console.log($scope.currentApplication);
+  }
+
   $scope.dict = {
     en: {
       application: 'Application',
