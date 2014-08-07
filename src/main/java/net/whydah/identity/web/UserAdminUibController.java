@@ -210,22 +210,25 @@ public class UserAdminUibController {
             method.setURI(new URI(url, true));
             int rescode = httpClient.executeMethod(method);
             // TODO: check rescode?
-            if (rescode != 200) {
+            if (rescode == 204) { // Delete
                 // Do something
+            } else {
+                InputStream responseBodyStream = method.getResponseBodyAsStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
+                StringBuilder responseBody = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) !=null) {
+                    responseBody.append(line);
+                }
+                model.addAttribute("jsondata", responseBody.toString());
+                response.setContentType("application/json; charset=utf-8");
             }
-            InputStream responseBodyStream = method.getResponseBodyAsStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
-            StringBuilder responseBody = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) !=null) {
-                responseBody.append(line);
-            }
-            model.addAttribute("jsondata", responseBody.toString());
-            response.setContentType("application/json; charset=utf-8");
             response.setStatus(rescode);
         } catch (IOException e) {
+            response.setStatus(503);
             logger.error("IOException", e);
         } catch (NullPointerException e) {
+            response.setStatus(503);
             logger.error("Nullpointer:", e);
         } finally {
             method.releaseConnection();
