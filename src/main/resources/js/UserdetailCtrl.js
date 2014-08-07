@@ -5,11 +5,11 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
   }
 
   $scope.userProperties = [
-    {value: 'firstName',    minLength: 2, maxLength: 64, required: true, type: 'text', validations:['Must be longer', 'Must be shorter']},
-    {value: 'lastName',     minLength: 2, maxLength: 64, required: true, type: 'text'},
-    {value: 'email',        minLength: 4, maxLength: 64, required: true, type: 'email'},
-    {value: 'cellPhone',    minLength: 3, maxLength: 48, required: false, type: 'text'},
-    {value: 'personRef',    minLength: 0, maxLength: 64, required: false, type: 'text'}
+    {value: 'firstName',    minLength: 2, maxLength: 64, required: true, type: 'text', validationMsg:'Must be between 2-64 characters long.'},
+    {value: 'lastName',     minLength: 2, maxLength: 64, required: true, type: 'text', validationMsg:'Must be between 2-64 characters long.'},
+    {value: 'email',        minLength: 4, maxLength: 64, required: true, type: 'email', validationMsg:'Please enter a valid e-mail address.'},
+    {value: 'cellPhone',    required: false, type: 'text'},
+    {value: 'personRef',    required: false, type: 'text'}
   ];
 
   $scope.getValidationClass = function(formPart) {
@@ -52,10 +52,16 @@ UseradminApp.controller('UserdetailCtrl', function($scope, Users) {
     // Make sure these $scope-values are properly connected to the view
     if($scope.form.userDetail.$valid){
         if(Users.user.isNew) {
-            delete Users.user.isNew;
-            Users.add(Users.user);
+            var newUser = angular.copy(Users.user);
+            delete newUser.isNew;
+            Users.add(newUser, function(){
+                delete Users.user.isNew;
+                $scope.form.userDetail.$setPristine();
+            });
         } else {
-            Users.save(Users.user);
+            Users.save(Users.user, function(){
+                $scope.form.userDetail.$setPristine();
+            });
         }
     } else {
         console.log('Tried to save an invalid form.');

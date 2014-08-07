@@ -57,7 +57,7 @@ UseradminApp.service('Users', function($http, Messages){
 
     // Current json-request for save
     // jsond: {"personRef":"1", "username":"leon", "firstName":"Leon", "lastName":"Ho", "email":"leon.ho@altran.com", "cellPhone":"993 97 835"}
-	this.save = function(user) {
+	this.save = function(user, successCallback) {
 	    console.log('Saving user', user);
 	    var that = this;
 		$http({
@@ -67,11 +67,16 @@ UseradminApp.service('Users', function($http, Messages){
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was saved successfully.');
 		    that.search();
+		    if(successCallback){
+		        successCallback();
+		    }
+		}).error(function(data){
+			Messages.add('error', 'Oops, something went wrong. User "'+user.username+'" was not saved successfully.');
 		});
 		return this;
 	};
 
-	this.add = function(user) {
+	this.add = function(user, successCallback) {
 	    console.log('Adding user', user);
 	    var that = this;
 		$http({
@@ -80,7 +85,13 @@ UseradminApp.service('Users', function($http, Messages){
 			data: user
 		}).success(function (data) {
 			Messages.add('success', 'User "'+user.username+'" was added successfully.');
+			user.uid = data.uid;
 			that.search();
+		    if(successCallback){
+		        successCallback();
+		    }
+		}).error(function(data){
+		    Messages.add('error', 'User was not added! Try again later...');
 		});
 		return this;
 	};

@@ -104,20 +104,18 @@
 
             <div class="modal-body">
             <div class="form-horizontal">
-              <div class="form-group" ng-if="users.user.isNew">
+              <div class="form-group" ng-if="users.user.isNew" ng-class="">
                 <label for="username" class="col-sm-2 control-label">Username</label>
-                <div class="col-sm-10"><input type="text" class="form-control" id="username" ng-model="users.user.username"></div>
+                <div class="col-sm-10"><input type="text" class="form-control" id="username" name="username" ng-model="users.user.username"></div>
               </div>
               <div class="form-group"
                    ng-form="formPart"
-                   ng-class="getValidationClass(formPart, property.value)"
+                   ng-class="getValidationClass(formPart)"
                    ng-repeat="property in userProperties">
                 <label for="{{property.value}}" class="col-sm-2 control-label">{{dict[conf.lang][property.value]}}</label>
                 <div class="col-sm-10">
                     <input type="{{property.type}}" class="form-control" id="{{property.value}}" name="{{property.value}}" ng-model="users.user[property.value]" ng-minlength="{{property.minLength}}" ng-maxlength="{{property.maxLength}}" ng-required="{{property.required}}">
-                </div>
-                <div ng-show="form.userDetail.{{property.value}}.$dirty && form.userDetail.{{property.value}}.$invalid">Invalid.
-                    <span ng-repeat="validation in property.validations">Hey</span>
+                    <span class="help-block" ng-show="formPart.$dirty && formPart.$invalid">{{property.validationMsg}}</span>
                 </div>
               </div>
             </div>
@@ -135,8 +133,11 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" ng-disabled="form.userDetail.$invalid" ng-click="save()">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+                Close
+                <span ng-if="form.userDetail.$dirty">and discard changes</span>
+            </button>
+            <button type="button" class="btn btn-primary" ng-disabled="form.userDetail.$invalid || form.userDetail.$pristine" ng-click="save()">Save changes</button>
             <button type="button" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()" ng-if="!users.user.isNew"><span class="glyphicon glyphicon-trash"></span> Delete {{users.user.username}}</button>
           </div>
 
@@ -167,13 +168,13 @@
             <div class="form-group">
                 <label for="application" class="col-sm-2 control-label">{{dict[conf.lang].application}}</label>
                 <div class="col-sm-10">
-                    <select class="form-control" id="application" ng-model="role.applicationId" ng-options="app.applicationId as app.applicationName for app in applications"></select>
+                    <select class="form-control" id="application" ng-model="role.applicationId" ng-options="app.applicationId as app.applicationName for app in applications" ng-change="updateCurrentApplication(role.applicationId)"></select>
                 </div>
             </div>
             <div class="form-group">
                 <label for="organization" class="col-sm-2 control-label">{{dict[conf.lang].organization}}</label>
                 <div class="col-sm-10">
-                    <select class="form-control" id="organization" ng-model="role.applicationName" ng-disabled="currentApplication.applicationId" ng-options="org in currentApplication.organizations"></select>
+                    <select class="form-control" id="organization" ng-model="role.applicationName" ng-disabled="!currentApplication.applicationId" ng-options="org for org in currentApplication.organizations"></select>
                 </div>
             </div>
             <div class="form-group">
