@@ -1,0 +1,28 @@
+{
+    "applications": [
+        {
+            "appId": "1",
+            "applicationName": "UserAdmin",
+            "userCount": 32,
+            "roleCount": 3
+        },
+        {
+            "appId": "2",
+            "applicationName": "Mobilefirst",
+            "userCount": 5,
+            "roleCount": 4
+        },
+        {
+            "appId": "3",
+            "applicationName": "Whydah",
+            "userCount": 13,
+            "roleCount": 1
+        },
+        {
+            "appId": "4",
+            "applicationName": "ACS",
+            "userCount": 332,
+            "roleCount": 3
+        }
+    ]
+}

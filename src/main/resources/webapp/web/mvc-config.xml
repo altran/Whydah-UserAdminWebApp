@@ -14,13 +14,16 @@
     <!-- <mvc:resources location="/images/" mapping="/images/**"/> -->
    <!--  -->
     <mvc:resources mapping="/images/**" location="/, classpath:/images/" />
+    <mvc:resources mapping="/img/**" location="/, classpath:/img/" />
+    <mvc:resources mapping="/template/**" location="/, classpath:/template/" />
     <mvc:resources mapping="/favicon.ico" location="/, classpath:/images/favicon.ico" />
     <mvc:resources mapping="/js/**" location="/, classpath:/js/" />
+    <mvc:resources mapping="/json/**" location="/, classpath:/json/" />
     <mvc:resources mapping="/ext3/**" location="/, classpath:/ext3/" />
     <mvc:resources mapping="/css/**" location="/, classpath:/css/" />
 
 
-	<context:component-scan base-package="net.whydah.iam.service" />
+	<context:component-scan base-package="net.whydah.identity" />
 
 	<mvc:annotation-driven />
 

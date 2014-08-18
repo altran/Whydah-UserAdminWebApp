@@ -1,0 +1,30 @@
+{
+    "identity": {
+        "personRef": "0000000000",
+        "uid": "123123",
+        "username": "Username",
+        "firstName": "Ola",
+        "lastName": "Norman",
+        "email": "ola@norman.no",
+        "cellPhone": "999",
+        "uri": "http://localhost:9995/uib/useradmin/users/123123/"
+    },
+    "propsAndRoles": [
+        {
+            "appId": "3",
+            "applicationName": "Whydah",
+            "orgID": "3",
+            "organizationName": "",
+            "roleName": "Employee",
+            "roleValue": "ola@norman.no"
+        },
+        {
+            "appId": "3",
+            "applicationName": "Whydah",
+            "orgID": "",
+            "organizationName": "",
+            "roleName": "",
+            "roleValue": ""
+        }
+    ]
+}

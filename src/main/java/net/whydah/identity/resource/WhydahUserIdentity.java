@@ -1,4 +1,4 @@
-package net.whydah.iam.service.resource;
+package net.whydah.identity.resource;
 
 import org.springframework.stereotype.Controller;
 

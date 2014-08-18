@@ -1,1 +1,30 @@
-{"identity":{"personRef":"136268468264506","uid":"sofia.hasselberg@gmail.com","brukernavn":"sofia.hasselberg@gmail.com","personName":"HASSELBERGSOFIA","firstName":"SOFIA","lastName":"HASSELBERG","email":"sofia.hasselberg@gmail.com","cellPhone":"45662274"},"propsAndRoles":[{"userID":"sofia.hasselberg@gmail.com","appId":"Invoice","orgID":"2","roleName":"FM","roleValue":"2010 - 2012","appliCationName":"Contempus Invoice","organizationName":"Maridalsveien 64 Borettslag"},{"userID":"sofia.hasselberg@gmail.com","appId":"Invoice","orgID":"2","roleName":"BA","roleValue":"","appliCationName":"Contempus Invoice","organizationName":"Maridalsveien 64 Borettslag"},{"userID":"sofia.hasselberg@gmail.com","appId":"Invoice","orgID":"2","roleName":"GA","roleValue":"","appliCationName":"Contempus Invoice","organizationName":"Maridalsveien 64 Borettslag"}]}
+{
+    "identity": {
+        "personRef": "0000000000",
+        "uid": "123123123",
+        "username": "User",
+        "firstName": "First",
+        "lastName": "Last",
+        "email": "email@gmail.com",
+        "cellPhone": "999888777",
+        "uri": "http://localhost:9995/uib/useradmin/users/123123123/"
+    },
+    "propsAndRoles": [
+        {
+            "appId": "1",
+            "applicationName": "Application",
+            "orgID": "1",
+            "organizationName": "Organ",
+            "roleName": "Employee",
+            "roleValue": "2014"
+        },
+        {
+            "appId": "1",
+            "applicationName": "Application",
+            "orgID": "2",
+            "organizationName": "Ization",
+            "roleName": "Manager",
+            "roleValue": ""
+        }
+    ]
+}

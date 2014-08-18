@@ -1,0 +1,42 @@
+<div class="row margin-top">
+  <div class="col-xs-9 col-sm-5 col-md-4">
+    <input type="search" class="form-control" ng-model="searchQuery" placeholder="Search applications" ng-change="searchApps()" autofocus> 
+  </div>
+</div>
+
+
+<div class="row margin-top">
+
+  <div class="col-sm-12">
+
+    <button class="btn btn-default btn-sm" ng-click="newUserDetail()"><span class="glyphicon glyphicon-plus"></span> Add application</button>
+
+    <div class="table-responsive margin-top">
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th><label><input tri-state-checkbox elements="apps.list" elements-selected="apps.selected"></label></th>
+            <th>Application</th>
+            <th>Users</th>
+            <th>Roles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="app in apps.list" class="itemrow">
+            <td><label><input type="checkbox" ng-model="app.isSelected"></label></td>
+            <td>{{app.applicationName}}</td>
+            <td>{{app.userCount}}</td>
+            <td>{{app.roleCount}}</td>
+          </tr>
+          <tr ng-if="!apps.list.length && searchQuery">
+            <td colspan="4">No results for search "{{searchQuery}}".</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,9 +1,17 @@
-package net.whydah.iam.service.util;
+package net.whydah.identity.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
-import java.util.MissingResourceException;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.whydah.identity.config.AppConfig;
+import net.whydah.identity.data.ApplicationCredential;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,25 +24,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-
-import net.whydah.iam.service.config.AppConfig;
-import net.whydah.iam.service.data.ApplicationCredential;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
+import java.util.MissingResourceException;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken-admin";
+    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
 
     private final URI tokenServiceUri;
     private final Client tokenServiceClient = Client.create();
@@ -97,7 +94,7 @@ public class SSOHelper {
         logger.debug("myAppTokenId: {}", myAppTokenId);
     }
     private String getTokenIdFromAppToken(String appTokenXML) {
-        return appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
+        return appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
     }
 
 
@@ -174,8 +171,8 @@ public class SSOHelper {
 
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenid) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
-        String appid = appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
-        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/iam/" + appid + "/getusertokenbytokenid");
+        String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
+        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbytokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
         p2.addParameter("apptoken",appTokenXML);
@@ -188,7 +185,7 @@ public class SSOHelper {
 
     private PostMethod setupRealApplicationLogon() {
         ApplicationCredential acred = new ApplicationCredential();
-        acred.setApplicationID("Styrerommet");
+        acred.setApplicationID("Whydah");
         acred.setApplicationPassord("dummy");
 
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/logon");
@@ -202,7 +199,7 @@ public class SSOHelper {
     public String getUserTokenByTicket(String ticket) {
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbyticket");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("ticket", ticket);
@@ -233,7 +230,9 @@ public class SSOHelper {
     public Cookie createUserTokenCookie(String userTokenXml) {
         String tokenID = getTokenId(userTokenXml);
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, tokenID);
-        int maxAge = calculateTokenRemainingLifetime(userTokenXml);
+        //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
+        int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
+
         cookie.setMaxAge(maxAge);
         cookie.setValue(tokenID);
         cookie.setSecure(true);
@@ -279,7 +278,7 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/lifespan";
+            String expression = "/whydahuser/identity/lifespan";
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
@@ -299,7 +298,7 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/timestamp";
+            String expression = "/whydahuser/identity/timestamp";
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {

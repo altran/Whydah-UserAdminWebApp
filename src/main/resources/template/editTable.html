@@ -1,0 +1,29 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th><label><input tri-state-checkbox elements="elements" elements-selected="elementsSelected"></label></th>
+      <th ng-repeat="field in visibleFields">{{field.label}}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="el in elements">
+      <td><input type="checkbox" ng-model="el.isSelected"></td>
+      <td ng-repeat="field in visibleFields"><input type="text" class="form-control" ng-model="el[field.name]" ng-show="el.isEditing" ng-if="field.editable"><span ng-show="!el.isEditing || !field.editable">{{el[field.name]}}</span></td>
+      <td>
+        <button class="btn btn-default btn-sm" ng-click="el.isEditing=true" ng-show="!el.isEditing">
+          <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit
+        </button>
+        <button class="btn btn-default btn-sm" ng-click="el.isEditing=false;editAction({role:el});" ng-show="el.isEditing">
+          <span class="glyphicon glyphicon-ok"></span>&nbsp;Save
+        </button>
+        <button class="btn btn-default btn-sm" ng-click="el.isEditing=false;" ng-show="el.isEditing">
+          <span class="glyphicon glyphicon-ok"></span>&nbsp;Cancel
+        </button>
+      </td>
+    </tr>
+    <tr ng-if="!elements.length">
+      <td colspan="{{visibleFields.length+2}}">No roles yet.</td>
+    </tr>
+  </tbody>
+</table>

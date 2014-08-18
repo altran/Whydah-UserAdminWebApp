@@ -1,18 +1,54 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.whydah.sso.service</groupId>
-    <artifactId>UserAdministration</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>net.whydah.identity</groupId>
+    <artifactId>UserAdminWebapp</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>UserAdministration</name>
-    <url>https://wiki.cantara.no/display/iam/UserAdministration</url>
+    <name>UserAdminWebapp</name>
+    <url>https://wiki.cantara.no/display/iam/UserAdminWebapp</url>
+
+    <developers>
+        <developer>
+            <id>totto</id>
+            <name>Thor Henning Hetland</name>
+            <email>totto@totto.org</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Altran Norge AS</organization>
+            <organizationUrl>http://www.altran.no/</organizationUrl>
+        </developer>
+        <developer>
+            <id>kimcs</id>
+            <name>Kim Christian Swenson</name>
+            <email>kim.christian.swenson@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Altran Norge AS</organization>
+            <organizationUrl>http://www.altran.no/</organizationUrl>
+        </developer>
+    </developers>
+
 
     <parent>
         <groupId>no.cantara.emi</groupId>
         <artifactId>parent</artifactId>
-        <version>1</version>
+        <version>2</version>
     </parent>
+
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/altran/Whydah-UserAdminWebApp.git</developerConnection>
+        <connection>scm:git:https://github.com/altran/Whydah-UserAdminWebApp.git</connection>
+        <url>https://github.com/altran/Whydah-UserAdminWebApp</url>
+    <tag>HEAD</tag>
+  </scm>
+
+    <properties>
+        <jersey.version>1.14</jersey.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <jetty.version>7.3.0.v20110203</jetty.version>
+    </properties>
 
     <repositories>
         <repository>
@@ -22,7 +58,7 @@
             <layout>default</layout>
         </repository>
 
-      <!-- Needed for parent  -->
+        <!-- Needed for parent  -->
         <repository>
             <id>cantara-releases</id>
             <name>Cantara Release Repository</name>
@@ -30,29 +66,13 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-	  <repository>
-	    <id>altran-releases</id>
-	    <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
-	  </repository>
-	  <snapshotRepository>
-	    <id>altran-snapshots</id>
-	    <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
-	  </snapshotRepository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-bundle</artifactId>
@@ -68,6 +88,7 @@
             <artifactId>jersey-json</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -93,26 +114,29 @@
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.16</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
         <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.16</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>7.3.0.v20110203</version>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>7.3.0.v20110203</version>
+            <version>${jetty.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -123,13 +147,14 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.27</version>
         </dependency>
-    </dependencies>
 
-    <properties>
-        <jersey.version>1.14</jersey.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -144,7 +169,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>net.whydah.iam.service.ServerRunner</mainClass>
+                    <mainClass>net.whydah.identity.ServerRunner</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -153,7 +178,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>net.whydah.iam.service.ServerRunner</Main-Class>
+                            <Main-Class>net.whydah.identity.ServerRunner</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -174,20 +199,15 @@
                                 </excludes>
                             </artifactSet>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
                                 </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.tooling</resource>
                                 </transformer>
                             </transformers>

@@ -89,7 +89,7 @@
             }
     </style>
 
-  <title>UserAdministration</title>
+  <title>Whydah Useradmin</title>
 </head>
 <body>
 
