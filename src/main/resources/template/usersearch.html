@@ -2,7 +2,7 @@
   <div class="col-xs-9 col-sm-5 col-md-4">
     <input type="search" class="form-control" ng-model="searchQuery" placeholder="Search users" ng-change="searchUsers()" autofocus> 
   </div>
-  <div class="col-xs-3 col-sm-5 col-md-8">
+  <div class="col-xs-3 col-sm-5 col-md-8 hidden">
     <div class="dropdown">
       <button class="btn btn-default dropdown-toggle btn-sm" type="button" id="filterdropdown" data-toggle="dropdown">
         <span class="glyphicon glyphicon-filter"></span>
@@ -155,43 +155,53 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="addrolelabel">Add role</h4>
       </div>
-      <div class="modal-body">
 
-        <div ng-if="addRoleForMultiple">
-            Selected users:
-            <span ng-repeat="user in users.list | filter:{isSelected: true}" class="label label-default" style="margin-right: 0.5em">
-              {{user.firstName}} {{user.lastName}}
-            </span>
-        </div>
+        <form name="form.roleDetail" class="validate-form" novalidate>
 
-        <div class="form-horizontal">
-            <div class="form-group">
-                <label for="application" class="col-sm-2 control-label">{{dict[conf.lang].application}}</label>
-                <div class="col-sm-10">
-                    <select class="form-control" id="application" ng-model="role.applicationId" ng-options="app.applicationId as app.applicationName for app in applications" ng-change="updateCurrentApplication(role.applicationId)"></select>
+          <div class="modal-body">
+
+            <div class="form-horizontal">
+
+                <div ng-if="addRoleForMultiple" class="form-group">
+                    <label class="col-sm-2 control-label">For users</label>
+                    <div class="col-sm-10">
+                        <span ng-repeat="user in users.list | filter:{isSelected: true}" class="label label-default" style="margin-right: 0.5em">
+                          {{user.firstName}} {{user.lastName}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="application" class="col-sm-2 control-label">{{dict[conf.lang].application}}</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="application" ng-model="role.applicationId" ng-options="app.applicationId as app.name for app in applications.list" ng-change="setCurrentApplication(role.applicationId)"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="organization" class="col-sm-2 control-label">{{dict[conf.lang].organization}}</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="organization" ng-model="role.applicationName" ng-disabled="!currentApplication.id" ng-options="org for org in currentApplication.availableOrgNames"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rolename" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleName}}</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" id="rolename" ng-model="role.applicationRoleName" ng-minlength="2" ng-maxlength="128"></div>
+                </div>
+                <div class="form-group">
+                    <label for="rolevalue" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleValue}}</label>
+                    <div class="col-sm-10"><input type="text" class="form-control" id="rolevalue" ng-model="role.applicationRoleValue" ng-minlength="0" ng-maxlength="128"></div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="organization" class="col-sm-2 control-label">{{dict[conf.lang].organization}}</label>
-                <div class="col-sm-10">
-                    <select class="form-control" id="organization" ng-model="role.applicationName" ng-disabled="!currentApplication.applicationId" ng-options="org for org in currentApplication.organizations"></select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="rolename" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleName}}</label>
-                <div class="col-sm-10"><input type="text" class="form-control" id="rolename" ng-model="role.applicationRoleName" ng-minlength="2" ng-maxlength="128"></div>
-            </div>
-            <div class="form-group">
-                <label for="rolevalue" class="col-sm-2 control-label">{{dict[conf.lang].applicationRoleValue}}</label>
-                <div class="col-sm-10"><input type="text" class="form-control" id="rolevalue" ng-model="role.applicationRoleValue" ng-minlength="0" ng-maxlength="128"></div>
-            </div>
-        </div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addRole()">Add role</button>
-      </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addRole()">Add role</button>
+          </div>
+
+        </form>
+
     </div>
   </div>
 </div>

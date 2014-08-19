@@ -197,6 +197,21 @@ public class UserAdminUibController {
         return "json";
     }
 
+
+    // APPLICATIONS
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @RequestMapping(value = "/applications", method = RequestMethod.GET)
+    public String getApplications(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("Getting applications");
+        HttpMethod method = new GetMethod();
+        String url = getUibUrl(apptokenid, usertokenid, "applications");
+        makeUibRequest(method, url, model, response);
+        return "json";
+    }
+
+
     private String getUibUrl(String apptokenid, String usertokenid, String s) {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }

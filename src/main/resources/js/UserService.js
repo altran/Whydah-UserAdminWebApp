@@ -128,7 +128,7 @@ UseradminApp.service('Users', function($http, Messages){
 		return this;
     }
 
-    this.addRoleForUser = function(role, user) {
+    this.addRoleForUser = function(role, user, successCallback) {
 	    console.log('Adding role for user', user, role);
 	    var that = this;
 		$http({
@@ -139,18 +139,21 @@ UseradminApp.service('Users', function($http, Messages){
 			Messages.add('success', 'Role for user "'+user.username+'" was added successfully.');
 			that.getRolesForCurrentUser();
 			that.search();
+			if(successCallback){
+			    successCallback();
+			}
 		});
 		return this;
     }
 
-	this.addRoleForCurrentUser = function(role) {
-	    this.addRoleForUser(role, this.user);
+	this.addRoleForCurrentUser = function(role, successCallback) {
+	    this.addRoleForUser(role, this.user, successCallback);
 	}
 
-	this.addRoleForSelectedUsers = function(role) {
+	this.addRoleForSelectedUsers = function(role, successCallback) {
 	    var selectedUsers = this.getSelectedUsers();
 	    for(var i=0; i<selectedUsers.length; i++) {
-	        this.addRoleForUser(role, selectedUsers[i]);
+	        this.addRoleForUser(role, selectedUsers[i], successCallback);
 	    }
 	}
 

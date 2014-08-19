@@ -16,20 +16,20 @@
       <table class="table">
         <thead>
           <tr>
-            <th><label><input tri-state-checkbox elements="apps.list" elements-selected="apps.selected"></label></th>
+            <th><label><input tri-state-checkbox elements="applications.list" elements-selected="applications.selected"></label></th>
             <th>Application</th>
             <th>Users</th>
             <th>Roles</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="app in apps.list" class="itemrow">
+          <tr ng-repeat="app in applications.list" class="itemrow">
             <td><label><input type="checkbox" ng-model="app.isSelected"></label></td>
-            <td>{{app.applicationName}}</td>
+            <td>{{app.name}}</td>
             <td>{{app.userCount}}</td>
             <td>{{app.roleCount}}</td>
           </tr>
-          <tr ng-if="!apps.list.length && searchQuery">
+          <tr ng-if="!applications.list.length && searchQuery">
             <td colspan="4">No results for search "{{searchQuery}}".</td>
           </tr>
         </tbody>
@@ -39,4 +39,51 @@
 
   </div>
 
+</div>
+
+<!-- Applicationdetail Modal -->
+<div class="modal fade" id="applicationdetail" tabindex="-1" role="dialog" aria-labelledby="applicationdetaillabel" aria-hidden="true" ng-controller="ApplicationdetailCtrl">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="applicationdetaillabel">
+                    {{applications.application.name || 'New application'}}
+                </h4>
+            </div>
+
+            <form name="form.applicationDetail" class="validate-form" novalidate> <!-- novalidate prevents HTML5 validation, as we will validate using Angular -->
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group" ng-if="applications.application.isNew" ng-class="">
+                            <label for="name" class="col-sm-2 control-label">Application name</label>
+                            <div class="col-sm-10"><input type="text" class="form-control" id="name" name="name" ng-model="application.application.name"></div>
+                        </div>
+                        <div class="form-group"
+                             ng-form="formPart"
+                             ng-class="getValidationClass(formPart)"
+                             ng-repeat="property in applicationProperties">
+                            <label for="{{property.value}}" class="col-sm-2 control-label">{{dict[conf.lang][property.value]}}</label>
+                            <div class="col-sm-10">
+                                <input type="{{property.type}}" class="form-control" id="{{property.value}}" name="{{property.value}}" ng-model="applications.application[property.value]" ng-minlength="{{property.minLength}}" ng-maxlength="{{property.maxLength}}" ng-required="{{property.required}}">
+                                <span class="help-block" ng-show="formPart.$dirty && formPart.$invalid">{{property.validationMsg}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                        <span ng-if="form.applicationDetail.$dirty">and discard changes</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-disabled="form.applicationDetail.$invalid || form.applicationDetail.$pristine" ng-click="save()">Save changes</button>
+                    <button type="button" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()" ng-if="!applications.application.isNew"><span class="glyphicon glyphicon-trash"></span> Delete {{applications.application.name}}</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </div>

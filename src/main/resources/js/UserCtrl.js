@@ -70,7 +70,7 @@ UseradminApp.controller('UserCtrl', function($scope, $http, $routeParams, Users,
   $scope.resetPasswordForUsers = function() {
     var selectedUsernames = Users.getSelectedUsernames();
     var selectedUsers = Users.getSelectedUsers();
-    if(window.confirm('Are you sure you want to reset password for users: '+selectedUsernames+'?')) {
+    if(window.confirm('Are you sure you want to reset password for users: '+selectedUsernames.join(', ')+'?')) {
         console.log('Resetting passwords.');
         for(var i=0; i<selectedUsers.length; i++) {
             Users.resetPassword(selectedUsers[i]);

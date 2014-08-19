@@ -1,19 +1,27 @@
-UseradminApp.controller('ApplicationCtrl', function($scope, Apps) {
+UseradminApp.controller('ApplicationCtrl', function($scope, Applications) {
 
   $scope.session.activeTab = 'application';
 
-  $scope.apps = Apps;
+  $scope.applications = Applications;
 
   $scope.searchApps = function() {
-  	Apps.search($scope.searchQuery);
+  	Applications.search($scope.searchQuery);
   }
 
   function init() {
-    Apps.search();
+    Applications.search();
   }
 
-  if(Apps.list.length<1) {
+  if(Applications.list.length<1) {
     init();
+  }
+
+  $scope.activateApplicationDetail = function(applicationName) {
+    console.log('Activating application detail...', applicationName);
+    Applications.get(applicationName, function(){
+        $scope.form.applicationDetail.$setPristine();
+        $('#applicationdetail').modal('show');
+    });
   }
 
 });

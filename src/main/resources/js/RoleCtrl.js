@@ -1,4 +1,4 @@
-UseradminApp.controller('RoleCtrl', function($scope, Users) {
+UseradminApp.controller('RoleCtrl', function($scope, Users, Applications) {
 
   $scope.role = {
     applicationRoleName: '',
@@ -8,7 +8,8 @@ UseradminApp.controller('RoleCtrl', function($scope, Users) {
     organizationName: ''
   }
 
-  $scope.applications = [
+  $scope.applications = Applications;
+  var test = [
     {
         applicationName: 'Whydah',
         applicationId: 3,
@@ -28,18 +29,16 @@ UseradminApp.controller('RoleCtrl', function($scope, Users) {
             'Gothenburg'
         ]
     }
-  ]
+  ];
 
   $scope.currentApplication = {};
 
-
-  $scope.updateCurrentApplication = function(appId){
-    console.log('curr app', appId);
-    angular.forEach($scope.applications, function(app){
+  // sets current application
+  $scope.setCurrentApplication = function(appId){
+    angular.forEach($scope.applications.list, function(app){
         console.log(app, appId);
         if(app.applicationId == appId) $scope.currentApplication = app;
     });
-    console.log($scope.currentApplication);
   }
 
   $scope.dict = {
@@ -52,10 +51,13 @@ UseradminApp.controller('RoleCtrl', function($scope, Users) {
   }
 
   $scope.addRole = function() {
+    var addRoleCallBack = function(){
+        $scope.form.roleDetail.$setPristine();
+    };
     if($scope.addRoleForMultiple) {
-        Users.addRoleForSelectedUsers($scope.role);
+        Users.addRoleForSelectedUsers($scope.role, addRoleCallBack);
     } else {
-        Users.addRoleForCurrentUser($scope.role);
+        Users.addRoleForCurrentUser($scope.role, addRoleCallBack);
     }
   }
 
