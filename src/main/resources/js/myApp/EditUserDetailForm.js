@@ -60,7 +60,7 @@
         anchor:'-15'
     });
   var e_email_field = new Ext.form.TextField({
-        fieldLabel: 'email',
+        fieldLabel: 'Email',
         name: 'email',
         anchor:'-15'
     });
@@ -78,7 +78,7 @@ EditUserDetailForm = Ext.extend(Ext.form.FormPanel, {
     initComponent: function(config) {
         var config = {
             // Put your pre-configured config options here
-            title: 'Brukerinformasjon',
+            title: 'User information',
             id: 'bruker-panel',
             bodyStyle:'padding:15px',
             monitorValid:true,
