@@ -92,8 +92,16 @@ UseradminApp.service('Users', function($http, Messages){
 		    }
 		}).error(function(data,status){
 			console.log('User was not added', data);
-			console.log('User http error code', status);
-		    Messages.add('danger', 'User was not added and! Try again later...');
+			switch status {
+				case 404:  /* 404 No access */
+					Messages.add('danger', 'User was not added! No access...');
+					break;
+				case 409:  /* 409 Conflict - user exists or was double posted */
+					Messages.add('danger', 'User was not added! Already exists...');
+					break;
+				default:
+			    	Messages.add('danger', 'User was not added and! Try again later...');
+			}
 		});
 		return this;
 	};
