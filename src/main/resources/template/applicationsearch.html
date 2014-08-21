@@ -17,6 +17,7 @@
         <thead>
           <tr>
             <th><label><input tri-state-checkbox elements="applications.list" elements-selected="applications.selected"></label></th>
+            <th>ID</th>
             <th>Application</th>
             <th>Users</th>
             <th>Roles</th>
@@ -25,6 +26,7 @@
         <tbody>
           <tr ng-repeat="app in applications.list" class="itemrow">
             <td><label><input type="checkbox" ng-model="app.isSelected"></label></td>
+            <td>{{app.id}}</td>
             <td>{{app.name}}</td>
             <td>{{app.userCount}}</td>
             <td>{{app.roleCount}}</td>
