@@ -188,11 +188,11 @@ public class UserAdminUibController {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RequestMapping(value = "/user/{username}/resetpassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{username}/resetpassword", method = RequestMethod.GET)
     public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Resetting password for user: " + username);
         PostMethod method = new PostMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+username+"/resetpassword");
+        String url = uibUrl + "/password/" + apptokenid +"/reset/username/" + username;
         makeUibRequest(method, url, model, response);
         return "json";
     }
