@@ -71,7 +71,7 @@ UseradminApp.service('Users', function($http, Messages){
 		        successCallback();
 		    }
 		}).error(function(data){
-			Messages.add('error', 'Oops, something went wrong. User "'+user.username+'" was not saved successfully.');
+			Messages.add('danger', 'Oops, something went wrong. User "'+user.username+'" was not saved successfully.');
 		});
 		return this;
 	};
@@ -90,8 +90,21 @@ UseradminApp.service('Users', function($http, Messages){
 		    if(successCallback){
 		        successCallback();
 		    }
-		}).error(function(data){
-		    Messages.add('error', 'User was not added! Try again later...');
+		}).error(function(data,status){
+			console.log('User was not added', data);
+			switch (status) {
+				case 403:
+					Messages.add('danger', 'User was not added! No access...');
+					break;
+				case 404:  /* 404 No access */
+					Messages.add('danger', 'User was not added! No access...');
+					break;
+				case 409:  /* 409 Conflict - user exists or was double posted */
+					Messages.add('danger', 'User was not added! Already exists...');
+					break;
+				default:
+			    	Messages.add('danger', 'User was not added and! Try again later...');
+			}
 		});
 		return this;
 	};

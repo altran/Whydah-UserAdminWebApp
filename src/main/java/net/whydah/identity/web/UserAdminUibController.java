@@ -191,8 +191,9 @@ public class UserAdminUibController {
     @RequestMapping(value = "/user/{username}/resetpassword", method = RequestMethod.POST)
     public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Resetting password for user: " + username);
-        String url = uibUrl + "password/" + apptokenid + "/reset/username/" + username;
-        makeUibRequest(new GetMethod(), url, model, response);
+        PostMethod method = new PostMethod();
+        String url = uibUrl + "/password/" + apptokenid +"/reset/username/" + username;
+        makeUibRequest(method, url, model, response);
         return "json";
     }
 
