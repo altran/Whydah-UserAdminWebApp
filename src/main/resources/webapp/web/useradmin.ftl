@@ -8,6 +8,7 @@
         <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">-->
         <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
+        <link href="css/autocomplete.css" rel="stylesheet">
     </head>
     <body ng-controller="MainCtrl">
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -60,6 +61,7 @@
         <script src="js/lib/bindHtml.js"></script>
         <script src="js/lib/position.js"></script>
         <script src="js/lib/tooltip.js"></script>
+        <script src="js/lib/autocomplete.js"></script>
         <script src="js/auth.js"></script>
 
         <!-- Main application -->

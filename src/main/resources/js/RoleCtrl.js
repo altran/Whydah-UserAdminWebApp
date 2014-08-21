@@ -36,8 +36,7 @@ UseradminApp.controller('RoleCtrl', function($scope, Users, Applications) {
   // sets current application
   $scope.setCurrentApplication = function(appId){
     angular.forEach($scope.applications.list, function(app){
-        console.log(app, appId);
-        if(app.applicationId == appId) $scope.currentApplication = app;
+        if(app.id == appId) $scope.currentApplication = app;
     });
   }
 
