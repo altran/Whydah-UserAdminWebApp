@@ -16,7 +16,7 @@ body {
     width: 30%;
     bottom: 0;
     right: 0;
-    z-index: 3;
+    z-index: 1070;
 }
 /* To-do: Increase width for smaller screen sizes */
 

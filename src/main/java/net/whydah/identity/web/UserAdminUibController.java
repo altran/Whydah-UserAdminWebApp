@@ -192,7 +192,7 @@ public class UserAdminUibController {
     public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Resetting password for user: " + username);
         PostMethod method = new PostMethod();
-        String url = uibUrl + "/password/" + apptokenid +"/reset/username/" + username;
+        String url = uibUrl + "password/" + apptokenid +"/reset/username/" + username;
         makeUibRequest(method, url, model, response);
         return "json";
     }
