@@ -17,19 +17,19 @@
         <thead>
           <tr>
             <th><label><input tri-state-checkbox elements="applications.list" elements-selected="applications.selected"></label></th>
-            <th>AppID</th>
-            <th>Application name</th>
-            <th>Users</th>
+            <th ng-click="changeOrder('id')">AppID <span class="glyphicon glyphicon-sort"></span></th>
+            <th ng-click="changeOrder('name')">Application name <span class="glyphicon glyphicon-sort"></span></th>
+            <th>Organizations</th>
             <th>Roles</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="app in applications.list" class="itemrow">
+          <tr ng-repeat="app in applications.list | orderBy:orderByColumn:orderReverse" class="itemrow">
             <td><label><input type="checkbox" ng-model="app.isSelected"></label></td>
             <td>{{app.id}}</td>
             <td>{{app.name}}</td>
-            <td>{{app.userCount}}</td>
-            <td>{{app.roleCount}}</td>
+            <td><span class="small" ng-repeat="org in app.availableOrgNames track by $index">{{org}}; </span></td>
+            <td><span class="small" ng-repeat="role in app.availableRoleNames track by $index">{{role}}; </span></td>
           </tr>
           <tr ng-if="!applications.list.length && searchQuery">
             <td colspan="4">No results for search "{{searchQuery}}".</td>

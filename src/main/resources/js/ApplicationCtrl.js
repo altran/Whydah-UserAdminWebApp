@@ -4,6 +4,14 @@ UseradminApp.controller('ApplicationCtrl', function($scope, Applications) {
 
   $scope.applications = Applications;
 
+  $scope.orderByColumn = 'id';
+  $scope.orderReverse = false;
+
+  $scope.changeOrder = function(orderByColumn) {
+    $scope.orderByColumn = orderByColumn;
+    $scope.orderReverse = !$scope.orderReverse;
+  }
+
   $scope.searchApps = function() {
   	Applications.search($scope.searchQuery);
   }
