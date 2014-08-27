@@ -1,6 +1,7 @@
 UseradminApp.service('Users', function($http, Messages){
 	
 	this.list = [];
+	this.rows = "";
 	this.user = {};
 	this.userRoles = {};
 	this.searchQuery = '*';
@@ -35,6 +36,23 @@ UseradminApp.service('Users', function($http, Messages){
 			//url: 'json/users.json',
 		}).success(function (data) {
 			that.list = data.result;
+			that.rows = data.rows;
+		}).error(function(data,status){
+			// This is most likely due to usertoken timeout - TODO: Redirect to login webapp   
+			console.log('Unable to search', data);
+			switch (status) {
+				case 403: /* Forbidden */
+					Messages.add('danger', 'Unable to seach! Forbidden...');
+					break;
+				case 404:  /* 404 No access */
+					Messages.add('danger', 'Unable to search! No access...');
+					break;
+				case 409:  /* 409 Conflict - will prbably not occur here */
+					Messages.add('danger', 'Search already exists...');
+					break;
+				default:
+			    	Messages.add('danger', 'Search failed with error code: ' + status);
+			}
 		});
 		return this;
 	};
@@ -151,7 +169,7 @@ UseradminApp.service('Users', function($http, Messages){
 		}).success(function (data) {
 			Messages.add('success', 'Role for user "'+user.username+'" was added successfully.');
 			that.getRolesForCurrentUser();
-			that.search();
+			that.search(that.searchQuery);
 			if(successCallback){
 			    successCallback();
 			}
@@ -181,7 +199,7 @@ UseradminApp.service('Users', function($http, Messages){
 		}).success(function (data) {
 			Messages.add('success', 'Role "'+roleName+'" for user "'+user.username+'" was deleted successfully.');
 			that.getRolesForCurrentUser();
-			that.search();
+			that.search(that.searchQuery);
 		}).error(function (data) {
             Messages.add('warning', 'Role "'+roleName+'" for user "'+that.user.username+'" was not deleted.');
             that.getRolesForCurrentUser();
@@ -204,7 +222,7 @@ UseradminApp.service('Users', function($http, Messages){
 		}).success(function (data) {
 			Messages.add('success', 'Role "'+roleName+'" for user "'+that.user.username+'" was saved successfully.');
 			that.getRolesForCurrentUser();
-			that.search();
+			that.search(that.searchQuery);
 		}).error(function (data) {
 			Messages.add('warning', 'Role "'+roleName+'" for user "'+that.user.username+'" was not saved.');
 			that.getRolesForCurrentUser();
