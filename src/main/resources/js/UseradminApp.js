@@ -34,6 +34,10 @@ UseradminApp.controller('MainCtrl', function($scope, $routeParams, Messages) {
   $scope.removeMessage = function(index) {
     Messages.remove(index);
   }
+  $scope.activateTimeoutModal = function() {
+    console.log('Timeout has been invoked...');
+    $('#timeoutmodal').modal('show');
+  }
 });
 
 // TODO: Move to separate js-file

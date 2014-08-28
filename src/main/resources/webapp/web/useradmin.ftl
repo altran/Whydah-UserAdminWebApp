@@ -11,6 +11,7 @@
         <link href="css/autocomplete.css" rel="stylesheet">
     </head>
     <body ng-controller="MainCtrl">
+
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -35,6 +36,30 @@
             </div>
         </div>
 
+        <!-- Logon timeout Modal -->
+        <div class="modal fade" id="timeoutmodal" tabindex="-1" role="dialog" aria-labelledby="timoutlabel" aria-hidden="true" ng-controller="MainCtrl">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="timeoutlabel">
+                            Login for <strong>${realName}</strong> timed out
+                        </h4>
+                    </div>
+
+                        <div class="modal-body">
+                            You have to log in again
+                        </div>
+                        <div class="modal-footer">
+                            <a href="${logOutUrl}" type="button" class="btn btn-success" data-dismiss="modal">
+                                Go to login
+                            </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message container -->
         <div class="container-fluid">
             <div ng-view id="mainview"></div>
             <div id="messageContainer">
