@@ -199,6 +199,7 @@ public class SSOHelper {
     public String getUserTokenByTicket(String ticket) {
         logonApplication();
 
+
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
