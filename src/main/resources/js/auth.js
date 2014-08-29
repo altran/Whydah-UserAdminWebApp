@@ -2,7 +2,7 @@ var auth = ( function () {
 
     var ssoUrl = '/';
     var tokenServiceUrl = ssoUrl + 'tokenservice/';
-    var appId = 'Styrerommet';
+    var appId = 'UserAdmin';
     var appSecret = 'dummy';
     var requiredRoles = ['Club Owner', 'WhydahUserAdmin', 'client'];
 
