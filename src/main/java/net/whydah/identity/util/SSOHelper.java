@@ -78,20 +78,30 @@ public class SSOHelper {
         WebResource logonResource = tokenServiceClient.resource(tokenServiceUri).path("logon");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         ApplicationCredential appCredential = new ApplicationCredential();
-        appCredential.setApplicationID("Whydah SSO UserAdministration");
-        appCredential.setApplicationPassord("secret dummy");
+        try {
+            String applicationid = AppConfig.readProperties().getProperty("applicationid");
+            String applicationsecret = AppConfig.readProperties().getProperty("applicationsecret");
 
-        formData.add("applicationcredential", appCredential.toXML());
-        ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
-        if (response.getStatus() != 200) {
-            logger.error("Application authentication failed with statuscode {}", response.getStatus());
-            throw new RuntimeException("Application authentication failed");
+            appCredential.setApplicationID(applicationid);
+            appCredential.setApplicationPassord(applicationsecret);
+
+            //appCredential.setApplicationID("Whydah SSO UserAdministration");
+            //appCredential.setApplicationPassord("secret dummy");
+
+            formData.add("applicationcredential", appCredential.toXML());
+            ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+            //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
+            if (response.getStatus() != 200) {
+                logger.error("Application authentication failed with statuscode {}", response.getStatus());
+                throw new RuntimeException("Application authentication failed");
+            }
+            myAppTokenXml = response.getEntity(String.class);
+            myAppTokenId = getTokenIdFromAppToken(myAppTokenXml);
+            logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
+            logger.debug("myAppTokenId: {}", myAppTokenId);
+        } catch (IOException ioe){
+            logger.warn("Did not find configuration for my application credential.",ioe);
         }
-        myAppTokenXml = response.getEntity(String.class);
-        myAppTokenId = getTokenIdFromAppToken(myAppTokenXml);
-        logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
-        logger.debug("myAppTokenId: {}", myAppTokenId);
     }
     private String getTokenIdFromAppToken(String appTokenXML) {
         return appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
