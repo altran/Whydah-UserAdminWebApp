@@ -46,12 +46,20 @@ public class UserAdminUibController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
+    @ResponseBody
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Finding users with query: " + query);
-        HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
-        makeUibRequest(method, url, model, response);
-        return "json";
+        //HttpMethod method = new GetMethod();
+        //String url = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
+        //makeUibRequest(method, url, model, response);
+        String resourcePath = "users/find/"+query;
+        String usersJson = "{no-users-found}";
+        try {
+            usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
+        } catch (Exception e) {
+            logger.warn("Could not find Users from UIB.", e);
+        }
+        return usersJson;
     }
 
     @GET
@@ -211,8 +219,6 @@ public class UserAdminUibController {
         String applicationsJson = "{no-apps-found}";
         try {
             applicationsJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
-            response.setContentType("application/json; charset=utf-8");
-            model.addAttribute("jsondata", applicationsJson);
         } catch (Exception e) {
             logger.warn("Could not fetch Applications from UIB.", e);
         }
