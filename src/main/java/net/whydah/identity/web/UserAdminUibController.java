@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -203,12 +204,20 @@ public class UserAdminUibController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
+    @ResponseBody
     public String getApplications(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Getting applications");
-        HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "applications");
-        makeUibRequest(method, url, model, response);
-        return "json";
+        String resourcePath = "applications";
+        String applicationsJson = "{no-apps-found}";
+        try {
+            applicationsJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
+            response.setContentType("application/json; charset=utf-8");
+            model.addAttribute("jsondata", applicationsJson);
+        } catch (Exception e) {
+            logger.warn("Could not fetch Applications from UIB.", e);
+        }
+
+        return applicationsJson;
     }
 
 
@@ -216,6 +225,43 @@ public class UserAdminUibController {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
+    protected String makeUibRequest(String apptokenid, String usertokenid, String resourcePath) {
+        String url = getUibUrl(apptokenid, usertokenid, resourcePath);
+        HttpMethodParams params = new HttpMethodParams();
+        params.setHttpElementCharset("UTF-8");
+        params.setContentCharset("UTF-8");
+        HttpMethod method = new GetMethod();
+        method.setParams(params);
+        StringBuilder responseBody = new StringBuilder();
+        try {
+            method.setURI(new URI(url, true));
+            int rescode = httpClient.executeMethod(method);
+            // TODO: check rescode?
+            if (rescode == 204) { // Delete
+                // Do something
+            } else {
+                InputStream responseBodyStream = method.getResponseBodyAsStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
+
+                String line;
+                while ((line = in.readLine()) != null) {
+                    responseBody.append(line);
+                }
+
+            }
+        } catch (Exception e) {
+            logger.info("Could not find applcations data. Url: " + url + " Response: " + responseBody, e);
+            throw new RuntimeException(e);
+        } finally {
+            method.releaseConnection();
+        }
+
+        return responseBody.toString();
+    }
+
+    /*
+    @Deprecated Use makeUibRequest(String apptokenid, String usertokenid, String resourcePath)
+     */
     private void makeUibRequest(HttpMethod method, String url, Model model, HttpServletResponse response) {
         HttpMethodParams params = new HttpMethodParams();
         params.setHttpElementCharset("UTF-8");
