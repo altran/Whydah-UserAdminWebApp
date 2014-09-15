@@ -1,22 +1,13 @@
 package net.whydah.identity.web;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import net.whydah.identity.config.AppConfig;
 import net.whydah.identity.util.SSOHelper;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -26,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -95,10 +85,10 @@ public class UserAdminController {
         try {
 	        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
 	        	
-	            String userTokenXml = ssoHelper.getUserTokenByTicket(userTicket);
+	            String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
 	            logger.debug("userToken from ticket:" + userTokenXml);
 	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-	                String tokenId = ssoHelper.getTokenId(userTokenXml);
+	                String tokenId = ssoHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
 	                logger.debug("tokenId:" + tokenId);
 	                addModelParams(model, tokenId);
 	

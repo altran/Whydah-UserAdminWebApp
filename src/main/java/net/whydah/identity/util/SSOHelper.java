@@ -85,9 +85,6 @@ public class SSOHelper {
             appCredential.setApplicationID(applicationid);
             appCredential.setApplicationPassord(applicationsecret);
 
-            //appCredential.setApplicationID("Whydah SSO UserAdministration");
-            //appCredential.setApplicationPassord("secret dummy");
-
             formData.add("applicationcredential", appCredential.toXML());
             ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
             //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
@@ -179,17 +176,17 @@ public class SSOHelper {
     }
 
 
-    private PostMethod setUpGetUserToken(PostMethod p,String userTokenid) throws IOException {
+    private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
         String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbytokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
         p2.addParameter("apptoken",appTokenXML);
-        p2.addParameter("usertokenid",userTokenid);
+        p2.addParameter("usertokenid",userTokenId);
 
-        logger.info("apptoken:" + appTokenXML);
-        logger.info("usertokenid:" + userTokenid);
+        logger.trace("apptoken:" + appTokenXML);
+        logger.trace("usertokenid:" + userTokenId);
         return p2;
     }
 
@@ -206,53 +203,53 @@ public class SSOHelper {
     }
 
 
-    public String getUserTokenByTicket(String ticket) {
+    public String getUserTokenByUserTicket(String userticket) {
         logonApplication();
 
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyticket");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyuserticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("ticket", ticket);
+        formData.add("userticket", userticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
-            myUserTokenId = getTokenId(responseXML);
+            logger.trace("Response OK with XML: {}", responseXML);
+            myUserTokenId = getUserTokenIdFromUserTokenXML(responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            logger.trace("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         logger.warn("User authentication failed: {}", response);
         if (response.getStatus() == Response.Status.GONE.getStatusCode()) {
-        	throw new MissingResourceException("No token found for ticket.", getClass().getSimpleName(), ticket);
+        	throw new MissingResourceException("No token found for ticket.", getClass().getSimpleName(), userticket);
         }
         throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
 
     public Cookie createUserTokenCookie(String userTokenXml) {
-        String tokenID = getTokenId(userTokenXml);
-        Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, tokenID);
+        String usertokenID = getUserTokenIdFromUserTokenXML(userTokenXml);
+        Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, usertokenID);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
 
         cookie.setMaxAge(maxAge);
-        cookie.setValue(tokenID);
+        cookie.setValue(usertokenID);
         cookie.setSecure(true);
-        logger.debug("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", tokenID=" + tokenID + ", maxAge=" + maxAge);
+        logger.trace("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", usertokenID=" + usertokenID + ", maxAge=" + maxAge);
         return cookie;
     }
-    public String getTokenId(String userTokenXml) {
+    public String getUserTokenIdFromUserTokenXML(String userTokenXml) {
         if (userTokenXml == null) {
-            logger.debug("Empty  userToken");
+            logger.trace("Empty  userToken");
             return "";
         }
 
@@ -280,7 +277,7 @@ public class SSOHelper {
 
     private String getLifespan(String userTokenXml) {
         if (userTokenXml == null){
-            logger.debug("Empty  userToken");
+            logger.trace("Empty  userToken");
             return "";
         }
         try {
@@ -293,14 +290,14 @@ public class SSOHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("getLifespan failed", e);
         }
         return "";
     }
 
     private String getTimestamp(String userTokenXml) {
         if (userTokenXml==null){
-            logger.debug("Empty  userToken");
+            logger.trace("Empty  userToken");
             return "";
         }
         try {
@@ -313,20 +310,20 @@ public class SSOHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("getTimestamp error", e);
         }
         return "";
     }
 
     public String getUserTokenIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        // logger.info("=============> header: " + cookies);
+        logger.trace("=============> header: " + cookies);
         if (cookies == null) {
             return null;
         }
 
         for (Cookie cookie : cookies) {
-            //logger.debug("Cookie: " + cookie.getName());
+            logger.trace("Cookie: " + cookie.getName());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
                 return cookie.getValue();
                 //return true;
