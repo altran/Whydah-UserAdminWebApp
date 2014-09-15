@@ -15,6 +15,7 @@ import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -174,6 +175,33 @@ public class SSOHelper {
         }
         return null;
     }
+
+    public static void removeUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = getUserTokenCookie(request);
+        if(cookie != null) {
+            cookie.setValue(USER_TOKEN_REFERENCE_NAME);
+            cookie.setMaxAge(0);
+            cookie.setValue("");
+            response.addCookie(cookie);
+        }
+    }
+
+    public static  Cookie getUserTokenCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        System.out.println("=============> header: " + cookies);
+        if (cookies == null) {
+            return null;
+        }
+
+        for (Cookie cooky : cookies) {
+            System.out.println("Cookie: " + cooky.getName());
+            if (cooky.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
+                return cooky;
+            }
+        }
+        return null;
+    }
+
 
 
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {

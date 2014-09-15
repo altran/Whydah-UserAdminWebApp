@@ -123,6 +123,9 @@ public class UserAdminController {
                 //return "myapp";
                 return MY_APP_TYPE;
             } else {
+
+                // Remove cookie with invalid usertokenid
+                SSOHelper.removeUserTokenCookie(request, response);
                 return LOGIN_SERVICE;
             }
         }
