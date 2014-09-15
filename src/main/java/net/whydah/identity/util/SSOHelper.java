@@ -179,7 +179,7 @@ public class SSOHelper {
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
         String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
-        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbytokenid");
+        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbyusertokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
         p2.addParameter("apptoken",appTokenXML);
