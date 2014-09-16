@@ -86,10 +86,10 @@ public class UserAdminController {
 	        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
 	        	
 	            String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
-	            logger.debug("userToken from ticket:" + userTokenXml);
+	            logger.trace("userToken from userticket:" + userTokenXml);
 	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 	                String tokenId = ssoHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
-	                logger.debug("tokenId:" + tokenId);
+	                logger.trace("usertokenId:" + tokenId);
 	                addModelParams(model, tokenId);
 	
 	
