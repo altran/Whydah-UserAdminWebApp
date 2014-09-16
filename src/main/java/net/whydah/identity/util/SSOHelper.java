@@ -207,7 +207,7 @@ public class SSOHelper {
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
         String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
-        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/token/" + applicationtokenid + "/getusertokenbyusertokenid");
+        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("user/" + applicationtokenid + "/get_usertoken_by_usertokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
         p2.addParameter("apptoken",appTokenXML);
@@ -235,7 +235,7 @@ public class SSOHelper {
         logonApplication();
 
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyuserticket");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_userticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("userticket", userticket);
