@@ -104,7 +104,7 @@ public class UserAdminController {
 	            }
 	        }
         } catch (MissingResourceException mre) {
-        	logger.debug("The ticked might have already been used, checking the cookie.", mre);
+        	logger.debug("The ticked might have already been used, checking the cookie.");
         }
 
         if (ssoHelper.hasRightCookie(request)) {
