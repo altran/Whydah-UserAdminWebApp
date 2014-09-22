@@ -110,10 +110,10 @@ public class UserAdminController {
         if (ssoHelper.hasRightCookie(request)) {
             String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
             logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
-            String userTokenXmlFromCookie = ssoHelper.getUserToken(userTokenIdFromCookie);
-            logger.debug("userTokenXmlFromCookie=" + userTokenXmlFromCookie);
+            String userTokenXml = ssoHelper.getUserToken(userTokenIdFromCookie);
+            logger.debug("userTokenXml=" + userTokenXml);
 
-            if (userTokenXmlFromCookie.length() >= MIN_USER_TOKEN_LENGTH ) {
+            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH ) {
 
                 addModelParams(model, userTokenIdFromCookie);
 
