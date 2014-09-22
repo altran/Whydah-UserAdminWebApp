@@ -157,11 +157,11 @@ public class UserAdminController {
 
             String expression = "/usertoken/firstname[1]";
             XPathExpression xPathExpression =  xPath.compile(expression);
-            String fornavn = (xPathExpression.evaluate(doc));
+            String firstname = (xPathExpression.evaluate(doc));
             expression = "/usertoken/lastname[1]";
             xPathExpression = xPath.compile(expression);
-            String etternavn = (xPathExpression.evaluate(doc));
-            return fornavn + " " + etternavn;
+            String lastname = (xPathExpression.evaluate(doc));
+            return firstname + " " + lastname;
         } catch (Exception e) {
             logger.error("", e);
         }
