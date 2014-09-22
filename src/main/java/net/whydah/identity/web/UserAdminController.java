@@ -155,10 +155,10 @@ public class UserAdminController {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/firstname[1]";
+            String expression = "/usertoken/firstname[1]";
             XPathExpression xPathExpression =  xPath.compile(expression);
             String fornavn = (xPathExpression.evaluate(doc));
-            expression = "/token/lastname[1]";
+            expression = "/usertoken/lastname[1]";
             xPathExpression = xPath.compile(expression);
             String etternavn = (xPathExpression.evaluate(doc));
             return fornavn + " " + etternavn;
