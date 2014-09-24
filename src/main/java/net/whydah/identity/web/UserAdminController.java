@@ -2,6 +2,7 @@ package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
 import net.whydah.identity.util.SSOHelper;
+import net.whydah.identity.util.XPATHHelper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class UserAdminController {
 	            String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
 	            logger.trace("userToken from userticket:" + userTokenXml);
 	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-	                String tokenId = ssoHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+	                String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
 	                logger.trace("usertokenId:" + tokenId);
 	                addModelParams(model, tokenId);
 	
@@ -137,7 +138,7 @@ public class UserAdminController {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", ssoHelper.getUserToken(userTokenID));
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", getRealName(ssoHelper.getUserToken(userTokenID)));
+            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserToken(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
@@ -148,24 +149,5 @@ public class UserAdminController {
         model.addAttribute("baseUrl", baseUrl);
     }
 
-    private String getRealName(String userTokenXml) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/usertoken/firstname[1]";
-            XPathExpression xPathExpression =  xPath.compile(expression);
-            String firstname = (xPathExpression.evaluate(doc));
-            expression = "/usertoken/lastname[1]";
-            xPathExpression = xPath.compile(expression);
-            String lastname = (xPathExpression.evaluate(doc));
-            return firstname + " " + lastname;
-        } catch (Exception e) {
-            logger.error("", e);
-        }
-        return "";
-    }
 
 }

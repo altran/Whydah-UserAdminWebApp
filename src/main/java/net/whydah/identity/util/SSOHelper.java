@@ -94,7 +94,7 @@ public class SSOHelper {
                 throw new RuntimeException("Application authentication failed");
             }
             myAppTokenXml = response.getEntity(String.class);
-            myAppTokenId = getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
+            myAppTokenId = XPATHHelper.getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
             logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
             logger.debug("myAppTokenId: {}", myAppTokenId);
         } catch (IOException ioe){
@@ -195,7 +195,7 @@ public class SSOHelper {
 
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
-        String applicationtokenid = getApplicationTokenIdFromAppTokenXML(appTokenXML);
+        String applicationtokenid = XPATHHelper.getApplicationTokenIdFromAppTokenXML(appTokenXML);
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("user/" + applicationtokenid + "/get_usertoken_by_usertokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
@@ -237,7 +237,7 @@ public class SSOHelper {
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.trace("Response OK with XML: {}", responseXML);
-            myUserTokenId = getUserTokenIdFromUserTokenXML(responseXML);
+            myUserTokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(responseXML);
             return responseXML;
         }
         //retry
@@ -255,7 +255,7 @@ public class SSOHelper {
     }
 
     public Cookie createUserTokenCookie(String userTokenXml) {
-        String usertokenID = getUserTokenIdFromUserTokenXML(userTokenXml);
+        String usertokenID = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, usertokenID);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
@@ -267,95 +267,16 @@ public class SSOHelper {
         return cookie;
     }
 
-    public String getUserTokenIdFromUserTokenXML(String userTokenXml) {
-        if (userTokenXml == null) {
-            logger.trace("Empty  userToken");
-            return "";
-        }
-
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/usertoken/@id";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            return (xPathExpression.evaluate(doc));
-        } catch (Exception e) {
-            logger.error("", e);
-        }
-        return "";
-    }
-
-
-    private String getApplicationTokenIdFromAppTokenXML(String appTokenXML) {
-        logger.trace("appTokenXML: {}", appTokenXML);
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(appTokenXML)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/applicationtoken/params/applicationtokenID[1]";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            String appId = xPathExpression.evaluate(doc);
-            logger.trace("XML parse: applicationtokenID = {}", appId);
-            return appId;
-        } catch (Exception e) {
-            logger.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
-        }
-        return "";
-    }
-
 
     private int calculateTokenRemainingLifetime(String userxml) {
-        int tokenLifespan = Integer.parseInt(getLifespan(userxml));
-        long tokenTimestamp = Long.parseLong(getTimestamp(userxml));
+        int tokenLifespan = Integer.parseInt(XPATHHelper.getLifespan(userxml));
+        long tokenTimestamp = Long.parseLong(XPATHHelper.getTimestamp(userxml));
         long endOfTokenLife = tokenTimestamp + tokenLifespan;
         long remainingLife_ms = endOfTokenLife - System.currentTimeMillis();
         return (int)remainingLife_ms/1000;
     }
 
-    private String getLifespan(String userTokenXml) {
-        if (userTokenXml == null){
-            logger.trace("Empty  userToken");
-            return "";
-        }
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/whydahuser/identity/lifespan";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            return (xPathExpression.evaluate(doc));
-        } catch (Exception e) {
-            logger.error("getLifespan failed", e);
-        }
-        return "";
-    }
-
-    private String getTimestamp(String userTokenXml) {
-        if (userTokenXml==null){
-            logger.trace("Empty  userToken");
-            return "";
-        }
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/whydahuser/identity/timestamp";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            return (xPathExpression.evaluate(doc));
-        } catch (Exception e) {
-            logger.error("getTimestamp error", e);
-        }
-        return "";
-    }
 
     public String getUserTokenIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
