@@ -94,15 +94,12 @@ public class SSOHelper {
                 throw new RuntimeException("Application authentication failed");
             }
             myAppTokenXml = response.getEntity(String.class);
-            myAppTokenId = getTokenIdFromAppToken(myAppTokenXml);
+            myAppTokenId = getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
             logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
             logger.debug("myAppTokenId: {}", myAppTokenId);
         } catch (IOException ioe){
             logger.warn("Did not find configuration for my application credential.",ioe);
         }
-    }
-    private String getTokenIdFromAppToken(String appTokenXML) {
-        return appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
     }
 
 
@@ -114,14 +111,6 @@ public class SSOHelper {
         return myUserTokenId;
     }
 
-
-    private PostMethod setUpApplicationLogon() {
-        String requestXML = "";
-        WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/logon");
-        PostMethod p = new PostMethod(resource.toString());
-        p.addParameter("applicationcredential",requestXML);
-        return p;
-    }
 
     public String getUserToken(String usertokenid) {
         if (usertokenid==null){
@@ -206,7 +195,7 @@ public class SSOHelper {
 
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
-        String applicationtokenid = appTokenXML.substring(appTokenXML.indexOf("<applicationtokenID>") + "<applicationtokenID>".length(), appTokenXML.indexOf("</applicationtokenID>"));
+        String applicationtokenid = getApplicationTokenIdFromAppTokenXML(appTokenXML);
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("user/" + applicationtokenid + "/get_usertoken_by_usertokenid");
 
         PostMethod p2 = new PostMethod(resource.toString());
@@ -217,6 +206,8 @@ public class SSOHelper {
         logger.trace("usertokenid:" + userTokenId);
         return p2;
     }
+
+
 
     private PostMethod setupRealApplicationLogon() {
         ApplicationCredential acred = new ApplicationCredential();
@@ -275,6 +266,7 @@ public class SSOHelper {
         logger.trace("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", usertokenID=" + usertokenID + ", maxAge=" + maxAge);
         return cookie;
     }
+
     public String getUserTokenIdFromUserTokenXML(String userTokenXml) {
         if (userTokenXml == null) {
             logger.trace("Empty  userToken");
@@ -295,6 +287,28 @@ public class SSOHelper {
         }
         return "";
     }
+
+
+    private String getApplicationTokenIdFromAppTokenXML(String appTokenXML) {
+        logger.trace("appTokenXML: {}", appTokenXML);
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(appTokenXML)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/applicationtoken/params/applicationtokenID[1]";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            String appId = xPathExpression.evaluate(doc);
+            logger.trace("XML parse: applicationtokenID = {}", appId);
+            return appId;
+        } catch (Exception e) {
+            logger.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
+        }
+        return "";
+    }
+
+
     private int calculateTokenRemainingLifetime(String userxml) {
         int tokenLifespan = Integer.parseInt(getLifespan(userxml));
         long tokenTimestamp = Long.parseLong(getTimestamp(userxml));
