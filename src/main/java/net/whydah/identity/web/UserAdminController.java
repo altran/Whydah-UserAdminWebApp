@@ -2,6 +2,7 @@ package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
 import net.whydah.identity.util.SSOHelper;
+import net.whydah.identity.util.XPATHHelper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.slf4j.Logger;
@@ -9,20 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import java.io.IOException;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
@@ -51,7 +45,7 @@ public class UserAdminController {
         MY_APP_URI = properties.getProperty("myuri");
         MY_APP_TYPE = properties.getProperty("myapp");
         if (MY_APP_TYPE == null || MY_APP_TYPE.isEmpty()) {
-           MY_APP_TYPE = "useradmin"; //TODO To be fixed in https://github.com/altran/Whydah-UserAdminWebApp/issues/44
+            MY_APP_TYPE = "useradmin"; //TODO To be fixed in https://github.com/altran/Whydah-UserAdminWebApp/issues/44
         }
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
@@ -83,28 +77,28 @@ public class UserAdminController {
         String userTicket = request.getParameter(USERTICKET);
         logger.debug("userTicket:" + userTicket);
         try {
-	        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
-	        	
-	            String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
-	            logger.trace("userToken from userticket:" + userTokenXml);
-	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-	                String tokenId = ssoHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
-	                logger.trace("usertokenId:" + tokenId);
-	                addModelParams(model, tokenId);
-	
-	
-	                Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-	                // cookie.setDomain("whydah.net");
-	                response.addCookie(cookie);
-	
-	                //return "myapp";
-	                return MY_APP_TYPE;
-	            } else {
-	                return LOGIN_SERVICE;
-	            }
-	        }
+            if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
+
+                String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
+                logger.trace("userToken from userticket:" + userTokenXml);
+                if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
+                    String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    logger.trace("usertokenId:" + tokenId);
+                    addModelParams(model, tokenId);
+
+
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    // cookie.setDomain("whydah.net");
+                    response.addCookie(cookie);
+
+                    //return "myapp";
+                    return MY_APP_TYPE;
+                } else {
+                    return LOGIN_SERVICE;
+                }
+            }
         } catch (MissingResourceException mre) {
-        	logger.debug("The ticked might have already been used, checking the cookie.");
+            logger.debug("The ticked might have already been used, checking the cookie.");
         }
 
         if (ssoHelper.hasRightCookie(request)) {
@@ -113,7 +107,7 @@ public class UserAdminController {
             String userTokenXml = ssoHelper.getUserToken(userTokenIdFromCookie);
             logger.debug("userTokenXml=" + userTokenXml);
 
-            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH ) {
+            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
                 addModelParams(model, userTokenIdFromCookie);
 
@@ -137,35 +131,16 @@ public class UserAdminController {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", ssoHelper.getUserToken(userTokenID));
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", getRealName(ssoHelper.getUserToken(userTokenID)));
+            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserToken(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
             model.addAttribute("realName", "Unknown UA");
         }
 
-        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
+        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId() + "/";
         model.addAttribute("baseUrl", baseUrl);
     }
 
-    private String getRealName(String userTokenXml) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/usertoken/firstname[1]";
-            XPathExpression xPathExpression =  xPath.compile(expression);
-            String firstname = (xPathExpression.evaluate(doc));
-            expression = "/usertoken/lastname[1]";
-            xPathExpression = xPath.compile(expression);
-            String lastname = (xPathExpression.evaluate(doc));
-            return firstname + " " + lastname;
-        } catch (Exception e) {
-            logger.error("", e);
-        }
-        return "";
-    }
 
 }
