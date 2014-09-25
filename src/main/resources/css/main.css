@@ -21,6 +21,17 @@ body {
 /* To-do: Increase width for smaller screen sizes */
 
 
+/* TABLE */
+.table {
+    table-layout: fixed
+}
+td {
+    word-wrap: break-word
+}
+.td-edit-buttons { width: 10em }
+.td-checkbox { width: 2em }
+
+
 /* VIEW TRANSITION ANIMATION */
 
 #mainview.ng-enter,
