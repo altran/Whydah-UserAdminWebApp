@@ -46,7 +46,7 @@ public class UserAdminUibController {
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         String utf8query = query;
         try {
-            utf8query = new String(query.getBytes("UTF-8"), "ISO-8859-1");
+            utf8query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
         } catch (UnsupportedEncodingException uee) {
 
         }
