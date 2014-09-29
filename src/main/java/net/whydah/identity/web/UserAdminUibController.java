@@ -52,7 +52,7 @@ public class UserAdminUibController {
         //HttpMethod method = new GetMethod();
         //String url = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
         //makeUibRequest(method, url, model, response);
-        String resourcePath = "users/find/"+query;
+        String resourcePath = "users/find/" + query + "/";  // Trailing slash to prevent Spring to split query on .
         String usersJson = "{no-users-found}";
         try {
             usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
