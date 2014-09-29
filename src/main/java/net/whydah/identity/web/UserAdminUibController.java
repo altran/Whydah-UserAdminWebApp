@@ -54,14 +54,17 @@ public class UserAdminUibController {
         //makeUibRequest(method, url, model, response);
         String resourcePath = "users/find/" + query + "/";  // Trailing slash to prevent Spring to split query on .
         String usersJson = "{no-users-found}";
+        String url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
+        HttpMethod method = new GetMethod();
         try {
-            usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
-            logger.trace("got {}", usersJson);
+            //usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
+            makeUibRequest(method, url, model, response);
+//            logger.trace("got {}", usersJson);
         } catch (Exception e) {
             logger.warn("Could not find Users from UIB.", e);
         }
         response.setContentType("application/json; charset=utf-8");
-        return usersJson;
+        return "json";
     }
 
     @GET
