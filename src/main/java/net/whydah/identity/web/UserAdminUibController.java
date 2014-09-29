@@ -56,6 +56,7 @@ public class UserAdminUibController {
         String usersJson = "{no-users-found}";
         try {
             usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
+            logger.trace("got {}", usersJson);
         } catch (Exception e) {
             logger.warn("Could not find Users from UIB.", e);
         }
