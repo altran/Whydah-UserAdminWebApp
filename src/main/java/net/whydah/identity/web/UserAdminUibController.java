@@ -51,7 +51,13 @@ public class UserAdminUibController {
         }
         logger.trace("Finding users with query: " + utf8query);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "users/find/" + utf8query);
+        String url;
+        try {
+            url = getUibUrl(apptokenid, usertokenid, "users/find/" + URIUtil.encodeAll(utf8query));
+        } catch (URIException urie) {
+            logger.warn("Error in handling URIencoding", urie);
+            url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
+        }
         makeUibRequest(method, url, model, response);
         return "json";
     }
@@ -234,18 +240,6 @@ public class UserAdminUibController {
 
 
     private String getUibUrl(String apptokenid, String usertokenid, String s) {
-        String utf8S = s;
-        try {
-            utf8S = new String(s.getBytes("UTF-8"), "ISO-8859-1");
-            return uibUrl + apptokenid + "/" + usertokenid + "/" + URIUtil.encodeAll(s);
-        } catch (URIException uri) {
-
-            logger.error("getUibUrl ", uri);
-        } catch (UnsupportedEncodingException uee) {
-            logger.error("getUibUrl ", uee);
-
-        }
-        
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
