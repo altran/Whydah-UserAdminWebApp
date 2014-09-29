@@ -59,6 +59,7 @@ public class UserAdminUibController {
         } catch (Exception e) {
             logger.warn("Could not find Users from UIB.", e);
         }
+        response.setContentType("application/json; charset=utf-8");
         return usersJson;
     }
 
@@ -70,6 +71,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -81,6 +83,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -92,6 +95,7 @@ public class UserAdminUibController {
         DeleteMethod method = new DeleteMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -110,6 +114,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -128,6 +133,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -142,6 +148,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/roles");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -160,6 +167,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -171,6 +179,7 @@ public class UserAdminUibController {
         DeleteMethod method = new DeleteMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -189,6 +198,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -203,6 +213,7 @@ public class UserAdminUibController {
         PostMethod method = new PostMethod();
         String url = uibUrl + "password/" + apptokenid +"/reset/username/" + username;
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -223,6 +234,7 @@ public class UserAdminUibController {
             logger.warn("Could not fetch Applications from UIB.", e);
         }
 
+        response.setContentType("application/json; charset=utf-8");
         return applicationsJson;
     }
 
