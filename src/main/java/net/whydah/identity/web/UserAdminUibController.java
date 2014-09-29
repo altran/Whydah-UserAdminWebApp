@@ -1,12 +1,11 @@
 package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -235,13 +234,14 @@ public class UserAdminUibController {
 
 
     private String getUibUrl(String apptokenid, String usertokenid, String s) {
-        String utf8S = s;
+        // String utf8S = s;
         try {
-            utf8S = new String(s.getBytes("UTF-8"), "ISO-8859-1");
-        } catch (UnsupportedEncodingException uee) {
+            //utf8S = new String(s.getBytes("UTF-8"), "ISO-8859-1");
+            return URIUtil.encodeAll(uibUrl + apptokenid + "/" + usertokenid + "/" + s);
+        } catch (URIException uri) {
 
         }
-        return uibUrl + apptokenid + "/" + usertokenid + "/" + utf8S;
+        return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
     protected String makeUibRequest(String apptokenid, String usertokenid, Model model, String resourcePath) {
