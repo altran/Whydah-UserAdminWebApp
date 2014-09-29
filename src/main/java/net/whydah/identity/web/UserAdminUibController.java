@@ -50,16 +50,15 @@ public class UserAdminUibController {
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Finding users with query: " + query);
         //HttpMethod method = new GetMethod();
-        //String url = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
+        //String resourcePath = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
         //makeUibRequest(method, url, model, response);
-        String url = "users/find/" + query + "/";  // Trailing slash to prevent Spring to split query on .
+        String resourcePath = "users/find/" + query + "/";  // Trailing slash to prevent Spring to split query on .
         String usersJson = "{no-users-found}";
         //String url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
-        HttpMethod method = new GetMethod();
         try {
-            //usersJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
-            makeUibRequest(method, url, model, response);
-//            logger.trace("got {}", usersJson);
+            usersJson = makeUibRequest(apptokenid, usertokenid, model, resourcePath);
+//            makeUibRequest(method, url, model, response);
+            logger.trace("got {}", usersJson);
         } catch (Exception e) {
             logger.warn("Could not find Users from UIB.", e);
         }
@@ -233,7 +232,7 @@ public class UserAdminUibController {
         String resourcePath = "applications";
         String applicationsJson = "{no-apps-found}";
         try {
-            applicationsJson = makeUibRequest(apptokenid, usertokenid, resourcePath);
+            applicationsJson = makeUibRequest(apptokenid, usertokenid, model, resourcePath);
         } catch (Exception e) {
             logger.warn("Could not fetch Applications from UIB.", e);
         }
@@ -247,7 +246,7 @@ public class UserAdminUibController {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
-    protected String makeUibRequest(String apptokenid, String usertokenid, String resourcePath) {
+    protected String makeUibRequest(String apptokenid, String usertokenid, Model model, String resourcePath) {
         String url = getUibUrl(apptokenid, usertokenid, resourcePath);
         HttpMethodParams params = new HttpMethodParams();
         params.setHttpElementCharset("UTF-8");
@@ -269,6 +268,8 @@ public class UserAdminUibController {
                 while ((line = in.readLine()) != null) {
                     responseBody.append(line);
                 }
+                model.addAttribute("jsondata", responseBody.toString());
+
 
             }
         } catch (Exception e) {
