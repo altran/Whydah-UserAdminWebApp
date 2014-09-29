@@ -20,10 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -47,9 +44,15 @@ public class UserAdminUibController {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
-        logger.trace("Finding users with query: " + query);
+        String utf8query = query;
+        try {
+            utf8query = new String(query.getBytes("UTF-8"), "ISO-8859-1");
+        } catch (UnsupportedEncodingException uee) {
+
+        }
+        logger.trace("Finding users with query: " + utf8query);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
+        String url = getUibUrl(apptokenid, usertokenid, "users/find/" + utf8query);
         makeUibRequest(method, url, model, response);
         return "json";
     }
