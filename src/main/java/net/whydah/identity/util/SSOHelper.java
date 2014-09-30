@@ -258,6 +258,7 @@ public class SSOHelper {
         for (Cookie cookie : cookies) {
             //logger.info("Cookie: " + cookie.getName());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
+                logger.trace("Found cookie, name={}  value={}", cookie.getName(), cookie.getValue());
                 return true;
             }
         }
