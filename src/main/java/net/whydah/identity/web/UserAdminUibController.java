@@ -48,7 +48,7 @@ public class UserAdminUibController {
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
-        if (usertokenid == null || usertokenid.length() < 3) {
+        if (usertokenid == null || usertokenid.length() < 7) {
             usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
             logger.trace("findUsers - Override usertokenid={}", usertokenid);
         }

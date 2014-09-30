@@ -228,7 +228,7 @@ public class SSOHelper {
 
     public String getUserTokenIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        logger.trace("=============> header: " + cookies);
+        logger.trace("getUserTokenIdFromCookie -  header: " + cookies);
         if (cookies == null) {
             return null;
         }
