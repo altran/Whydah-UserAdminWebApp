@@ -211,7 +211,7 @@ public class SSOHelper {
         cookie.setMaxAge(maxAge);
         cookie.setValue(usertokenID);
         cookie.setSecure(true);
-        logger.trace("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", usertokenID=" + usertokenID + ", maxAge=" + maxAge);
+        logger.trace("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", usertokenid=" + usertokenID + ", maxAge=" + maxAge);
         return cookie;
     }
 

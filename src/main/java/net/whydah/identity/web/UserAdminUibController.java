@@ -34,6 +34,7 @@ public class UserAdminUibController {
     private final String uibUrl;
     private final HttpClient httpClient;
     private SSOHelper ssoHelper = new SSOHelper();
+    private String utf8query;
 
 
     public UserAdminUibController() throws IOException {
@@ -49,6 +50,7 @@ public class UserAdminUibController {
         logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
         if (usertokenid == null || usertokenid.length() < 3) {
             usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            logger.trace("findUsers - Override usertokenid={}", usertokenid);
         }
         String utf8query = query;
         try {
