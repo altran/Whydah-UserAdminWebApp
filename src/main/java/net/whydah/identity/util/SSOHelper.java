@@ -40,31 +40,6 @@ public class SSOHelper {
             throw new IllegalArgumentException(e.getLocalizedMessage(), e);
         }
     }
-    /*
-    public void logonApplication() {
-        PostMethod p = setUpApplicationLogon();
-        HttpClient c = new HttpClient();
-        try {
-            int v = c.executeMethod(p);
-            if (v == 201) {
-                logger.info("Post" + p.getRequestHeader("Location").getValue());
-            }
-            if (v == 400) {
-                logger.info("Internal error");
-            }
-            if (v == 500 || v == 501) {
-                logger.info("Internal error");
-// retry
-            }
-            logger.info(p.getResponseBodyAsString());
-
-        } catch (IOException e) {
-            logger.error("", e);
-        } finally {
-            p.releaseConnection();
-        }
-    }
-    */
 
     private void logonApplication() {
         //todo sjekke om myAppTokenXml er gyldig før reauth
@@ -82,15 +57,15 @@ public class SSOHelper {
             ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
             //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
             if (response.getStatus() != 200) {
-                logger.error("Application authentication failed with statuscode {}", response.getStatus());
+                logger.error("logonApplication - Application authentication failed with statuscode {}", response.getStatus());
                 throw new RuntimeException("Application authentication failed");
             }
             myAppTokenXml = response.getEntity(String.class);
             myAppTokenId = XPATHHelper.getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
-            logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
-            logger.debug("myAppTokenId: {}", myAppTokenId);
+            logger.trace("logonApplication - Applogon ok: apptokenxml: {}", myAppTokenXml);
+            logger.trace("logonApplication - myAppTokenId: {}", myAppTokenId);
         } catch (IOException ioe){
-            logger.warn("Did not find configuration for my application credential.",ioe);
+            logger.warn("logonApplication - Did not find configuration for my application credential.", ioe);
         }
     }
 
