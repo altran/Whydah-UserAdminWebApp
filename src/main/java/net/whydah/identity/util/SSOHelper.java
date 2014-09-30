@@ -9,6 +9,8 @@ import net.whydah.identity.data.ApplicationCredential;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +19,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -172,6 +180,33 @@ public class SSOHelper {
         p.addParameter("applicationcredential",acred.toXML());
         return p;
     }
+
+
+    public static boolean hasUserAdminRight(String userTokenXml) {
+        if (userTokenXml == null) {
+            logger.trace("hasUserAdminRight - Empty  userToken");
+            return false;
+        }
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/usertoken/application[@ID='19']/role[@name='WhydahUserAdmin']";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            logger.trace("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
+            String v = (xPathExpression.evaluate(doc));
+            if (v == null || v.length() < 1) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("getTimestamp - userTokenXml timestamp parsing error", e);
+        }
+        return false;
+    }
+
 
 
     public String getUserTokenByUserTicket(String userticket) {

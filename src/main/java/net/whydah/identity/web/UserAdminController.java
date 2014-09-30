@@ -83,6 +83,9 @@ public class UserAdminController {
                 logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        return LOGIN_SERVICE;
+                    }
                     logger.trace("myapp - usertokenId:" + tokenId);
                     addModelParams(model, tokenId);
 
@@ -112,9 +115,9 @@ public class UserAdminController {
 
                     addModelParams(model, userTokenIdFromCookie);
                     Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-                    // TODO verify that the token is valid
-                    //TODO Should we do something with the cookie here?
-                    //return "myapp";
+                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        return LOGIN_SERVICE;
+                    }
                     return MY_APP_TYPE;
                 } else {
 
