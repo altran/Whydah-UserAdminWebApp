@@ -106,19 +106,23 @@ public class SSOHelper {
         throw new RuntimeException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed with status code " + response.getStatus());
     }
 
-    public static void removeUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
-        Cookie cookie = getUserTokenCookie(request);
-        if(cookie != null) {
-            cookie.setValue(USER_TOKEN_REFERENCE_NAME);
-            cookie.setMaxAge(0);
-            cookie.setValue("");
-            response.addCookie(cookie);
+    public static void removeUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.println("Cookie: " + cookie.getName());
+            if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
+                cookie.setValue(USER_TOKEN_REFERENCE_NAME);
+                cookie.setMaxAge(0);
+                cookie.setPath("");
+                cookie.setValue("");
+                response.addCookie(cookie);
+            }
         }
     }
 
     public static  Cookie getUserTokenCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        System.out.println("=============> header: " + cookies);
+        System.out.println("getUserTokenCookie - header: " + cookies);
         if (cookies == null) {
             return null;
         }

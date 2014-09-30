@@ -119,12 +119,12 @@ public class UserAdminController {
                 } else {
 
                     // Remove cookie with invalid usertokenid
-                    SSOHelper.removeUserTokenCookie(request, response);
+                    SSOHelper.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
         } catch (RuntimeException mre) {
-            SSOHelper.removeUserTokenCookie(request, response);
+            SSOHelper.removeUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
         }
         return LOGIN_SERVICE;
