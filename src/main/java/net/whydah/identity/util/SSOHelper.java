@@ -10,8 +10,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -20,15 +18,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.MissingResourceException;
+import java.util.Properties;
 
 public class SSOHelper {
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
@@ -211,9 +204,16 @@ public class SSOHelper {
 
     private PostMethod setupRealApplicationLogon() {
         ApplicationCredential acred = new ApplicationCredential();
-        acred.setApplicationID("Whydah");
-        acred.setApplicationPassord("dummy");
+        try {
+            acred = new ApplicationCredential();
+            Properties properties = AppConfig.readProperties();
 
+            acred.setApplicationID(properties.getProperty("applicationname"));
+            acred.setApplicationPassord(properties.getProperty("applicationname"));
+
+        } catch (IOException ioe) {
+            logger.error("Unable to get my application credentials from propertyfile.", ioe);
+        }
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/logon");
 
         PostMethod p = new PostMethod(resource.toString());
