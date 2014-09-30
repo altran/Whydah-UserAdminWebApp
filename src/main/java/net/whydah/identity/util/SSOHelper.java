@@ -193,9 +193,9 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/usertoken/application[@ID='19']/role[@name='WhydahUserAdmin']";
+            String expression = "/usertoken/application[@ID=\"19\"]/role[@name=\"WhydahUserAdmin\"]";
             XPathExpression xPathExpression = xPath.compile(expression);
-            logger.trace("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
+            logger.trace("hasUserAdminRight - token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             String v = (xPathExpression.evaluate(doc));
             if (v == null || v.length() < 1) {
                 return false;
