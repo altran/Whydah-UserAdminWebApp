@@ -104,7 +104,7 @@ public class UserAdminController {
         if (ssoHelper.hasRightCookie(request)) {
             String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
             logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
-            String userTokenXml = ssoHelper.getUserToken(userTokenIdFromCookie);
+            String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
             logger.debug("userTokenXml=" + userTokenXml);
 
             if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
@@ -129,9 +129,9 @@ public class UserAdminController {
 
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
-            model.addAttribute("token", ssoHelper.getUserToken(userTokenID));
+            model.addAttribute("token", ssoHelper.getUserTokenFromUserTokenId(userTokenID));
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserToken(userTokenID)));
+            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);

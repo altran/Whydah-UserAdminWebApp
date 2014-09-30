@@ -6,7 +6,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.whydah.identity.config.AppConfig;
 import net.whydah.identity.data.ApplicationCredential;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,56 +104,29 @@ public class SSOHelper {
     }
 
 
-    public String getUserToken(String usertokenid) {
-        if (usertokenid==null){
-            usertokenid="dummy";
+    public String getUserTokenFromUserTokenId(String usertokenid) {
+        logonApplication();
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_usertokenid");
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add("apptoken", myAppTokenXml);
+        formData.add("usertokenid", usertokenid);
+        ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+            throw new IllegalArgumentException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed.");
         }
-        PostMethod p = setupRealApplicationLogon();
-        HttpClient c = new HttpClient();
-        try {
-            int v = c.executeMethod(p);
-            if (v == 201) {
-                logger.info("Post" + p.getRequestHeader("Location").getValue());
-            }
-            if (v == 400) {
-                logger.info("Internal error");
-            }
-            if (v == 406) {
-                logger.info("Not accepted");
-            }
-            if (v == 500 || v == 501) {
-                logger.info("Internal error");
-// retry
-            }
-            logger.info("ApplicationToken:" + p.getResponseBodyAsString());
-            PostMethod p2 = setUpGetUserToken(p,usertokenid);
-            v = c.executeMethod(p2);
-            if (v == 201) {
-                logger.info("Post" + p2.getRequestHeader("Location").getValue());
-            }
-            if (v == 400 || v == 404 ) {
-                logger.info("Internal error");
-            }
-            if (v == 406) {
-                logger.info("Not accepted");
-            }
-            if (v == 415 ) {
-                logger.info("Internal error, unsupported media type");
-            }
-            if (v == 500 || v == 501) {
-                logger.info("Internal error");// retry
-            }
-//            logger.info("Request:"+p2.
-            logger.info("v:" + v);
-            logger.info("Response:" + p2.getResponseBodyAsString());
-            return p2.getResponseBodyAsString();
-
-
-        } catch (IOException e) {
-            logger.error("", e);
-        } finally {
-            p.releaseConnection();
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.trace("Response OK with XML: {}", responseXML);
+            return responseXML;
         }
+        //retry
+        response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.trace("Response OK with XML: {}", responseXML);
+            return responseXML;
+        }
+
         return null;
     }
 
