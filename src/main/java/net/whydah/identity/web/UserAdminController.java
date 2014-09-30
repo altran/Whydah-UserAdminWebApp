@@ -101,6 +101,7 @@ public class UserAdminController {
             logger.debug("The ticked might have already been used, checking the cookie.");
         }
 
+        try {
         if (ssoHelper.hasRightCookie(request)) {
             String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
             logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
@@ -122,6 +123,10 @@ public class UserAdminController {
                 SSOHelper.removeUserTokenCookie(request, response);
                 return LOGIN_SERVICE;
             }
+        }
+        } catch (RuntimeException mre) {
+            SSOHelper.removeUserTokenCookie(request, response);
+            logger.info("The usertoken found in the cookie is not valid.");
         }
         return LOGIN_SERVICE;
     }
