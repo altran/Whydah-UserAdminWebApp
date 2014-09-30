@@ -68,22 +68,22 @@ public class UserAdminController {
     public String myapp(HttpServletRequest request, HttpServletResponse response, Model model) {
         response.setContentType(HTML_CONTENT_TYPE);
         if (STANDALONE) {
-            logger.debug("Standalone mode select, no authentication.");
+            logger.trace("myapp - Standalone mode select, no authentication.");
             addModelParams(model, null);
             return MY_APP_TYPE;
             // return "myapp";
         }
 
         String userTicket = request.getParameter(USERTICKET);
-        logger.debug("userTicket:" + userTicket);
+        logger.trace("myapp - userTicket:" + userTicket);
         try {
             if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
 
                 String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
-                logger.trace("userToken from userticket:" + userTokenXml);
+                logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
-                    logger.trace("usertokenId:" + tokenId);
+                    logger.trace("myapp - usertokenId:" + tokenId);
                     addModelParams(model, tokenId);
 
 
@@ -98,32 +98,31 @@ public class UserAdminController {
                 }
             }
         } catch (MissingResourceException mre) {
-            logger.debug("The ticked might have already been used, checking the cookie.");
+            logger.trace("myapp - The ticked might have already been used, checking the cookie.");
         }
 
         try {
-        if (ssoHelper.hasRightCookie(request)) {
-            String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
-            logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
-            String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
-            logger.debug("userTokenXml=" + userTokenXml);
+            if (ssoHelper.hasRightCookie(request)) {
+                String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
+                logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
+                String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
+                logger.trace("myapp - userTokenXml=" + userTokenXml);
 
-            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
+                if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
-                addModelParams(model, userTokenIdFromCookie);
+                    addModelParams(model, userTokenIdFromCookie);
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    // TODO verify that the token is valid
+                    //TODO Should we do something with the cookie here?
+                    //return "myapp";
+                    return MY_APP_TYPE;
+                } else {
 
-                // TODO verify that the token is valid
-
-                //TODO Should we do something with the cookie here?
-                //return "myapp";
-                return MY_APP_TYPE;
-            } else {
-
-                // Remove cookie with invalid usertokenid
-                SSOHelper.removeUserTokenCookie(request, response);
-                return LOGIN_SERVICE;
+                    // Remove cookie with invalid usertokenid
+                    SSOHelper.removeUserTokenCookie(request, response);
+                    return LOGIN_SERVICE;
+                }
             }
-        }
         } catch (RuntimeException mre) {
             SSOHelper.removeUserTokenCookie(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
