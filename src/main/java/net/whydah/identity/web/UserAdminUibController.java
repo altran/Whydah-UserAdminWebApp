@@ -43,13 +43,14 @@ public class UserAdminUibController {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
+        logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
         String utf8query = query;
         try {
             utf8query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
         } catch (UnsupportedEncodingException uee) {
 
         }
-        logger.trace("Finding users with query: " + utf8query);
+        logger.trace("findUsers - Finding users with query: " + utf8query);
         HttpMethod method = new GetMethod();
         String url;
         try {
