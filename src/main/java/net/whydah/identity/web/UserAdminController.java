@@ -107,6 +107,10 @@ public class UserAdminController {
         try {
             if (ssoHelper.hasRightCookie(request)) {
                 String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
+                if (userTokenIdFromCookie == null || userTokenIdFromCookie.length() < 7) {
+                    SSOHelper.removeUserTokenCookies(request, response);
+                    return LOGIN_SERVICE;
+                }
                 logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
                 String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
                 logger.trace("myapp - userTokenXml=" + userTokenXml);
