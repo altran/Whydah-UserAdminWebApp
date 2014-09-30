@@ -85,6 +85,7 @@ public class SSOHelper {
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", usertokenid);
+        logger.trace("getUserTokenFromUserTokenId - calling={} with usertokenid={} ", myAppTokenId, usertokenid);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed.");
@@ -102,7 +103,7 @@ public class SSOHelper {
             return responseXML;
         }
 
-        return null;
+        throw new RuntimeException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed with status code " + response.getStatus());
     }
 
     public static void removeUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
