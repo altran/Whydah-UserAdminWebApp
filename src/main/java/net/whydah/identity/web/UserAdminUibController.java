@@ -1,6 +1,7 @@
 package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
+import net.whydah.identity.util.SSOHelper;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.*;
@@ -32,6 +33,8 @@ public class UserAdminUibController {
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
     private final String uibUrl;
     private final HttpClient httpClient;
+    private SSOHelper ssoHelper = new SSOHelper();
+
 
     public UserAdminUibController() throws IOException {
         Properties properties = AppConfig.readProperties();
@@ -44,6 +47,9 @@ public class UserAdminUibController {
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
+        if (usertokenid == null || usertokenid.length() < 3) {
+            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+        }
         String utf8query = query;
         try {
             utf8query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
