@@ -234,13 +234,18 @@ public class UserAdminUibController {
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     @ResponseBody
     public String getApplications(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        logger.trace("Getting applications");
+        logger.trace("getApplications - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
+        if (usertokenid == null || usertokenid.length() < 7) {
+            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            logger.trace("getApplications - Override usertokenid={}", usertokenid);
+        }
+
         String resourcePath = "applications";
         String applicationsJson = "{no-apps-found}";
         try {
             applicationsJson = makeUibRequest(apptokenid, usertokenid, model, resourcePath);
         } catch (Exception e) {
-            logger.warn("Could not fetch Applications from UIB.", e);
+            logger.warn("getApplications - Could not fetch Applications from UIB.", e);
         }
 
         response.setContentType("application/json; charset=utf-8");
