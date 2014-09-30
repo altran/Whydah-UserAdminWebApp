@@ -116,14 +116,14 @@ public class SSOHelper {
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("Response OK with XML: {}", responseXML);
+            logger.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("Response OK with XML: {}", responseXML);
+            logger.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
             return responseXML;
         }
 
