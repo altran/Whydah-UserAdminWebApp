@@ -1,38 +1,22 @@
 package net.whydah.identity.web;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import net.whydah.identity.config.AppConfig;
 import net.whydah.identity.util.SSOHelper;
+import net.whydah.identity.util.XPATHHelper;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import java.io.IOException;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
@@ -60,6 +44,9 @@ public class UserAdminController {
         STANDALONE = Boolean.valueOf(properties.getProperty("standalone"));
         MY_APP_URI = properties.getProperty("myuri");
         MY_APP_TYPE = properties.getProperty("myapp");
+        if (MY_APP_TYPE == null || MY_APP_TYPE.isEmpty()) {
+            MY_APP_TYPE = "useradmin"; //TODO To be fixed in https://github.com/altran/Whydah-UserAdminWebApp/issues/44
+        }
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
         LOGIN_SERVICE = "redirect:" + properties.getProperty("logonserviceurl") + "login?redirectURI=" + MY_APP_URI;
@@ -81,57 +68,71 @@ public class UserAdminController {
     public String myapp(HttpServletRequest request, HttpServletResponse response, Model model) {
         response.setContentType(HTML_CONTENT_TYPE);
         if (STANDALONE) {
-            logger.debug("Standalone mode select, no authentication.");
+            logger.trace("myapp - Standalone mode select, no authentication.");
             addModelParams(model, null);
             return MY_APP_TYPE;
             // return "myapp";
         }
 
         String userTicket = request.getParameter(USERTICKET);
-        logger.debug("userTicket:" + userTicket);
+        logger.trace("myapp - userTicket:" + userTicket);
         try {
-	        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
-	        	
-	            String userTokenXml = ssoHelper.getUserTokenByTicket(userTicket);
-	            logger.debug("userToken from ticket:" + userTokenXml);
-	            if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-	                String tokenId = ssoHelper.getTokenId(userTokenXml);
-	                logger.debug("tokenId:" + tokenId);
-	                addModelParams(model, tokenId);
-	
-	
-	                Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-	                // cookie.setDomain("whydah.net");
-	                response.addCookie(cookie);
-	
-	                //return "myapp";
-	                return MY_APP_TYPE;
-	            } else {
-	                return LOGIN_SERVICE;
-	            }
-	        }
+            if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
+
+                String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
+                logger.trace("myapp - userToken={} from userticket:", userTokenXml);
+                if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
+                    String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        return LOGIN_SERVICE;
+                    }
+                    logger.trace("myapp - usertokenId:" + tokenId);
+                    addModelParams(model, tokenId);
+
+
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    // cookie.setDomain("whydah.net");
+                    response.addCookie(cookie);
+
+                    //return "myapp";
+                    return MY_APP_TYPE;
+                } else {
+                    return LOGIN_SERVICE;
+                }
+            }
         } catch (MissingResourceException mre) {
-        	logger.debug("The ticked might have already been used, checking the cookie.", mre);
+            logger.trace("myapp - The ticked might have already been used, checking the cookie.");
         }
 
-        if (ssoHelper.hasRightCookie(request)) {
-            String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
-            logger.debug("userTokenIdFromCookie=" + userTokenIdFromCookie);
-            String userTokenXmlFromCookie = ssoHelper.getUserToken(userTokenIdFromCookie);
-            logger.debug("userTokenXmlFromCookie=" + userTokenXmlFromCookie);
+        try {
+            if (ssoHelper.hasRightCookie(request)) {
+                String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
+                if (userTokenIdFromCookie == null || userTokenIdFromCookie.length() < 7) {
+                    SSOHelper.removeUserTokenCookies(request, response);
+                    return LOGIN_SERVICE;
+                }
+                logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
+                String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
+                logger.trace("myapp - userTokenXml=" + userTokenXml);
 
-            if (userTokenXmlFromCookie.length() >= MIN_USER_TOKEN_LENGTH ) {
+                if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
-                addModelParams(model, userTokenIdFromCookie);
+                    addModelParams(model, userTokenIdFromCookie);
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        return LOGIN_SERVICE;
+                    }
+                    return MY_APP_TYPE;
+                } else {
 
-                // TODO verify that the token is valid
-
-                //TODO Should we do something with the cookie here?
-                //return "myapp";
-                return MY_APP_TYPE;
-            } else {
-                return LOGIN_SERVICE;
+                    // Remove cookie with invalid usertokenid
+                    SSOHelper.removeUserTokenCookies(request, response);
+                    return LOGIN_SERVICE;
+                }
             }
+        } catch (RuntimeException mre) {
+            SSOHelper.removeUserTokenCookies(request, response);
+            logger.info("The usertoken found in the cookie is not valid.");
         }
         return LOGIN_SERVICE;
     }
@@ -139,37 +140,18 @@ public class UserAdminController {
 
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
-            model.addAttribute("token", ssoHelper.getUserToken(userTokenID));
+            model.addAttribute("token", ssoHelper.getUserTokenFromUserTokenId(userTokenID));
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", getRealName(ssoHelper.getUserToken(userTokenID)));
+            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", LOGOUT_SERVICE);
             model.addAttribute("realName", "Unknown UA");
         }
 
-        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId()+"/";
+        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId() + "/";
         model.addAttribute("baseUrl", baseUrl);
     }
 
-    private String getRealName(String userTokenXml) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/token/firstname[1]";
-            XPathExpression xPathExpression =  xPath.compile(expression);
-            String fornavn = (xPathExpression.evaluate(doc));
-            expression = "/token/lastname[1]";
-            xPathExpression = xPath.compile(expression);
-            String etternavn = (xPathExpression.evaluate(doc));
-            return fornavn + " " + etternavn;
-        } catch (Exception e) {
-            logger.error("", e);
-        }
-        return "";
-    }
 
 }

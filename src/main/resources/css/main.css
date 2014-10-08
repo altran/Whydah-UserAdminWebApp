@@ -16,9 +16,20 @@ body {
     width: 30%;
     bottom: 0;
     right: 0;
-    z-index: 3;
+    z-index: 1070;
 }
 /* To-do: Increase width for smaller screen sizes */
+
+
+/* TABLE */
+.table {
+    table-layout: fixed
+}
+td {
+    word-wrap: break-word
+}
+.td-edit-buttons { width: 10em }
+.td-checkbox { width: 2em }
 
 
 /* VIEW TRANSITION ANIMATION */

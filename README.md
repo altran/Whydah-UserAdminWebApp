@@ -24,19 +24,19 @@ Installation
 export IAM_MODE=TEST
 #export IAM_MODE=PROD
 
-A=UserAdminWebapp
+A=UserAdminWebApp
 V=LATEST
 JARFILE=$A-$V.jar
 
 pkill -f $A
 
 wget --user=altran --password=l1nkSys -O $JARFILE "http://mvnrepo.cantara.no/service/local/artifact/maven/content?r=snapshots&g=net.whydah.sso.service&a=$A&v=$V&p=jar"
-nohup java -jar -DIAM_CONFIG=useradmin.TEST.properties $JARFILE &
+nohup java -jar -DIAM_CONFIG=useradminwebapp.TEST.properties $JARFILE &
 
 tail -f nohup.out
 ```
 
-* create UserAdministration.TEST.properties
+* create useradminwebapp.TEST.properties
 
 ```
 # standalone=true

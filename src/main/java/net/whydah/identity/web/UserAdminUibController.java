@@ -1,12 +1,12 @@
 package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
-import org.apache.commons.httpclient.HttpClient;
+import net.whydah.identity.util.SSOHelper;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,15 +14,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -35,6 +33,9 @@ public class UserAdminUibController {
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
     private final String uibUrl;
     private final HttpClient httpClient;
+    private SSOHelper ssoHelper = new SSOHelper();
+    private String utf8query;
+
 
     public UserAdminUibController() throws IOException {
         Properties properties = AppConfig.readProperties();
@@ -46,12 +47,30 @@ public class UserAdminUibController {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/users/find/{query}", method = RequestMethod.GET)
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
-        logger.trace("Finding users with query: " + query);
+        logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
+        if (usertokenid == null || usertokenid.length() < 7) {
+            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            logger.trace("findUsers - Override usertokenid={}", usertokenid);
+        }
+        String utf8query = query;
+        try {
+            utf8query = new String(query.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+
+        }
+        logger.trace("findUsers - Finding users with query: " + utf8query);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "users/find/"+query);
+        String url;
+        try {
+            url = getUibUrl(apptokenid, usertokenid, "users/find/" + URIUtil.encodeAll(utf8query));
+        } catch (URIException urie) {
+            logger.warn("Error in handling URIencoding", urie);
+            url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
+        }
         makeUibRequest(method, url, model, response);
         return "json";
     }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -61,6 +80,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -72,6 +92,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -83,6 +104,7 @@ public class UserAdminUibController {
         DeleteMethod method = new DeleteMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -101,6 +123,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -119,6 +142,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -133,6 +157,7 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/roles");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -151,6 +176,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/");
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -162,6 +188,7 @@ public class UserAdminUibController {
         DeleteMethod method = new DeleteMethod();
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -180,6 +207,7 @@ public class UserAdminUibController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -192,8 +220,9 @@ public class UserAdminUibController {
     public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Resetting password for user: " + username);
         PostMethod method = new PostMethod();
-        String url = uibUrl + "/password/" + apptokenid +"/reset/username/" + username;
+        String url = uibUrl + "password/" + apptokenid +"/reset/username/" + username;
         makeUibRequest(method, url, model, response);
+        response.setContentType("application/json; charset=utf-8");
         return "json";
     }
 
@@ -203,12 +232,24 @@ public class UserAdminUibController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
+    @ResponseBody
     public String getApplications(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        logger.trace("Getting applications");
-        HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "applications");
-        makeUibRequest(method, url, model, response);
-        return "json";
+        logger.trace("getApplications - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
+        if (usertokenid == null || usertokenid.length() < 7) {
+            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            logger.trace("getApplications - Override usertokenid={}", usertokenid);
+        }
+
+        String resourcePath = "applications";
+        String applicationsJson = "{no-apps-found}";
+        try {
+            applicationsJson = makeUibRequest(apptokenid, usertokenid, model, resourcePath);
+        } catch (Exception e) {
+            logger.warn("getApplications - Could not fetch Applications from UIB.", e);
+        }
+
+        response.setContentType("application/json; charset=utf-8");
+        return applicationsJson;
     }
 
 
@@ -216,6 +257,45 @@ public class UserAdminUibController {
         return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
+    protected String makeUibRequest(String apptokenid, String usertokenid, Model model, String resourcePath) {
+        String url = getUibUrl(apptokenid, usertokenid, resourcePath);
+        HttpMethodParams params = new HttpMethodParams();
+        params.setHttpElementCharset("UTF-8");
+        params.setContentCharset("UTF-8");
+        HttpMethod method = new GetMethod();
+        method.setParams(params);
+        StringBuilder responseBody = new StringBuilder();
+        try {
+            method.setURI(new URI(url, true));
+            int rescode = httpClient.executeMethod(method);
+            // TODO: check rescode?
+            if (rescode == 204) { // Delete
+                // Do something
+            } else {
+                InputStream responseBodyStream = method.getResponseBodyAsStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(responseBodyStream));
+
+                String line;
+                while ((line = in.readLine()) != null) {
+                    responseBody.append(line);
+                }
+                model.addAttribute("jsondata", responseBody.toString());
+
+
+            }
+        } catch (Exception e) {
+            logger.info("Could not find applcations data. Url: " + url + " Response: " + responseBody, e);
+            throw new RuntimeException(e);
+        } finally {
+            method.releaseConnection();
+        }
+
+        return responseBody.toString();
+    }
+
+    /*
+    @Deprecated Use makeUibRequest(String apptokenid, String usertokenid, String resourcePath)
+     */
     private void makeUibRequest(HttpMethod method, String url, Model model, HttpServletResponse response) {
         HttpMethodParams params = new HttpMethodParams();
         params.setHttpElementCharset("UTF-8");

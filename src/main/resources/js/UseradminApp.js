@@ -1,4 +1,4 @@
-var UseradminApp = angular.module('UseradminApp', ['ngRoute', 'ngAnimate', 'ui.bootstrap.tooltip']);
+var UseradminApp = angular.module('UseradminApp', ['ngRoute', 'ngAnimate', 'ui.bootstrap.tooltip', 'autocomplete']);
 
 UseradminApp.config(['$routeProvider',
   function($routeProvider) {
@@ -33,6 +33,10 @@ UseradminApp.controller('MainCtrl', function($scope, $routeParams, Messages) {
   $scope.messages = Messages;
   $scope.removeMessage = function(index) {
     Messages.remove(index);
+  }
+  $scope.activateTimeoutModal = function() {
+    console.log('Timeout has been invoked...');
+    $('#timeoutmodal').modal('show');
   }
 });
 

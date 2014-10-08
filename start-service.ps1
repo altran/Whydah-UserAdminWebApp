@@ -18,12 +18,12 @@ $mode = 'TEST'
 $env:IAM_MODE=$mode
 
 # Set service name, version and repository
-$A='UserAdministration'
-$V='0.2-SNAPSHOT'
+$A='UserAdminWebApp'
+$V='2.14-SNAPSHOT'
 $url =  'http://mvnrepo.cantara.no/service/local/artifact/maven/content?r=altran-snapshots&g=net.whydah.identity&a='+$A+'&v='+$V+'&p=jar'
 $user = 'altran'
 $pwd = ConvertTo-SecureString "l1nkSys" -AsPlainText -Force
-$jarstartconfig = "-DIAM_CONFIG=useradministration."+ $mode + ".properties"
+$jarstartconfig = "-DIAM_CONFIG=useradminwebapp."+ $mode + ".properties"
 
 # Kill process if this service already runs
 #TODO: Line below gives error: Stop-Process : Cannot bind parameter 'InputObject'. Cannot convert the "UserAdministration" value of type "System.Strin
