@@ -84,8 +84,8 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
-                        logger.trace("Got user from userticket, but wrong access rights - retry login");
-                        return LOGIN_SERVICE;
+                        logger.trace("Got user from userticket, but wrong access rights - logout");
+                        return LOGOUT_SERVICE;
                     }
                     logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + tokenId);
                     addModelParams(model, tokenId);
@@ -99,6 +99,7 @@ public class UserAdminController {
                     return MY_APP_TYPE;
                 } else {
                     logger.trace("Got user from userticket - Got no valid user, retrying login");
+                    SSOHelper.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
@@ -120,10 +121,12 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
                     addModelParams(model, userTokenIdFromCookie);
-                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
                     if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        SSOHelper.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    response.addCookie(cookie);
                     return MY_APP_TYPE;
                 } else {
 
@@ -136,6 +139,7 @@ public class UserAdminController {
             SSOHelper.removeUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
         }
+        SSOHelper.removeUserTokenCookies(request, response);
         return LOGIN_SERVICE;
     }
 
