@@ -138,6 +138,7 @@ public class UserAdminController {
         } catch (RuntimeException mre) {
             SSOHelper.removeUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
+            return LOGOUT_SERVICE;
         }
         SSOHelper.removeUserTokenCookies(request, response);
         return LOGIN_SERVICE;
