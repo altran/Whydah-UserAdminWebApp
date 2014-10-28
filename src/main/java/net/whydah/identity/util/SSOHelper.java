@@ -273,9 +273,11 @@ public class SSOHelper {
         }
 
         for (Cookie cookie : cookies) {
-            logger.trace("Cookie: " + cookie.getName());
+            logger.trace("Cookie Value: " + cookie.getName() + " PATH: " + cookie.getPath() + " Domain:" + cookie.getDomain());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                return cookie.getValue();
+                if (cookie.getValue().length() > 7) {
+                    return cookie.getValue();
+                }
                 //return true;
             }
         }

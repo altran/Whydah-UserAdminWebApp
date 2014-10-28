@@ -84,9 +84,10 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        logger.trace("Got user from userticket, but wrong access rights - retry login");
                         return LOGIN_SERVICE;
                     }
-                    logger.trace("myapp - usertokenId:" + tokenId);
+                    logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + tokenId);
                     addModelParams(model, tokenId);
 
 
@@ -97,6 +98,7 @@ public class UserAdminController {
                     //return "myapp";
                     return MY_APP_TYPE;
                 } else {
+                    logger.trace("Got user from userticket - Got no valid user, retrying login");
                     return LOGIN_SERVICE;
                 }
             }
