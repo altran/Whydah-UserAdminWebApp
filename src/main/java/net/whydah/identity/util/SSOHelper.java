@@ -116,6 +116,8 @@ public class SSOHelper {
 
     public static void removeUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+
         for (Cookie cookie : cookies) {
             System.out.println("Cookie: " + cookie.getName());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
@@ -125,6 +127,7 @@ public class SSOHelper {
                 cookie.setValue("");
                 response.addCookie(cookie);
             }
+        }
         }
     }
 
