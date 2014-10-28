@@ -50,7 +50,7 @@ public class UserAdminController {
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
         LOGIN_SERVICE = "redirect:" + properties.getProperty("logonserviceurl") + "login?redirectURI=" + MY_APP_URI;
-        LOGOUT_SERVICE = properties.getProperty("logonserviceurl") + "logoutaction?redirectURI=" + MY_APP_URI;
+        LOGOUT_SERVICE = "redirect:" + properties.getProperty("logonserviceurl") + "logoutaction?redirectURI=" + MY_APP_URI;
 
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
