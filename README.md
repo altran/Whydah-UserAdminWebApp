@@ -58,8 +58,8 @@ useridentitybackend=http://localhost:9995/uib/
 #
 # uses SSOLogonservice to redirect non-authenticated users
 #
-logonserviceurl=http://localhost:9997/sso/
-#logonserviceurl=http://myserver.net/sso/
+logonservice=http://localhost:9997/sso/
+#logonservice=http://sso.myserver.net/sso/
 
 #
 # Logs on to SecurityTokenService to participate in the Whydah stack using AppCredentials
