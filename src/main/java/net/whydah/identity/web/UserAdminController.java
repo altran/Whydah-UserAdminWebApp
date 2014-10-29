@@ -38,9 +38,9 @@ public class UserAdminController {
     private final String LOGOUT_SERVICE;
     private final HttpClient httpClient;
     private final boolean STANDALONE;
+    Properties properties = AppConfig.readProperties();
 
     public UserAdminController() throws IOException {
-        Properties properties = AppConfig.readProperties();
         STANDALONE = Boolean.valueOf(properties.getProperty("standalone"));
         MY_APP_URI = properties.getProperty("myuri");
         MY_APP_TYPE = properties.getProperty("myapp");
@@ -148,12 +148,12 @@ public class UserAdminController {
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", ssoHelper.getUserTokenFromUserTokenId(userTokenID));
-            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
+            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
             model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
-            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", "Unknown UA");
+            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
+            model.addAttribute("realName", "Unknown User");
         }
 
         String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId() + "/";
