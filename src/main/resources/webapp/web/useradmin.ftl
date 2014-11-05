@@ -30,7 +30,7 @@
                         <li ng-class="{active: session.activeTab == 'about'}"><a href="#/about">About Whydah</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="${logOutUrl}">Log out <strong>${realName}</strong></a></li>
+                        <li><a id="logout" href="${logOutUrl}">Log out <strong>${realName}</strong></a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
@@ -63,7 +63,7 @@
         <div class="container-fluid">
             <div ng-view id="mainview"></div>
             <div id="messageContainer">
-                <div ng-repeat="msg in messages.list" class="alert alert-{{msg.type}}">
+                <div ng-repeat="msg in messages.list" class="alert alert-{{msg.type}}" id="alertMessage">
                     <button type="button" class="close" aria-hidden="true" ng-click="removeMessage($index)">&times;</button>
                     {{msg.text}}
                 </div>

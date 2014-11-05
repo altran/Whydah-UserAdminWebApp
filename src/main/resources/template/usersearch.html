@@ -1,6 +1,6 @@
 <div class="row margin-top">
   <div class="col-xs-9 col-sm-5 col-md-4">
-    <input type="search" class="form-control" ng-model="searchQuery" placeholder="Search users" ng-change="searchUsers()" autofocus>
+    <input type="search" id="searchfield" class="form-control" ng-model="searchQuery" placeholder="Search users" ng-change="searchUsers()" autofocus>
     <span class="small">{{users.rows}} found</span>
   </div>
   <div class="col-xs-3 col-sm-5 col-md-8 hidden">
@@ -32,7 +32,7 @@
 
   <div class="col-sm-12">
 
-    <button class="btn btn-default btn-sm" ng-click="newUserDetail()">
+    <button id="adduserbutton" class="btn btn-default btn-sm" ng-click="newUserDetail()">
         <span class="glyphicon glyphicon-plus"></span>
         <span class="glyphicon glyphicon-user"></span>
         Add user
@@ -70,7 +70,7 @@
         <tbody>
           <tr ng-repeat="user in users.list | orderBy:orderByColumn:orderReverse" class="itemrow">
             <td><label><input type="checkbox" ng-model="user.isSelected"></label></td>
-            <td ng-click="activateUserDetail(user.uid)">{{user.username}}</td>
+            <td ng-click="activateUserDetail(user.uid)" id="rowid_{{user.username}}">{{user.username}}</td>
             <td ng-click="activateUserDetail(user.uid)">{{user.firstName}}</td>
             <td ng-click="activateUserDetail(user.uid)">{{user.lastName}}</td>
             <td ng-click="activateUserDetail(user.uid)">{{user.cellPhone}}</td>
@@ -134,12 +134,12 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">
+            <button type="button" id="close" class="btn btn-default" data-dismiss="modal">
                 Close
                 <span ng-if="form.userDetail.$dirty">and discard changes</span>
             </button>
-            <button type="button" class="btn btn-primary" ng-disabled="form.userDetail.$invalid || form.userDetail.$pristine" ng-click="save()">Save changes</button>
-            <button type="button" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()" ng-if="!users.user.isNew"><span class="glyphicon glyphicon-trash"></span> Delete {{users.user.username}}</button>
+            <button type="button" id="saveChanges" class="btn btn-primary" ng-disabled="form.userDetail.$invalid || form.userDetail.$pristine" ng-click="save()">Save changes</button>
+            <button type="button" id="deleteUser" class="btn btn-xs btn-danger pull-left" data-dismiss="modal" ng-click="delete()" ng-if="!users.user.isNew"><span class="glyphicon glyphicon-trash"></span> Delete {{users.user.username}}</button>
           </div>
 
       </form>
