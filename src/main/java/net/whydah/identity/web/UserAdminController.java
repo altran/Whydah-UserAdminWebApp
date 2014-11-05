@@ -38,9 +38,9 @@ public class UserAdminController {
     private final String LOGOUT_SERVICE;
     private final HttpClient httpClient;
     private final boolean STANDALONE;
+    Properties properties = AppConfig.readProperties();
 
     public UserAdminController() throws IOException {
-        Properties properties = AppConfig.readProperties();
         STANDALONE = Boolean.valueOf(properties.getProperty("standalone"));
         MY_APP_URI = properties.getProperty("myuri");
         MY_APP_TYPE = properties.getProperty("myapp");
@@ -49,8 +49,8 @@ public class UserAdminController {
         }
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
-        LOGIN_SERVICE = "redirect:" + properties.getProperty("logonserviceurl") + "login?redirectURI=" + MY_APP_URI;
-        LOGOUT_SERVICE = properties.getProperty("logonserviceurl") + "logoutaction?redirectURI=" + MY_APP_URI;
+        LOGIN_SERVICE = "redirect:" + properties.getProperty("logonservice") + "login?redirectURI=" + MY_APP_URI;
+        LOGOUT_SERVICE = "redirect:" + properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI;
 
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
@@ -84,9 +84,10 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
-                        return LOGIN_SERVICE;
+                        logger.trace("Got user from userticket, but wrong access rights - logout");
+                        return LOGOUT_SERVICE;
                     }
-                    logger.trace("myapp - usertokenId:" + tokenId);
+                    logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + tokenId);
                     addModelParams(model, tokenId);
 
 
@@ -97,6 +98,8 @@ public class UserAdminController {
                     //return "myapp";
                     return MY_APP_TYPE;
                 } else {
+                    logger.trace("Got user from userticket - Got no valid user, retrying login");
+                    SSOHelper.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
@@ -118,10 +121,12 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
                     addModelParams(model, userTokenIdFromCookie);
-                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
                     if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                        SSOHelper.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
+                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    response.addCookie(cookie);
                     return MY_APP_TYPE;
                 } else {
 
@@ -133,7 +138,9 @@ public class UserAdminController {
         } catch (RuntimeException mre) {
             SSOHelper.removeUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
+            return LOGOUT_SERVICE;
         }
+        SSOHelper.removeUserTokenCookies(request, response);
         return LOGIN_SERVICE;
     }
 
@@ -141,12 +148,12 @@ public class UserAdminController {
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", ssoHelper.getUserTokenFromUserTokenId(userTokenID));
-            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
+            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
             model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
-            model.addAttribute("logOutUrl", LOGOUT_SERVICE);
-            model.addAttribute("realName", "Unknown UA");
+            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
+            model.addAttribute("realName", "Unknown User");
         }
 
         String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId() + "/";

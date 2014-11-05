@@ -116,6 +116,8 @@ public class SSOHelper {
 
     public static void removeUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+
         for (Cookie cookie : cookies) {
             System.out.println("Cookie: " + cookie.getName());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
@@ -125,6 +127,7 @@ public class SSOHelper {
                 cookie.setValue("");
                 response.addCookie(cookie);
             }
+        }
         }
     }
 
@@ -273,9 +276,11 @@ public class SSOHelper {
         }
 
         for (Cookie cookie : cookies) {
-            logger.trace("Cookie: " + cookie.getName());
+            logger.trace("Cookie Value: " + cookie.getName() + " PATH: " + cookie.getPath() + " Domain:" + cookie.getDomain());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                return cookie.getValue();
+                if (cookie.getValue().length() > 7) {
+                    return cookie.getValue();
+                }
                 //return true;
             }
         }
