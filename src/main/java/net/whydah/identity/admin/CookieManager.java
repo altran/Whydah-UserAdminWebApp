@@ -1,101 +1,86 @@
 package net.whydah.identity.admin;
 
+import net.whydah.identity.admin.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class CookieManager {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
+    private static String cookiedomain = null;
+
+    private CookieManager() {
+    }
+
+    static {
+        try {
+            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
+        } catch (IOException e) {
+            logger.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
+        }
+    }
+
+
 
     public static void createAndSetUserTokenCookie(String userTokenId, HttpServletResponse response) {
-        Cookie cookie = CookieManager.createUserTokenCookie(userTokenId);
-        response.addCookie(cookie);
-    }
-    private static Cookie createUserTokenCookie(String userTokenId) {
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, userTokenId);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
 
         cookie.setMaxAge(maxAge);
         cookie.setValue(userTokenId);
+        if (cookiedomain != null && !cookiedomain.isEmpty()) {
+            cookie.setDomain(cookiedomain);
+        }
         cookie.setSecure(true);
         logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}", cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
-        return cookie;
+
+        response.addCookie(cookie);
     }
 
-    public static void removeUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                logger.trace("Cleared cookie with name={}", cookie.getName());
-                cookie.setMaxAge(0);
-                cookie.setPath("/");
-                cookie.setValue("");
-                response.addCookie(cookie);
-            }
+    public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = getUserTokenCookie(request);
+        if (cookie != null) {
+            logger.trace("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            cookie.setValue("");
+            response.addCookie(cookie);
         }
     }
+
 
     public static String getUserTokenIdFromCookie(HttpServletRequest request) {
+        Cookie userTokenCookie = getUserTokenCookie(request);
+        if (userTokenCookie != null && userTokenCookie.getValue().length() > 7) {
+            return userTokenCookie.getValue();
+        }
+
+        return (userTokenCookie != null ? userTokenCookie.getValue() : null);
+    }
+
+    private static Cookie getUserTokenCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
         }
-
         for (Cookie cookie : cookies) {
-            logger.debug("getUserTokenIdFromCookie: cookie with name={}, path{}, domain={}", cookie.getName(), cookie.getPath(), cookie.getDomain());
-            if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                if (cookie.getValue().length() > 7) {
-                    return cookie.getValue();
-                }
-                //return true;
+            logger.debug("getUserTokenCookie: cookie with name={}, path{}, domain={}", cookie.getName(), cookie.getPath(), cookie.getDomain());
+            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName()) && cookiedomain.equalsIgnoreCase(cookie.getDomain())) {
+                return cookie;
             }
         }
         return null;
     }
 
-    /**
-     * Look for cookie for whydah auth.
-     */
+
     public static boolean hasRightCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return false;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                logger.debug("hasRightCookie found cookie: name={}  value={}", cookie.getName(), cookie.getValue());
-                return true;
-            }
-        }
-        return false;
+        return getUserTokenIdFromCookie(request) != null;
     }
-
-     /*
-    public static  Cookie getUserTokenCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        logger.debug("getUserTokenCookie - header: " + cookies);
-        if (cookies == null) {
-            return null;
-        }
-
-        for (Cookie cooky : cookies) {
-            logger.debug("Cookie: " + cooky.getName());
-            if (cooky.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                return cooky;
-            }
-        }
-        return null;
-    }
-    */
 }

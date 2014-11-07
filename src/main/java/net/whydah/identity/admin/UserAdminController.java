@@ -93,7 +93,7 @@ public class UserAdminController {
                     return MY_APP_TYPE;
                 } else {
                     logger.trace("Got user from userticket - Got no valid user, retrying login");
-                    CookieManager.removeUserTokenCookies(request, response);
+                    CookieManager.clearUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
@@ -105,7 +105,7 @@ public class UserAdminController {
             if (CookieManager.hasRightCookie(request)) {
                 String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
                 if (userTokenIdFromCookie == null || userTokenIdFromCookie.length() < 7) {
-                    CookieManager.removeUserTokenCookies(request, response);
+                    CookieManager.clearUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
                 logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
@@ -116,7 +116,7 @@ public class UserAdminController {
 
                     addModelParams(model, userTokenIdFromCookie);
                     if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
-                        CookieManager.removeUserTokenCookies(request, response);
+                        CookieManager.clearUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
                     String userTokenIdFromUserTokenXml = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
@@ -126,16 +126,16 @@ public class UserAdminController {
                 } else {
 
                     // Remove cookie with invalid usertokenid
-                    CookieManager.removeUserTokenCookies(request, response);
+                    CookieManager.clearUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
         } catch (RuntimeException mre) {
-            CookieManager.removeUserTokenCookies(request, response);
+            CookieManager.clearUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
             return LOGOUT_SERVICE;
         }
-        CookieManager.removeUserTokenCookies(request, response);
+        CookieManager.clearUserTokenCookies(request, response);
         return LOGIN_SERVICE;
     }
 
