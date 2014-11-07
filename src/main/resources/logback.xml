@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</pattern>
-        </layout>
-    </appender>
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+</appender>
 
-    <!--Daily rolling file appender -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>logs/UserAdminWebApp.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/UserAdminWebApp-%d{yyyy-MM-dd}.log</FileNamePattern>
-            <maxHistory>5</maxHistory>
-        </rollingPolicy>
+<!--Daily rolling file appender -->
+<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/UserAdminWebApp.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <FileNamePattern>logs/UserAdminWebApp-%d{yyyy-MM-dd}.log</FileNamePattern>
+        <maxHistory>5</maxHistory>
+    </rollingPolicy>
 
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</Pattern>
-        </layout>
-    </appender>
-
-
-    <logger name="org.apache.directory" level="WARN" additivity="false">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
+    <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+</appender>
 
 
-    <logger name="net.whydah.identity" level="TRACE" additivity="false">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
+<logger name="org.eclipse.jetty" level="WARN" />
 
-    <root>
-        <level value="INFO" />
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </root>
+<logger name="net.whydah.identity.admin" level="TRACE" />
+
+<root level="INFO">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+</root>
 </configuration>
