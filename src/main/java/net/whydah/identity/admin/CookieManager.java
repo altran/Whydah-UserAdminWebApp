@@ -12,7 +12,11 @@ public class CookieManager {
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
 
-    public static Cookie createUserTokenCookie(String userTokenId) {
+    public static void createAndSetUserTokenCookie(String userTokenId, HttpServletResponse response) {
+        Cookie cookie = CookieManager.createUserTokenCookie(userTokenId);
+        response.addCookie(cookie);
+    }
+    private static Cookie createUserTokenCookie(String userTokenId) {
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, userTokenId);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
@@ -20,7 +24,7 @@ public class CookieManager {
         cookie.setMaxAge(maxAge);
         cookie.setValue(userTokenId);
         cookie.setSecure(true);
-        logger.trace("Created cookie with name=" + USER_TOKEN_REFERENCE_NAME + ", usertokenid=" + userTokenId + ", maxAge=" + maxAge);
+        logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}", cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
         return cookie;
     }
 
@@ -32,10 +36,9 @@ public class CookieManager {
 
         for (Cookie cookie : cookies) {
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                logger.trace("Removing cookie with name={}", cookie.getName());
-                cookie.setValue(USER_TOKEN_REFERENCE_NAME);
+                logger.trace("Cleared cookie with name={}", cookie.getName());
                 cookie.setMaxAge(0);
-                cookie.setPath("");
+                cookie.setPath("/");
                 cookie.setValue("");
                 response.addCookie(cookie);
             }
@@ -49,7 +52,7 @@ public class CookieManager {
         }
 
         for (Cookie cookie : cookies) {
-            logger.debug("getUserTokenIdFromCookie: cookie: name={}, path{}, domain={}", cookie.getName(), cookie.getPath(), cookie.getDomain());
+            logger.debug("getUserTokenIdFromCookie: cookie with name={}, path{}, domain={}", cookie.getName(), cookie.getPath(), cookie.getDomain());
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
                 if (cookie.getValue().length() > 7) {
                     return cookie.getValue();

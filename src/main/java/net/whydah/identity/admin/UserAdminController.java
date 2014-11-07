@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Produces;
@@ -90,11 +89,7 @@ public class UserAdminController {
                     addModelParams(model, userTokenId);
 
 
-                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenId);
-                    // cookie.setDomain("whydah.net");
-                    response.addCookie(cookie);
-
-                    //return "myapp";
+                    CookieManager.createAndSetUserTokenCookie(userTokenId, response);
                     return MY_APP_TYPE;
                 } else {
                     logger.trace("Got user from userticket - Got no valid user, retrying login");
@@ -124,8 +119,9 @@ public class UserAdminController {
                         CookieManager.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
-                    Cookie cookie = CookieManager.createUserTokenCookie(UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml));
-                    response.addCookie(cookie);
+                    String userTokenIdFromUserTokenXml = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    CookieManager.createAndSetUserTokenCookie(userTokenIdFromUserTokenXml, response);
+
                     return MY_APP_TYPE;
                 } else {
 
