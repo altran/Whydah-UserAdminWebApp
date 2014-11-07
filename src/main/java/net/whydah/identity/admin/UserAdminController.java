@@ -1,6 +1,8 @@
 package net.whydah.identity.admin;
 
 import net.whydah.identity.admin.config.AppConfig;
+import net.whydah.identity.admin.usertoken.TokenServiceClient;
+import net.whydah.identity.admin.usertoken.UserTokenXpathHelper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.slf4j.Logger;
@@ -81,7 +83,7 @@ public class UserAdminController {
                 logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
-                    if (!TokenServiceClient.hasUserAdminRight(userTokenXml)) {
+                    if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                         logger.trace("Got user from userticket, but wrong access rights - logout");
                         return LOGOUT_SERVICE;
                     }
@@ -119,7 +121,7 @@ public class UserAdminController {
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
                     addModelParams(model, userTokenIdFromCookie);
-                    if (!TokenServiceClient.hasUserAdminRight(userTokenXml)) {
+                    if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                         CookieManager.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }

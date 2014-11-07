@@ -1,8 +1,8 @@
-package net.whydah.identity.admin;
+package net.whydah.identity.admin.usertoken;
 
 import org.junit.Test;
 
-public class XpathTest {
+public class UserTokenXpathHelperTest {
 
     @Test
     public void testRoleParsing() {
@@ -34,7 +34,6 @@ public class XpathTest {
                 "    <hash type=\"MD5\">21d3f0edf36cb5a0486b592fe84621</hash>\n" +
                 "</usertoken>";
 
-        assert (TokenServiceClient.hasUserAdminRight(testToken));
-
+        assert (UserTokenXpathHelper.hasUserAdminRight(testToken));
     }
 }

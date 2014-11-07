@@ -1,7 +1,6 @@
-package net.whydah.identity.admin;
+package net.whydah.identity.admin.usertoken;
 
 public class ApplicationCredential {
-
     private String applicationID="apphkjhkjhkjh";
     private String applicationPassord="nmnmnm,n,";
 

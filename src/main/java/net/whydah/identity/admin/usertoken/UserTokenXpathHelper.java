@@ -1,4 +1,4 @@
-package net.whydah.identity.admin;
+package net.whydah.identity.admin.usertoken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +75,32 @@ public class UserTokenXpathHelper {
         }
         return "";
     }
+
+    public static boolean hasUserAdminRight(String userTokenXml) {
+        if (userTokenXml == null) {
+            logger.trace("hasUserAdminRight - Empty  userToken");
+            return false;
+        }
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/usertoken/application[@ID=\"19\"]/role[@name=\"WhydahUserAdmin\"]/@value";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            logger.trace("hasUserAdminRight - token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
+            String v = (xPathExpression.evaluate(doc));
+            if (v == null || v.length() < 1) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("getTimestamp - userTokenXml timestamp parsing error", e);
+        }
+        return false;
+    }
+
 
     /*
     public static  String getLifespan(String userTokenXml) {

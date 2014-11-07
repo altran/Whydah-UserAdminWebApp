@@ -12,8 +12,6 @@ import javax.ws.rs.core.UriInfo;
 @Controller
 @Path("/iam")
 public class WhydahUserIdentity {
-
-
     @Context
     UriInfo uriInfo;
 
