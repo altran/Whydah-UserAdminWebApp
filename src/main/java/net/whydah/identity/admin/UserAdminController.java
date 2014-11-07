@@ -78,20 +78,19 @@ public class UserAdminController {
         logger.trace("myapp - userTicket:" + userTicket);
         try {
             if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
-
                 String userTokenXml = tokenServiceClient.getUserTokenByUserTicket(userTicket);
                 logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-                    String tokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    String userTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                         logger.trace("Got user from userticket, but wrong access rights - logout");
                         return LOGOUT_SERVICE;
                     }
-                    logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + tokenId);
-                    addModelParams(model, tokenId);
+                    logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + userTokenId);
+                    addModelParams(model, userTokenId);
 
 
-                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
+                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenId);
                     // cookie.setDomain("whydah.net");
                     response.addCookie(cookie);
 
@@ -125,7 +124,7 @@ public class UserAdminController {
                         CookieManager.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
-                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
+                    Cookie cookie = CookieManager.createUserTokenCookie(UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml));
                     response.addCookie(cookie);
                     return MY_APP_TYPE;
                 } else {
