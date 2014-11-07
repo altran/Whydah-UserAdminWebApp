@@ -1,4 +1,4 @@
-package net.whydah.identity.data;
+package net.whydah.identity.admin;
 
 public class UserCredential {
 

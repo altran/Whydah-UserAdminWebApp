@@ -1,8 +1,6 @@
-package net.whydah.identity.web;
+package net.whydah.identity.admin;
 
-import net.whydah.identity.config.AppConfig;
-import net.whydah.identity.util.TokenServiceClient;
-import net.whydah.identity.util.XPATHHelper;
+import net.whydah.identity.admin.config.AppConfig;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.slf4j.Logger;
@@ -82,7 +80,7 @@ public class UserAdminController {
                 String userTokenXml = tokenServiceClient.getUserTokenByUserTicket(userTicket);
                 logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
-                    String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                    String tokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!TokenServiceClient.hasUserAdminRight(userTokenXml)) {
                         logger.trace("Got user from userticket, but wrong access rights - logout");
                         return LOGOUT_SERVICE;
@@ -149,7 +147,7 @@ public class UserAdminController {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", tokenServiceClient.getUserTokenFromUserTokenId(userTokenID));
             model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
-            model.addAttribute("realName", XPATHHelper.getRealName(tokenServiceClient.getUserTokenFromUserTokenId(userTokenID)));
+            model.addAttribute("realName", UserTokenXpathHelper.getRealName(tokenServiceClient.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);

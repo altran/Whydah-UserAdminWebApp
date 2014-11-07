@@ -1,6 +1,5 @@
-package net.whydah.identity.web;
+package net.whydah.identity.admin;
 
-import net.whydah.identity.util.XPATHHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ public class CookieManager {
 
 
     public static Cookie createUserTokenCookie(String userTokenXml) {
-        String usertokenID = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+        String usertokenID = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, usertokenID);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas

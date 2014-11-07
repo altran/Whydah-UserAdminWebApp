@@ -1,4 +1,4 @@
-package net.whydah.identity.util;
+package net.whydah.identity.admin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +12,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
 
-public class XPATHHelper {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(XPATHHelper.class);
-
+public class UserTokenXpathHelper {
+    private static final Logger logger = LoggerFactory.getLogger(UserTokenXpathHelper.class);
 
     public static String getUserTokenIdFromUserTokenXML(String userTokenXml) {
         if (userTokenXml == null) {
@@ -59,48 +56,6 @@ public class XPATHHelper {
         return "";
     }
 
-
-
-    public static  String getLifespan(String userTokenXml) {
-        if (userTokenXml == null){
-            logger.trace("Empty  userToken");
-            return "";
-        }
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/whydahuser/identity/lifespan";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            return (xPathExpression.evaluate(doc));
-        } catch (Exception e) {
-            logger.error("getLifespan failed", e);
-        }
-        return "";
-    }
-
-    public static String getTimestamp(String userTokenXml) {
-        if (userTokenXml==null){
-            logger.trace("Empty  userToken");
-            return "";
-        }
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
-            XPath xPath = XPathFactory.newInstance().newXPath();
-
-            String expression = "/whydahuser/identity/timestamp";
-            XPathExpression xPathExpression = xPath.compile(expression);
-            return (xPathExpression.evaluate(doc));
-        } catch (Exception e) {
-            logger.error("getTimestamp error", e);
-        }
-        return "";
-    }
-
     public static String getRealName(String userTokenXml) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -121,4 +76,46 @@ public class XPATHHelper {
         return "";
     }
 
+    /*
+    public static  String getLifespan(String userTokenXml) {
+        if (userTokenXml == null){
+            logger.trace("Empty  userToken");
+            return "";
+        }
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/whydahuser/identity/lifespan";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            return (xPathExpression.evaluate(doc));
+        } catch (Exception e) {
+            logger.error("getLifespan failed", e);
+        }
+        return "";
+    }
+
+
+    public static String getTimestamp(String userTokenXml) {
+        if (userTokenXml==null){
+            logger.trace("Empty  userToken");
+            return "";
+        }
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/whydahuser/identity/timestamp";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            return (xPathExpression.evaluate(doc));
+        } catch (Exception e) {
+            logger.error("getTimestamp error", e);
+        }
+        return "";
+    }
+    */
 }

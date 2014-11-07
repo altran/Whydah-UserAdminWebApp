@@ -1,11 +1,10 @@
-package net.whydah.identity.util;
+package net.whydah.identity.admin;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import net.whydah.identity.config.AppConfig;
-import net.whydah.identity.data.ApplicationCredential;
+import net.whydah.identity.admin.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -91,7 +90,7 @@ public class TokenServiceClient {
                 throw new RuntimeException("Application authentication failed");
             }
             myAppTokenXml = response.getEntity(String.class);
-            myAppTokenId = XPATHHelper.getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
+            myAppTokenId = UserTokenXpathHelper.getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
             logger.trace("logonApplication - Applogon ok: apptokenxml: {}", myAppTokenXml);
             logger.trace("logonApplication - myAppTokenId: {}", myAppTokenId);
         } catch (IOException ioe){
@@ -142,7 +141,7 @@ public class TokenServiceClient {
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.trace("Response OK with XML: {}", responseXML);
-            myUserTokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(responseXML);
+            myUserTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(responseXML);
             return responseXML;
         }
         //retry

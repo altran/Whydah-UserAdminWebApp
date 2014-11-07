@@ -1,9 +1,8 @@
-package net.whydah.identity.util;
+package net.whydah.identity.admin;
 
 import org.junit.Test;
 
 public class XpathTest {
-
 
     @Test
     public void testRoleParsing() {
