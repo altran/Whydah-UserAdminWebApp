@@ -1,7 +1,6 @@
 package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
-import net.whydah.identity.util.SSOHelper;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.*;
@@ -29,12 +28,10 @@ import java.util.Properties;
 @RequestMapping("/{apptokenid}/{usertokenid}")
 @Controller
 public class UserAdminUibController {
-
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
     private final String uibUrl;
     private final HttpClient httpClient;
-    private SSOHelper ssoHelper = new SSOHelper();
-    private String utf8query;
+    //private String utf8query;
 
 
     public UserAdminUibController() throws IOException {
@@ -49,7 +46,7 @@ public class UserAdminUibController {
     public String findUsers(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("query") String query, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("findUsers - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
         if (usertokenid == null || usertokenid.length() < 7) {
-            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            usertokenid = CookieManager.getUserTokenIdFromCookie(request);
             logger.trace("findUsers - Override usertokenid={}", usertokenid);
         }
         String utf8query = query;
@@ -236,7 +233,7 @@ public class UserAdminUibController {
     public String getApplications(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("getApplications - entry.  applicationtokenid={},  usertokenid={}", apptokenid, usertokenid);
         if (usertokenid == null || usertokenid.length() < 7) {
-            usertokenid = ssoHelper.getUserTokenIdFromCookie(request);
+            usertokenid = CookieManager.getUserTokenIdFromCookie(request);
             logger.trace("getApplications - Override usertokenid={}", usertokenid);
         }
 
@@ -332,6 +329,4 @@ public class UserAdminUibController {
             logger.error("jsondata attribute not set when fetching data from URL: {}", url);
         }
     }
-
-
 }

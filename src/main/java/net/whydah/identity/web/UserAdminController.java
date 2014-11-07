@@ -1,7 +1,7 @@
 package net.whydah.identity.web;
 
 import net.whydah.identity.config.AppConfig;
-import net.whydah.identity.util.SSOHelper;
+import net.whydah.identity.util.TokenServiceClient;
 import net.whydah.identity.util.XPATHHelper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -29,7 +29,7 @@ public class UserAdminController {
     private static final int MIN_USERTOKEN_ID_LENGTH = 4;
     private static final String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
-    private SSOHelper ssoHelper = new SSOHelper();
+    private TokenServiceClient tokenServiceClient = new TokenServiceClient();
 
     private String MY_APP_TYPE = "myapp";
     private final String MY_APP_URI;
@@ -79,11 +79,11 @@ public class UserAdminController {
         try {
             if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
 
-                String userTokenXml = ssoHelper.getUserTokenByUserTicket(userTicket);
+                String userTokenXml = tokenServiceClient.getUserTokenByUserTicket(userTicket);
                 logger.trace("myapp - userToken={} from userticket:", userTokenXml);
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
                     String tokenId = XPATHHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
-                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
+                    if (!TokenServiceClient.hasUserAdminRight(userTokenXml)) {
                         logger.trace("Got user from userticket, but wrong access rights - logout");
                         return LOGOUT_SERVICE;
                     }
@@ -91,7 +91,7 @@ public class UserAdminController {
                     addModelParams(model, tokenId);
 
 
-                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
                     // cookie.setDomain("whydah.net");
                     response.addCookie(cookie);
 
@@ -99,7 +99,7 @@ public class UserAdminController {
                     return MY_APP_TYPE;
                 } else {
                     logger.trace("Got user from userticket - Got no valid user, retrying login");
-                    SSOHelper.removeUserTokenCookies(request, response);
+                    CookieManager.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
@@ -108,55 +108,55 @@ public class UserAdminController {
         }
 
         try {
-            if (ssoHelper.hasRightCookie(request)) {
-                String userTokenIdFromCookie = ssoHelper.getUserTokenIdFromCookie(request);
+            if (CookieManager.hasRightCookie(request)) {
+                String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
                 if (userTokenIdFromCookie == null || userTokenIdFromCookie.length() < 7) {
-                    SSOHelper.removeUserTokenCookies(request, response);
+                    CookieManager.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
                 logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
-                String userTokenXml = ssoHelper.getUserTokenFromUserTokenId(userTokenIdFromCookie);
+                String userTokenXml = tokenServiceClient.getUserTokenFromUserTokenId(userTokenIdFromCookie);
                 logger.trace("myapp - userTokenXml=" + userTokenXml);
 
                 if (userTokenXml.length() >= MIN_USER_TOKEN_LENGTH) {
 
                     addModelParams(model, userTokenIdFromCookie);
-                    if (!SSOHelper.hasUserAdminRight(userTokenXml)) {
-                        SSOHelper.removeUserTokenCookies(request, response);
+                    if (!TokenServiceClient.hasUserAdminRight(userTokenXml)) {
+                        CookieManager.removeUserTokenCookies(request, response);
                         return LOGIN_SERVICE;
                     }
-                    Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+                    Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
                     response.addCookie(cookie);
                     return MY_APP_TYPE;
                 } else {
 
                     // Remove cookie with invalid usertokenid
-                    SSOHelper.removeUserTokenCookies(request, response);
+                    CookieManager.removeUserTokenCookies(request, response);
                     return LOGIN_SERVICE;
                 }
             }
         } catch (RuntimeException mre) {
-            SSOHelper.removeUserTokenCookies(request, response);
+            CookieManager.removeUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
             return LOGOUT_SERVICE;
         }
-        SSOHelper.removeUserTokenCookies(request, response);
+        CookieManager.removeUserTokenCookies(request, response);
         return LOGIN_SERVICE;
     }
 
 
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
-            model.addAttribute("token", ssoHelper.getUserTokenFromUserTokenId(userTokenID));
+            model.addAttribute("token", tokenServiceClient.getUserTokenFromUserTokenId(userTokenID));
             model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
-            model.addAttribute("realName", XPATHHelper.getRealName(ssoHelper.getUserTokenFromUserTokenId(userTokenID)));
+            model.addAttribute("realName", XPATHHelper.getRealName(tokenServiceClient.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
             model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
             model.addAttribute("realName", "Unknown User");
         }
 
-        String baseUrl = "/useradmin/" + ssoHelper.getMyAppTokenId() + "/" + ssoHelper.getMyUserTokenId() + "/";
+        String baseUrl = "/useradmin/" + tokenServiceClient.getMyAppTokenId() + "/" + tokenServiceClient.getMyUserTokenId() + "/";
         model.addAttribute("baseUrl", baseUrl);
     }
 

@@ -35,7 +35,7 @@ public class XpathTest {
                 "    <hash type=\"MD5\">21d3f0edf36cb5a0486b592fe84621</hash>\n" +
                 "</usertoken>";
 
-        assert (SSOHelper.hasUserAdminRight(testToken));
+        assert (TokenServiceClient.hasUserAdminRight(testToken));
 
     }
 }
