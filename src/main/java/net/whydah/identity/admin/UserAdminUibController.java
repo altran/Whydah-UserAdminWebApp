@@ -2,6 +2,7 @@ package net.whydah.identity.admin;
 
 import net.whydah.identity.admin.config.AppConfig;
 import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.util.URIUtil;
