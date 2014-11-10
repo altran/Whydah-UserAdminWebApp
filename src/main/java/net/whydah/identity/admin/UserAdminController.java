@@ -29,12 +29,13 @@ public class UserAdminController {
     private static final String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
     private TokenServiceClient tokenServiceClient = new TokenServiceClient();
+    private final String userIdentityBackend;
 
     private String MY_APP_TYPE = "myapp";
     private final String MY_APP_URI;
-    private final String LOGIN_SERVICE;
-    private final String userIdentityBackend;
+    private final String LOGIN_SERVICE_REDIRECT;
     private final String LOGOUT_SERVICE;
+    private final String LOGOUT_SERVICE_REDIRECT;
     private final HttpClient httpClient;
     private final boolean STANDALONE;
     Properties properties = AppConfig.readProperties();
@@ -48,8 +49,9 @@ public class UserAdminController {
         }
         userIdentityBackend = properties.getProperty("useridentitybackend");
 
-        LOGIN_SERVICE = "redirect:" + properties.getProperty("logonservice") + "login?redirectURI=" + MY_APP_URI;
-        LOGOUT_SERVICE = "redirect:" + properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI;
+        LOGIN_SERVICE_REDIRECT = "redirect:" + properties.getProperty("logonservice") + "login?redirectURI=" + MY_APP_URI;
+        LOGOUT_SERVICE = properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI;
+        LOGOUT_SERVICE_REDIRECT = "redirect:" + LOGOUT_SERVICE;
 
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
@@ -57,8 +59,8 @@ public class UserAdminController {
         strb.append("\n- Standalone=").append(STANDALONE);
         strb.append("\n- MY_APP_URI=").append(MY_APP_URI);
         strb.append("\n- userIdentityBackend=").append(userIdentityBackend);
-        strb.append("\n- LOGIN_SERVICE=").append(LOGIN_SERVICE);
-        strb.append("\n- LOGOUT_SERVICE=").append(LOGOUT_SERVICE);
+        strb.append("\n- LOGIN_SERVICE_REDIRECT=").append(LOGIN_SERVICE_REDIRECT);
+        strb.append("\n- LOGOUT_SERVICE_REDIRECT=").append(LOGOUT_SERVICE_REDIRECT);
         logger.debug(strb.toString());
     }
 
@@ -70,11 +72,10 @@ public class UserAdminController {
             logger.trace("myapp - Standalone mode select, no authentication.");
             addModelParams(model, null);
             return MY_APP_TYPE;
-            // return "myapp";
         }
 
         String userTicket = request.getParameter(USERTICKET);
-        logger.trace("myapp - userTicket:" + userTicket);
+        logger.debug("myapp - userTicket={}", userTicket);
         try {
             if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
                 String userTokenXml = tokenServiceClient.getUserTokenByUserTicket(userTicket);
@@ -83,7 +84,7 @@ public class UserAdminController {
                     String userTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                         logger.trace("Got user from userticket, but wrong access rights - logout");
-                        return LOGOUT_SERVICE;
+                        return LOGOUT_SERVICE_REDIRECT;
                     }
                     logger.trace("myapp - Got user from userticket - has correct access rights - usertokenId:" + userTokenId);
                     addModelParams(model, userTokenId);
@@ -94,7 +95,7 @@ public class UserAdminController {
                 } else {
                     logger.trace("Got user from userticket - Got no valid user, retrying login");
                     CookieManager.clearUserTokenCookies(request, response);
-                    return LOGIN_SERVICE;
+                    return LOGIN_SERVICE_REDIRECT;
                 }
             }
         } catch (MissingResourceException mre) {
@@ -106,7 +107,7 @@ public class UserAdminController {
                 String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
                 if (userTokenIdFromCookie == null || userTokenIdFromCookie.length() < 7) {
                     CookieManager.clearUserTokenCookies(request, response);
-                    return LOGIN_SERVICE;
+                    return LOGIN_SERVICE_REDIRECT;
                 }
                 logger.trace("myapp - userTokenIdFromCookie=" + userTokenIdFromCookie);
                 String userTokenXml = tokenServiceClient.getUserTokenFromUserTokenId(userTokenIdFromCookie);
@@ -117,7 +118,7 @@ public class UserAdminController {
                     addModelParams(model, userTokenIdFromCookie);
                     if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                         CookieManager.clearUserTokenCookies(request, response);
-                        return LOGIN_SERVICE;
+                        return LOGIN_SERVICE_REDIRECT;
                     }
                     String userTokenIdFromUserTokenXml = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
                     CookieManager.createAndSetUserTokenCookie(userTokenIdFromUserTokenXml, response);
@@ -127,29 +128,29 @@ public class UserAdminController {
 
                     // Remove cookie with invalid usertokenid
                     CookieManager.clearUserTokenCookies(request, response);
-                    return LOGIN_SERVICE;
+                    return LOGIN_SERVICE_REDIRECT;
                 }
             }
         } catch (RuntimeException mre) {
             CookieManager.clearUserTokenCookies(request, response);
             logger.info("The usertoken found in the cookie is not valid.");
-            return LOGOUT_SERVICE;
+            return LOGOUT_SERVICE_REDIRECT;
         }
         CookieManager.clearUserTokenCookies(request, response);
-        return LOGIN_SERVICE;
+        return LOGIN_SERVICE_REDIRECT;
     }
 
 
     private void addModelParams(Model model, String userTokenID) {
         if (userTokenID != null && userTokenID.length() >= MIN_USERTOKEN_ID_LENGTH) {
             model.addAttribute("token", tokenServiceClient.getUserTokenFromUserTokenId(userTokenID));
-            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
             model.addAttribute("realName", UserTokenXpathHelper.getRealName(tokenServiceClient.getUserTokenFromUserTokenId(userTokenID)));
         } else {
             model.addAttribute("token", "Unauthorized");
-            model.addAttribute("logOutUrl", properties.getProperty("logonservice") + "logoutaction?redirectURI=" + MY_APP_URI);
             model.addAttribute("realName", "Unknown User");
         }
+
+        model.addAttribute("logOutUrl", LOGOUT_SERVICE);
 
         String baseUrl = "/useradmin/" + tokenServiceClient.getMyAppTokenId() + "/" + tokenServiceClient.getMyUserTokenId() + "/";
         model.addAttribute("baseUrl", baseUrl);
