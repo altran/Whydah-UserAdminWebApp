@@ -121,6 +121,21 @@ public class TokenServiceClient {
         throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
 
+
+    public static Integer calculateTokenRemainingLifetimeInSeconds(String userTokenXml) {
+        Integer tokenLifespanMs = UserTokenXpathHelper.getLifespan(userTokenXml);
+        Long tokenTimestampMsSinceEpoch = UserTokenXpathHelper.getTimestamp(userTokenXml);
+
+        if (tokenLifespanMs == null || tokenTimestampMsSinceEpoch == null) {
+            return null;
+        }
+
+        long endOfTokenLifeMs = tokenTimestampMsSinceEpoch + tokenLifespanMs;
+        long remainingLifeMs = endOfTokenLifeMs - System.currentTimeMillis();
+        return (int) (remainingLifeMs / 1000);
+    }
+
+
     public String getMyAppTokenId(){
         return myAppTokenId;
     }
@@ -130,15 +145,6 @@ public class TokenServiceClient {
 
 
     /*
-    private int calculateTokenRemainingLifetime(String userxml) {
-        int tokenLifespan = Integer.parseInt(XPATHHelper.getLifespan(userxml));
-        long tokenTimestamp = Long.parseLong(XPATHHelper.getTimestamp(userxml));
-        long endOfTokenLife = tokenTimestamp + tokenLifespan;
-        long remainingLife_ms = endOfTokenLife - System.currentTimeMillis();
-        return (int)remainingLife_ms/1000;
-    }
-
-
     private PostMethod setUpGetUserToken(PostMethod p,String userTokenId) throws IOException {
         String appTokenXML = p.getResponseBodyAsString();
         String applicationtokenid = XPATHHelper.getApplicationTokenIdFromAppTokenXML(appTokenXML);

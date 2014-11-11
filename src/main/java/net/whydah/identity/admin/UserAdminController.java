@@ -96,7 +96,8 @@ public class UserAdminController {
 
                 logger.info("Logon OK. UserTokenXML obtained with user ticket contained a valid admin user. userTokenId={}", userTokenId);
                 addModelParams(model, userTokenXml, UserTokenXpathHelper.getRealName(userTokenXml));
-                CookieManager.createAndSetUserTokenCookie(userTokenId, response);
+                Integer tokenRemainingLifetimeSeconds = TokenServiceClient.calculateTokenRemainingLifetimeInSeconds(userTokenXml);
+                CookieManager.createAndSetUserTokenCookie(userTokenId, tokenRemainingLifetimeSeconds, response);
                 return MY_APP_TYPE;
             } catch (MissingResourceException mre) {
                 logger.trace("getUserTokenByUserTicket failed. The ticked might have already been used. Checking cookie. MissingResourceException=", mre.getMessage());
@@ -133,7 +134,9 @@ public class UserAdminController {
 
         String userTokenIdFromUserTokenXml = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
         addModelParams(model, userTokenXml, UserTokenXpathHelper.getRealName(userTokenXml));
-        CookieManager.createAndSetUserTokenCookie(userTokenIdFromUserTokenXml, response);   //ED: Cookie already exists? Not necessary to create new..?
+        Integer tokenRemainingLifetimeSeconds = TokenServiceClient.calculateTokenRemainingLifetimeInSeconds(userTokenXml);
+        CookieManager.updateUserTokenCookie(userTokenIdFromUserTokenXml, tokenRemainingLifetimeSeconds, request, response);
+
         logger.info("Logon OK. userTokenIdFromUserTokenXml={}", userTokenIdFromUserTokenXml);
         return MY_APP_TYPE;
     }
