@@ -50,7 +50,6 @@ public class CookieManager {
         }
         cookie.setMaxAge(tokenRemainingLifetimeSeconds);
 
-        cookie.setMaxAge(tokenRemainingLifetimeSeconds);
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             cookie.setDomain(cookiedomain);
         }
