@@ -35,16 +35,16 @@ public class TokenServiceClient {
     }
 
 
-    public String getUserTokenFromUserTokenId(String usertokenid) {
+    public String getUserTokenFromUserTokenId(String userTokenId) {
         logonApplication();
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_usertokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("usertokenid", usertokenid);
-        logger.trace("getUserTokenFromUserTokenId - calling={} with usertokenid={} ", myAppTokenId, usertokenid);
+        formData.add("usertokenid", userTokenId);
+        logger.trace("getUserTokenFromUserTokenId - calling {} with usertokenid={}", userTokenResource.getURI().toString(), userTokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
-            throw new IllegalArgumentException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed.");
+            throw new RuntimeException("getUserTokenFromUserTokenId failed with status code=" + response.getStatus() + ", userTokenId=" + userTokenId + ", tokenServiceUrl=" + userTokenResource.toString());
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
@@ -59,7 +59,7 @@ public class TokenServiceClient {
             return responseXML;
         }
 
-        throw new RuntimeException("getUserTokenFromUserTokenId - get_usertoken_by_usertokenid failed with status code " + response.getStatus());
+        throw new RuntimeException("getUserTokenFromUserTokenId failed with status code=" + response.getStatus() + ", userTokenId=" + userTokenId + ", tokenServiceUrl=" + userTokenResource.toString());
     }
 
     private void logonApplication() {

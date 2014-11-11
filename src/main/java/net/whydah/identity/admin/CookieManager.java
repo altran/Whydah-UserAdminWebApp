@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CookieManager {
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
+    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_useradminwebapp";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
     private static String cookiedomain = null;
@@ -30,24 +30,28 @@ public class CookieManager {
 
     public static void createAndSetUserTokenCookie(String userTokenId, HttpServletResponse response) {
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, userTokenId);
+        cookie.setValue(userTokenId);
+
+        //Only name and value are sent back to the server from the browser. The other attributes are only used by the browser to determine of the cookie should be sent or not.
+        //http://en.wikipedia.org/wiki/HTTP_cookie#Setting_a_cookie
+
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         int maxAge = 365 * 24 * 60 * 60; //TODO Calculating TokenLife is hindered by XML with differing schemas
-
         cookie.setMaxAge(maxAge);
-        cookie.setValue(userTokenId);
+        cookie.setPath("/");
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             cookie.setDomain(cookiedomain);
         }
         cookie.setSecure(true);
-        logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}", cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
-
+        logger.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+                cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);
     }
 
-    public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
+    public static void clearUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getUserTokenCookie(request);
         if (cookie != null) {
-            logger.trace("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
+            logger.trace("Cleared cookie with name={}", cookie.getName());
             cookie.setMaxAge(0);
             cookie.setPath("/");
             cookie.setValue("");
@@ -71,8 +75,8 @@ public class CookieManager {
             return null;
         }
         for (Cookie cookie : cookies) {
-            logger.debug("getUserTokenCookie: cookie with name={}, path{}, domain={}", cookie.getName(), cookie.getPath(), cookie.getDomain());
-            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName()) && cookiedomain.equalsIgnoreCase(cookie.getDomain())) {
+            logger.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue());
+            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }
         }
@@ -80,7 +84,4 @@ public class CookieManager {
     }
 
 
-    public static boolean hasRightCookie(HttpServletRequest request) {
-        return getUserTokenIdFromCookie(request) != null;
-    }
 }
