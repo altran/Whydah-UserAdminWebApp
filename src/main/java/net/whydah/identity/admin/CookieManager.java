@@ -63,15 +63,16 @@ public class CookieManager {
     public static void clearUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getUserTokenCookie(request);
         if (cookie != null) {
-            logger.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
-                    cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
             cookie.setValue("");
+
             cookie.setMaxAge(0);
             if (cookiedomain != null && !cookiedomain.isEmpty()) {
                 cookie.setDomain(cookiedomain);
             }
             cookie.setPath("/");
             cookie.setSecure(true);
+            logger.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+                    cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
             response.addCookie(cookie);
         }
     }
