@@ -244,7 +244,7 @@ UseradminApp.service('Users', function($http, Messages){
 			method: 'POST',
 			url: baseUrl+'user/'+user.username+'/resetpassword'
 		}).success(function (data) {
-			Messages.add('success', 'Successfully reset password for user "'+user.username+'".');
+			Messages.add('success', 'Reset password mail sent to user "'+user.username+'".');
 		}).error(function (data) {
 			Messages.add('warning', 'Unable to reset password for user "'+user.username+'".');
 		});
