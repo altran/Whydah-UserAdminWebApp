@@ -90,9 +90,11 @@ public class UserTokenXpathHelper {
             String expression = "/usertoken/application[@ID=\"19\"]/role[@name=\"WhydahUserAdmin\"]/@value";
             XPathExpression xPathExpression = xPath.compile(expression);
             logger.trace("hasUserAdminRight - token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
-            String v = (xPathExpression.evaluate(doc));
-            if (v == null || v.length() < 1) {
-                return false;
+            String roleValue = (xPathExpression.evaluate(doc));
+            if (roleValue != null) {
+                if (roleValue.equals("false") || roleValue.equals("0") || roleValue.equals("disabled")) {
+                    return false;
+                }
             }
             return true;
         } catch (Exception e) {
