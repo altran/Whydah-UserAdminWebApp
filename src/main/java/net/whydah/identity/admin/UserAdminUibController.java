@@ -29,6 +29,7 @@ import java.util.Properties;
 @Controller
 public class UserAdminUibController {
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
+    private static final String JSON_DATA_KEY = "jsondata";
     private final String uibUrl;
     private final HttpClient httpClient;
     //private String utf8query;
@@ -75,8 +76,9 @@ public class UserAdminUibController {
     public String getUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Getting user with uid: " + uid);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
+        String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
+        logger.trace("getUser with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
@@ -85,10 +87,10 @@ public class UserAdminUibController {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/useraggregate/{uid}/", method = RequestMethod.GET)
     public String getUserAggregate(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        logger.trace("Getting user with uid: " + uid);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
+        String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
+        logger.trace("getUserAggregate with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
@@ -276,7 +278,7 @@ public class UserAdminUibController {
                 while ((line = in.readLine()) != null) {
                     responseBody.append(line);
                 }
-                model.addAttribute("jsondata", responseBody.toString());
+                model.addAttribute(JSON_DATA_KEY, responseBody.toString());
 
 
             }
@@ -312,7 +314,7 @@ public class UserAdminUibController {
                 while ((line = in.readLine()) !=null) {
                     responseBody.append(line);
                 }
-                model.addAttribute("jsondata", responseBody.toString());
+                model.addAttribute(JSON_DATA_KEY, responseBody.toString());
                 response.setContentType("application/json; charset=utf-8");
             }
             response.setStatus(rescode);
@@ -325,7 +327,7 @@ public class UserAdminUibController {
         } finally {
             method.releaseConnection();
         }
-        if (!model.containsAttribute("jsondata")) {
+        if (!model.containsAttribute(JSON_DATA_KEY)) {
             logger.error("jsondata attribute not set when fetching data from URL: {}", url);
         }
     }
