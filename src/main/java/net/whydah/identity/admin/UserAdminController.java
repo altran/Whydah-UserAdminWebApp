@@ -30,7 +30,6 @@ public class UserAdminController {
     private static final String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
     private TokenServiceClient tokenServiceClient = new TokenServiceClient();
-    private final String userIdentityBackend;
 
     private String MY_APP_TYPE = "myapp";
     private final String MY_APP_URI;
@@ -48,7 +47,6 @@ public class UserAdminController {
         if (MY_APP_TYPE == null || MY_APP_TYPE.isEmpty()) {
             MY_APP_TYPE = "useradmin"; //TODO To be fixed in https://github.com/altran/Whydah-UserAdminWebApp/issues/44
         }
-        userIdentityBackend = properties.getProperty("useridentitybackend");
 
         LOGIN_SERVICE_REDIRECT = "redirect:" + properties.getProperty("logonservice") + "login?" + REDIRECT_URI_KEY + "=" + MY_APP_URI;
         LOGOUT_SERVICE = properties.getProperty("logonservice") + "logout?" + REDIRECT_URI_KEY + "=" + MY_APP_URI;
@@ -59,7 +57,6 @@ public class UserAdminController {
         StringBuilder strb = new StringBuilder("Initialized UserAdminController \n");
         strb.append("\n- Standalone=").append(STANDALONE);
         strb.append("\n- MY_APP_URI=").append(MY_APP_URI);
-        strb.append("\n- userIdentityBackend=").append(userIdentityBackend);
         strb.append("\n- LOGIN_SERVICE_REDIRECT=").append(LOGIN_SERVICE_REDIRECT);
         strb.append("\n- LOGOUT_SERVICE_REDIRECT=").append(LOGOUT_SERVICE_REDIRECT);
         logger.debug(strb.toString());
