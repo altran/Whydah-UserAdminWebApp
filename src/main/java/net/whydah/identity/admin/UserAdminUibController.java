@@ -30,14 +30,16 @@ import java.util.Properties;
 public class UserAdminUibController {
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
     private static final String JSON_DATA_KEY = "jsondata";
-    private final String uibUrl;
+    //private final String uibUrl;
+    private final String userAdminServiceUrl;
     private final HttpClient httpClient;
     //private String utf8query;
 
 
     public UserAdminUibController() throws IOException {
         Properties properties = AppConfig.readProperties();
-        uibUrl = properties.getProperty("useridentitybackend");
+//        uibUrl = properties.getProperty("useridentitybackend");
+        userAdminServiceUrl = properties.getProperty("useradminservice");
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
     }
 
@@ -60,10 +62,10 @@ public class UserAdminUibController {
         HttpMethod method = new GetMethod();
         String url;
         try {
-            url = getUibUrl(apptokenid, usertokenid, "users/find/" + URIUtil.encodeAll(utf8query));
+            url = buildUasUrl(apptokenid, usertokenid, "users/find/" + URIUtil.encodeAll(utf8query));
         } catch (URIException urie) {
             logger.warn("Error in handling URIencoding", urie);
-            url = getUibUrl(apptokenid, usertokenid, "users/find/" + query);
+            url = buildUasUrl(apptokenid, usertokenid, "users/find/" + query);
         }
         makeUibRequest(method, url, model, response);
         return "json";
@@ -76,7 +78,7 @@ public class UserAdminUibController {
     public String getUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Getting user with uid: " + uid);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
         logger.trace("getUser with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
@@ -88,7 +90,7 @@ public class UserAdminUibController {
     @RequestMapping(value = "/useraggregate/{uid}/", method = RequestMethod.GET)
     public String getUserAggregate(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
         logger.trace("getUserAggregate with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
@@ -101,7 +103,7 @@ public class UserAdminUibController {
     public String deleteUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Deleting user with uid: " + uid);
         DeleteMethod method = new DeleteMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -120,7 +122,7 @@ public class UserAdminUibController {
             e.printStackTrace();
         }
         method.setRequestEntity(inputStreamRequestEntity);
-        String url = getUibUrl(apptokenid, usertokenid, "user/" + uid);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -139,7 +141,7 @@ public class UserAdminUibController {
             e.printStackTrace();
         }
         method.setRequestEntity(inputStreamRequestEntity);
-        String url = getUibUrl(apptokenid, usertokenid, "user/");
+        String url = buildUasUrl(apptokenid, usertokenid, "user/");
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -154,7 +156,7 @@ public class UserAdminUibController {
     public String getUserRoles(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Getting user roles for user with uid: " + uid);
         HttpMethod method = new GetMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/roles");
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/roles");
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -173,7 +175,7 @@ public class UserAdminUibController {
             e.printStackTrace();
         }
         method.setRequestEntity(inputStreamRequestEntity);
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/");
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/");
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -185,7 +187,7 @@ public class UserAdminUibController {
     public String deleteUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, @PathVariable("roleId") String roleId, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Deleting role with roleId: " + roleId + ", for user with uid: " + uid);
         DeleteMethod method = new DeleteMethod();
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/" + roleId);
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -204,7 +206,7 @@ public class UserAdminUibController {
             e.printStackTrace();
         }
         method.setRequestEntity(inputStreamRequestEntity);
-        String url = getUibUrl(apptokenid, usertokenid, "user/"+uid+"/role/"+roleId);
+        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/" + roleId);
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -219,7 +221,7 @@ public class UserAdminUibController {
     public String resetPassword(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("username") String username, HttpServletRequest request, HttpServletResponse response, Model model) {
         logger.trace("Resetting password for user: " + username);
         PostMethod method = new PostMethod();
-        String url = uibUrl + "password/" + apptokenid +"/reset/username/" + username;
+        String url = userAdminServiceUrl + "password/" + apptokenid +"/reset/username/" + username;
         makeUibRequest(method, url, model, response);
         response.setContentType("application/json; charset=utf-8");
         return "json";
@@ -252,12 +254,12 @@ public class UserAdminUibController {
     }
 
 
-    private String getUibUrl(String apptokenid, String usertokenid, String s) {
-        return uibUrl + apptokenid + "/" + usertokenid + "/" + s;
+    private String buildUasUrl(String apptokenid, String usertokenid, String s) {
+        return userAdminServiceUrl + apptokenid + "/" + usertokenid + "/" + s;
     }
 
     protected String makeUibRequest(String apptokenid, String usertokenid, Model model, String resourcePath) {
-        String url = getUibUrl(apptokenid, usertokenid, resourcePath);
+        String url = buildUasUrl(apptokenid, usertokenid, resourcePath);
         HttpMethodParams params = new HttpMethodParams();
         params.setHttpElementCharset("UTF-8");
         params.setContentCharset("UTF-8");
