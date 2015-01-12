@@ -28,6 +28,7 @@ public class UserAdminController {
     private static final int MIN_USER_TOKEN_LENGTH = 11;
     private static final int MIN_USERTOKEN_ID_LENGTH = 4;
     private static final String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
+    private static String userTokenId = null;
 
     private TokenServiceClient tokenServiceClient = new TokenServiceClient();
 
@@ -73,7 +74,7 @@ public class UserAdminController {
         }
 
         String userTicket = request.getParameter(USERTICKET_KEY);
-        if (userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
+        if (userTokenId == null && userTicket != null && userTicket.length() > MIN_USERTICKET_LENGTH) {
             String userTokenXml;
             try {
                 userTokenXml = tokenServiceClient.getUserTokenByUserTicket(userTicket);
@@ -85,7 +86,8 @@ public class UserAdminController {
                     return LOGIN_SERVICE_REDIRECT;
                 }
 
-                String userTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+                userTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+
                 if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                     logger.trace("Got user from userTokenXml, but wrong access rights. Redirecting to logout.");
                     return LOGOUT_SERVICE_REDIRECT;
@@ -129,12 +131,12 @@ public class UserAdminController {
             return LOGOUT_SERVICE_REDIRECT;
         }
 
-        String userTokenIdFromUserTokenXml = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
+        userTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(userTokenXml);
         addModelParams(model, userTokenXml, UserTokenXpathHelper.getRealName(userTokenXml));
         Integer tokenRemainingLifetimeSeconds = TokenServiceClient.calculateTokenRemainingLifetimeInSeconds(userTokenXml);
-        CookieManager.updateUserTokenCookie(userTokenIdFromUserTokenXml, tokenRemainingLifetimeSeconds, request, response);
+        CookieManager.updateUserTokenCookie(userTokenId, tokenRemainingLifetimeSeconds, request, response);
 
-        logger.info("Logon OK. userTokenIdFromUserTokenXml={}", userTokenIdFromUserTokenXml);
+        logger.info("Logon OK. userTokenIdFromUserTokenXml={}", userTokenId);
         return MY_APP_TYPE;
     }
 
@@ -142,6 +144,7 @@ public class UserAdminController {
     public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         //model.addAttribute("redirectURI", MY_APP_URI);
+        userTokenId = null;
         logger.trace("Logout was called with userTokenIdFromCookie={}. Redirecting to {}.", userTokenIdFromCookie, LOGOUT_SERVICE_REDIRECT);
         CookieManager.clearUserTokenCookie(request, response);
         return LOGOUT_SERVICE_REDIRECT;

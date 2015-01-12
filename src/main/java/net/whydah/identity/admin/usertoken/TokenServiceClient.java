@@ -23,7 +23,7 @@ public class TokenServiceClient {
     private final URI tokenServiceUri;
     private String myAppTokenXml;
     private String myAppTokenId;
-    private String myUserTokenId;
+    private static String myUserTokenId;
 
 
     public TokenServiceClient() throws IOException {
@@ -91,6 +91,7 @@ public class TokenServiceClient {
     }
 
     public String getUserTokenByUserTicket(String userticket) {
+
         logonApplication();
 
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_userticket");
