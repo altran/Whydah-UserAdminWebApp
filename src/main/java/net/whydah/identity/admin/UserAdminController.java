@@ -108,6 +108,7 @@ public class UserAdminController {
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         if (userTokenIdFromCookie == null) {
             CookieManager.clearUserTokenCookie(request, response);
+            userTokenId = null;
             return LOGIN_SERVICE_REDIRECT;
         }
 
@@ -117,17 +118,20 @@ public class UserAdminController {
             if (userTokenXml.length() < MIN_USER_TOKEN_LENGTH) {
                 CookieManager.clearUserTokenCookie(request, response);
                 logger.trace("UserTokenXML null or too short to be useful. Redirecting to login.");
+                userTokenId = null;
                 return LOGIN_SERVICE_REDIRECT;
             }
         } catch (RuntimeException mre) {
             CookieManager.clearUserTokenCookie(request, response);
             logger.trace("{}. Redirecting to login.", userTokenIdFromCookie, mre.getMessage());
+            userTokenId = null;
             return LOGIN_SERVICE_REDIRECT;
         }
 
         if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
             logger.trace("Got user from userTokenXml, but wrong access rights. Redirecting to logout.");
             CookieManager.clearUserTokenCookie(request, response);
+            userTokenId = null;
             return LOGOUT_SERVICE_REDIRECT;
         }
 
