@@ -90,6 +90,7 @@ public class UserAdminController {
 
                 if (!UserTokenXpathHelper.hasUserAdminRight(userTokenXml)) {
                     logger.trace("Got user from userTokenXml, but wrong access rights. Redirecting to logout.");
+                    userTokenId = null;
                     return LOGOUT_SERVICE_REDIRECT;
                 }
 
