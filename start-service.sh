@@ -2,12 +2,12 @@
 
 
 #  If IAM_MODE not set, use PROD
-if [ -z "$IAM_MODE" ]
+if [ -z "$IAM_MODE" ]; then 
   IAM_MODE=PROD
 fi
 
 # If IAM_CONFOG not set, use PROD properties from local directory
-if [ -z "$IAM_CONFIG" ]
+if [ -z "$IAM_CONFIG" ]; then 
   IAM_CONFIG=useradminwebapp.PROD.properties
 fi
 
