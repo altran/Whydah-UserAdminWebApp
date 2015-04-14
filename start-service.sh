@@ -1,3 +1,23 @@
 #!/bin/sh
 
-nohup /usr/bin/java -DIAM_MODE=PROD -DIAM_CONFIG=/home/UserAdminWebApp/useradminwebapp.PROD.properties -jar /home/UserAdminWebApp/UserAdminWebApp.jar &
+
+#  If IAM_MODE not set, use PROD
+if [ -z "$IAM_MODE" ]
+  IAM_MODE=PROD
+fi
+
+# If IAM_CONFOG not set, use PROD properties from local directory
+if [ -z "$IAM_CONFIG" ]
+  IAM_CONFIG=useradminwebapp.PROD.properties
+fi
+
+# If Version is from source, find the artifact
+if [ $Version = "FROM_SOURCE" ]; then 
+    # Find the bult artifact
+    Version=$(find target/* -name *.jar | grep SNAPSHOT | grep -v original | grep -v lib)
+else
+    Version=UserAdminWebApp.jar
+fi
+
+
+nohup /usr/bin/java -DIAM_MODE=$IAM_MODE -DIAM_CONFIG=$IAM_CONFIG -jar  $Version
