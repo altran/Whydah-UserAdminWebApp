@@ -2,7 +2,7 @@ UserAdministration
 ========================
 
 Administration UI for Whydah Users and their mapping to Roles, Applications and Organizations.
-Requires UserIdentityBackend, and if authorization is turned on; SSOLoginService and SecurityTokenService.
+Requires UserAdminService, and if authorization is turned on; SSOLoginService and SecurityTokenService.
 In order to use the Administration UI the User requires a UserAdmin-role defined in UserIdentityBackend.
 
 
@@ -50,10 +50,9 @@ myuri=http://localhost:9996/useradmin/
 
 
 #
-#  Uses UserIdentiTyBackend to get the users
+#  Uses UserAdminService to get the users
 #
-# useridentitybackend=http://myserver.net/uib/
-useridentitybackend=http://localhost:9995/uib/
+useradminservice=http://localhost:9992/useradminservice/
 
 #
 # uses SSOLogonservice to redirect non-authenticated users

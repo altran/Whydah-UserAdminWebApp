@@ -30,7 +30,6 @@ import java.util.Properties;
 public class UserAdminUibController {
     private static final Logger logger = LoggerFactory.getLogger(UserAdminUibController.class);
     private static final String JSON_DATA_KEY = "jsondata";
-    //private final String uibUrl;
     private final String userAdminServiceUrl;
     private final HttpClient httpClient;
     //private String utf8query;
@@ -38,7 +37,6 @@ public class UserAdminUibController {
 
     public UserAdminUibController() throws IOException {
         Properties properties = AppConfig.readProperties();
-//        uibUrl = properties.getProperty("useridentitybackend");
         userAdminServiceUrl = properties.getProperty("useradminservice");
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
     }
