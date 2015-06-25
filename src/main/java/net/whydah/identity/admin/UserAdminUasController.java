@@ -204,8 +204,9 @@ public class UserAdminUasController {
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/{uid}/role/{roleId}", method = RequestMethod.PUT)
-    public String putUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, @PathVariable("roleId") String roleId, HttpServletRequest request, HttpServletResponse response, Model model) {
-        log.trace("Putting role with roleId: " + roleId + ", for user with uid: " + uid);
+    public String putUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
+                              @PathVariable("uid") String uid, @PathVariable("roleId") String roleId, HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.trace("putUserRole with roleId: " + roleId + ", for user with uid: " + uid);
         PutMethod method = new PutMethod();
         InputStreamRequestEntity inputStreamRequestEntity = null;
         try {
@@ -216,6 +217,7 @@ public class UserAdminUasController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/" + roleId);
         makeUasRequest(method, url, model, response);
+        log.trace("putUserRole for uid={}, roleId={} with the following jsondata=\n{}", uid, roleId, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
