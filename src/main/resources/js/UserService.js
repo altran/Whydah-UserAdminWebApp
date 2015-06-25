@@ -59,7 +59,7 @@ UseradminApp.service('Users', function($http, Messages){
 	};
 
 	this.get = function(uid, callback) {
-	    console.log('Getting user', uid);
+	    console.log('Getting user with uid=', uid);
 	    var that = this;
 		$http({
 			method: 'GET',
@@ -146,7 +146,7 @@ UseradminApp.service('Users', function($http, Messages){
 
     this.getRolesForCurrentUser = function(callback) {
         var uid = this.user.uid;
-	    console.log('Getting roles for user', uid);
+	    console.log('Getting roles for user with uid=', uid);
 	    var that = this;
 		$http({
 			method: 'GET',
@@ -159,7 +159,7 @@ UseradminApp.service('Users', function($http, Messages){
 		    }
 		});
 		return this;
-    }
+    };
 
     this.addRoleForUser = function(role, user, successCallback) {
 	    console.log('Adding role for user', user, role);
@@ -177,18 +177,18 @@ UseradminApp.service('Users', function($http, Messages){
 			}
 		});
 		return this;
-    }
+    };
 
 	this.addRoleForCurrentUser = function(role, successCallback) {
 	    this.addRoleForUser(role, this.user, successCallback);
-	}
+	};
 
 	this.addRoleForSelectedUsers = function(role, successCallback) {
 	    var selectedUsers = this.getSelectedUsers();
 	    for(var i=0; i<selectedUsers.length; i++) {
 	        this.addRoleForUser(role, selectedUsers[i], successCallback);
 	    }
-	}
+	};
 
     this.deleteRoleForUser = function(role, user) {
 	    console.log('Deleting role for user', user, role);
@@ -207,11 +207,11 @@ UseradminApp.service('Users', function($http, Messages){
             that.getRolesForCurrentUser();
         });
 		return this;
-    }
+    };
 
 	this.deleteRoleForCurrentUser = function(role) {
 	    this.deleteRoleForUser(role, this.user);
-	}
+	};
 
     this.saveRoleForUser = function(role, user) {
 	    console.log('Saving role for user', user, role);
@@ -230,11 +230,11 @@ UseradminApp.service('Users', function($http, Messages){
 			that.getRolesForCurrentUser();
 		});
 		return this;
-    }
+    };
 
     this.saveRoleForCurrentUser = function(role) {
         this.saveRoleForUser(role, this.user);
-    }
+    };
 
 
     // PASSWORD
@@ -249,6 +249,6 @@ UseradminApp.service('Users', function($http, Messages){
 			Messages.add('warning', 'Unable to reset password for user "'+user.username+'".');
 		});
 		return this;
-    }
+    };
 
 });

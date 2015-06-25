@@ -136,16 +136,17 @@ public class UserAdminUasController {
     public String postUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
                            HttpServletRequest request, HttpServletResponse response, Model model) {
         log.trace("Posting new user");
-        PostMethod method = new PostMethod();
         InputStreamRequestEntity inputStreamRequestEntity = null;
         try {
             inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
         } catch (IOException e) {
             log.error("", e);
         }
+        PostMethod method = new PostMethod();
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/");
         makeUasRequest(method, url, model, response);
+        log.trace("postUser with the following jsondata=\n{}", model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
@@ -170,8 +171,9 @@ public class UserAdminUasController {
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/{uid}/role/", method = RequestMethod.POST)
-    public String postUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        log.trace("Posting new role for user with uid: " + uid);
+    public String postUserRole(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
+                               @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.trace("postUserRole for uid={}", uid);
         PostMethod method = new PostMethod();
         InputStreamRequestEntity inputStreamRequestEntity = null;
         try {
@@ -182,6 +184,7 @@ public class UserAdminUasController {
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/");
         makeUasRequest(method, url, model, response);
+        log.trace("postUserRole for uid={} with the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
