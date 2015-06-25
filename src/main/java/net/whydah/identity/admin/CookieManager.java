@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class CookieManager {
     private static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_useradminwebapp";
-    private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
+    private static final Logger log = LoggerFactory.getLogger(CookieManager.class);
     private static final int DEFAULT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 
     private static String cookiedomain = null;
@@ -23,7 +23,7 @@ public class CookieManager {
         try {
             cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
         } catch (IOException e) {
-            logger.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
+            log.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
         }
     }
 
@@ -55,7 +55,7 @@ public class CookieManager {
         }
         cookie.setPath("/");
         cookie.setSecure(true);
-        logger.debug("Created/updated cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+        log.debug("Created/updated cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                 cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);
     }
@@ -71,7 +71,7 @@ public class CookieManager {
             }
             cookie.setPath("/");
             cookie.setSecure(true);
-            logger.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+            log.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                     cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
             response.addCookie(cookie);
         }
@@ -93,7 +93,7 @@ public class CookieManager {
             return null;
         }
         for (Cookie cookie : cookies) {
-            logger.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue());
+            log.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue());
             if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }

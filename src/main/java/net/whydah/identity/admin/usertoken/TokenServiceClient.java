@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.MissingResourceException;
 
 public class TokenServiceClient {
-    private static final Logger logger = LoggerFactory.getLogger(TokenServiceClient.class);
+    private static final Logger log = LoggerFactory.getLogger(TokenServiceClient.class);
 
     private final Client tokenServiceClient = Client.create();
     private final URI tokenServiceUri;
@@ -41,21 +41,21 @@ public class TokenServiceClient {
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", userTokenId);
-        logger.trace("getUserTokenFromUserTokenId - calling {} with usertokenid={}", userTokenResource.getURI().toString(), userTokenId);
+        log.trace("getUserTokenFromUserTokenId - calling {} with usertokenid={}", userTokenResource.getURI().toString(), userTokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new RuntimeException("getUserTokenFromUserTokenId failed with status code=" + response.getStatus() + ", userTokenId=" + userTokenId + ", tokenServiceUrl=" + userTokenResource.toString());
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
+            log.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
+            log.trace("getUserTokenFromUserTokenId - Response OK with XML: {}", responseXML);
             return responseXML;
         }
 
@@ -78,15 +78,15 @@ public class TokenServiceClient {
             ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
             //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
             if (response.getStatus() != 200) {
-                logger.error("logonApplication - Application authentication failed with statuscode {}", response.getStatus());
+                log.error("logonApplication - Application authentication failed with statuscode {}", response.getStatus());
                 throw new RuntimeException("Application authentication failed");
             }
             myAppTokenXml = response.getEntity(String.class);
             myAppTokenId = UserTokenXpathHelper.getApplicationTokenIdFromAppTokenXML(myAppTokenXml);
-            logger.trace("logonApplication - Applogon ok: apptokenxml: {}", myAppTokenXml);
-            logger.trace("logonApplication - myAppTokenId: {}", myAppTokenId);
+            log.trace("logonApplication - Applogon ok: apptokenxml: {}", myAppTokenXml);
+            log.trace("logonApplication - myAppTokenId: {}", myAppTokenId);
         } catch (IOException ioe){
-            logger.warn("logonApplication - Did not find configuration for my application credential.", ioe);
+            log.warn("logonApplication - Did not find configuration for my application credential.", ioe);
         }
     }
 
@@ -104,7 +104,7 @@ public class TokenServiceClient {
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("Response OK with XML: {}", responseXML);
+            log.trace("Response OK with XML: {}", responseXML);
             myUserTokenId = UserTokenXpathHelper.getUserTokenIdFromUserTokenXML(responseXML);
             return responseXML;
         }
@@ -112,10 +112,10 @@ public class TokenServiceClient {
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.trace("Response OK with XML: {}", responseXML);
+            log.trace("Response OK with XML: {}", responseXML);
             return responseXML;
         }
-        logger.warn("User authentication failed: {}", response);
+        log.warn("User authentication failed: {}", response);
         if (response.getStatus() == Response.Status.GONE.getStatusCode()) {
             throw new MissingResourceException("No token found for ticket.", getClass().getSimpleName(), userticket);
         }
@@ -155,8 +155,8 @@ public class TokenServiceClient {
         p2.addParameter("apptoken",appTokenXML);
         p2.addParameter("usertokenid",userTokenId);
 
-        logger.trace("apptoken:" + appTokenXML);
-        logger.trace("usertokenid:" + userTokenId);
+        log.trace("apptoken:" + appTokenXML);
+        log.trace("usertokenid:" + userTokenId);
         return p2;
     }
 
@@ -170,7 +170,7 @@ public class TokenServiceClient {
             acred.setApplicationPassord(properties.getProperty("applicationname"));
 
         } catch (IOException ioe) {
-            logger.error("Unable to get my application credentials from propertyfile.", ioe);
+            log.error("Unable to get my application credentials from propertyfile.", ioe);
         }
         WebResource resource = tokenServiceClient.resource(tokenServiceUri).path("/logon");
 

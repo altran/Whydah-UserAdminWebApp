@@ -13,11 +13,11 @@ import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
 
 public class UserTokenXpathHelper {
-    private static final Logger logger = LoggerFactory.getLogger(UserTokenXpathHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(UserTokenXpathHelper.class);
 
     public static String getUserTokenIdFromUserTokenXML(String userTokenXml) {
         if (userTokenXml == null) {
-            logger.trace("Empty  userToken");
+            log.trace("Empty  userToken");
             return "";
         }
 
@@ -31,14 +31,14 @@ public class UserTokenXpathHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
         }
         return "";
     }
 
 
     public static  String getApplicationTokenIdFromAppTokenXML(String appTokenXML) {
-        logger.trace("appTokenXML: {}", appTokenXML);
+        log.trace("appTokenXML: {}", appTokenXML);
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -48,10 +48,10 @@ public class UserTokenXpathHelper {
             String expression = "/applicationtoken/params/applicationtokenID[1]";
             XPathExpression xPathExpression = xPath.compile(expression);
             String appId = xPathExpression.evaluate(doc);
-            logger.trace("XML parse: applicationtokenID = {}", appId);
+            log.trace("XML parse: applicationtokenID = {}", appId);
             return appId;
         } catch (Exception e) {
-            logger.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
+            log.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
         }
         return "";
     }
@@ -71,14 +71,14 @@ public class UserTokenXpathHelper {
             String lastname = (xPathExpression.evaluate(doc));
             return firstname + " " + lastname;
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
         }
         return "";
     }
 
     public static boolean hasUserAdminRight(String userTokenXml) {
         if (userTokenXml == null) {
-            logger.trace("hasUserAdminRight - Empty  userToken");
+            log.trace("hasUserAdminRight - Empty  userToken");
             return false;
         }
         try {
@@ -89,7 +89,7 @@ public class UserTokenXpathHelper {
 
             String expression = "/usertoken/application[@ID=\"19\"]/role[@name=\"WhydahUserAdmin\"]/@value";
             XPathExpression xPathExpression = xPath.compile(expression);
-            logger.trace("hasUserAdminRight - token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
+            log.trace("hasUserAdminRight - token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             String roleValue = (xPathExpression.evaluate(doc));
             if (roleValue != null) {
                 if (roleValue.equals("false") || roleValue.equals("0") || roleValue.equals("disabled")) {
@@ -98,7 +98,7 @@ public class UserTokenXpathHelper {
             }
             return true;
         } catch (Exception e) {
-            logger.error("getTimestamp - userTokenXml timestamp parsing error", e);
+            log.error("getTimestamp - userTokenXml timestamp parsing error", e);
         }
         return false;
     }
@@ -106,7 +106,7 @@ public class UserTokenXpathHelper {
 
     public static Integer getLifespan(String userTokenXml) {
         if (userTokenXml == null){
-            logger.debug("userTokenXml was empty, so returning empty lifespan.");
+            log.debug("userTokenXml was empty, so returning empty lifespan.");
             return null;
         }
         try {
@@ -119,14 +119,14 @@ public class UserTokenXpathHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return Integer.parseInt(xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("getLifespan - userTokenXml lifespan parsing error", e);
+            log.error("getLifespan - userTokenXml lifespan parsing error", e);
         }
         return null;
     }
 
     public static Long getTimestamp(String userTokenXml) {
         if (userTokenXml==null){
-            logger.debug("userTokenXml was empty, so returning empty timestamp.");
+            log.debug("userTokenXml was empty, so returning empty timestamp.");
             return null;
         }
         try {
@@ -137,10 +137,10 @@ public class UserTokenXpathHelper {
 
             String expression = "/usertoken/timestamp";
             XPathExpression xPathExpression = xPath.compile(expression);
-            logger.debug("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
+            log.debug("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             return Long.parseLong(xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("getTimestamp - userTokenXml timestamp parsing error", e);
+            log.error("getTimestamp - userTokenXml timestamp parsing error", e);
         }
         return null;
     }

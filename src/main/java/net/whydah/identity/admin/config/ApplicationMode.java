@@ -14,7 +14,7 @@ public class ApplicationMode {
     public final static String TEST = "TEST";
     public final static String TEST_L = "TEST_LOCALHOST";
     public final static String DEV = "DEV";
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationMode.class);
+    private static final Logger log = LoggerFactory.getLogger(ApplicationMode.class);
 
 
     public static String getApplicationMode() {
@@ -31,7 +31,7 @@ public class ApplicationMode {
             System.err.println("Unknown " + IAM_MODE_KEY + ": " + appMode);
             System.exit(5);
         }
-        logger.info(String.format("Running in %s mode", appMode));
+        log.info(String.format("Running in %s mode", appMode));
         return appMode;
     }
 }
