@@ -91,7 +91,7 @@ public class UserAdminUasController {
     @RequestMapping(value = "/useraggregate/{uid}/", method = RequestMethod.GET)
     public String getUserAggregate(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         HttpMethod method = new GetMethod();
-        String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
+        String url = buildUasUrl(apptokenid, usertokenid, "useraggregate/" + uid);
         makeUasRequest(method, url, model, response);
         log.trace("getUserAggregate with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
@@ -154,12 +154,14 @@ public class UserAdminUasController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RequestMapping(value = "/user/{uid}/roles", method = RequestMethod.GET)
-    public String getUserRoles(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        log.trace("Getting user roles for user with uid: " + uid);
+    @RequestMapping(value = "/user/{uid}/roles/", method = RequestMethod.GET)
+    public String getUserRoles(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
+                               @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.trace("Getting user roles for user with uid={}", uid);
         HttpMethod method = new GetMethod();
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/roles");
         makeUasRequest(method, url, model, response);
+        log.trace("getUserRoles with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
