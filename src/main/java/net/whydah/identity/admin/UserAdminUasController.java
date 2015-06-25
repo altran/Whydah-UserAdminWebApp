@@ -83,6 +83,8 @@ public class UserAdminUasController {
         return "json";
     }
 
+    //Not currently used. Json fetch useridentity + roles currently.
+    /*
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/useraggregate/{uid}/", method = RequestMethod.GET)
@@ -94,6 +96,7 @@ public class UserAdminUasController {
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
+    */
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
