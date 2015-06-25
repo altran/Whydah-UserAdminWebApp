@@ -73,12 +73,13 @@ public class UserAdminUasController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/{uid}/", method = RequestMethod.GET)
-    public String getUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
-        log.trace("Getting user with uid: " + uid);
+    public String getUserIdentity(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
+                                  @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.trace("getUserIdentity with uid={}", uid);
         HttpMethod method = new GetMethod();
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
         makeUasRequest(method, url, model, response);
-        log.trace("getUser with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
+        log.trace("getUserIdentity with uid={} returned the following jsondata=\n{}", uid, model.asMap().get(JSON_DATA_KEY));
         response.setContentType("application/json; charset=utf-8");
         return "json";
     }
