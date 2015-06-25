@@ -154,7 +154,7 @@ public class UserAdminUasController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RequestMapping(value = "/user/{uid}/roles/", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{uid}/roles", method = RequestMethod.GET)
     public String getUserRoles(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
                                @PathVariable("uid") String uid, HttpServletRequest request, HttpServletResponse response, Model model) {
         log.trace("Getting user roles for user with uid={}", uid);
