@@ -121,7 +121,7 @@ public class UserAdminUasController {
         try {
             inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid);
@@ -133,14 +133,15 @@ public class UserAdminUasController {
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RequestMapping(value = "/user/", method = RequestMethod.POST)
-    public String postUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String postUser(@PathVariable("apptokenid") String apptokenid, @PathVariable("usertokenid") String usertokenid,
+                           HttpServletRequest request, HttpServletResponse response, Model model) {
         log.trace("Posting new user");
         PostMethod method = new PostMethod();
         InputStreamRequestEntity inputStreamRequestEntity = null;
         try {
             inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/");
@@ -176,7 +177,7 @@ public class UserAdminUasController {
         try {
             inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/");
@@ -207,7 +208,7 @@ public class UserAdminUasController {
         try {
             inputStreamRequestEntity = new InputStreamRequestEntity(request.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
         method.setRequestEntity(inputStreamRequestEntity);
         String url = buildUasUrl(apptokenid, usertokenid, "user/" + uid + "/role/" + roleId);
